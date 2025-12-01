@@ -1,0 +1,316 @@
+
+> server@1.0.0 dev
+> nodemon --delay 200ms --watch src --ext ts ...
+
+[33m[nodemon] 3.1.9[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): src/**/*[39m
+[33m[nodemon] watching extensions: ts[39m
+[32m[nodemon] starting `ts-node -r module-alias/register src/server.ts ...`[39m
+⚠️  [STRIPE] TEST MODE ENABLED - All payments are mocked. Set TEST_PAYMENTS=false to use real Stripe.
+✅ Connected to Redis
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `ts-node -r module-alias/register src/server.ts ...`[39m
+⚠️  [STRIPE] TEST MODE ENABLED - All payments are mocked. Set TEST_PAYMENTS=false to use real Stripe.
+✅ Connected to Redis
+Neon Database connected successfully.
+Server is running on port 5000
+[INFO] Sign in {
+  userId: 'df11c595-04b2-409c-b4fe-cd960c0e40fc',
+  sessionId: 'qMmSZhFC_GZLESS2636Kh5U_9UuwBQU8',
+  timePeriod: 0
+}
+[2025-11-29T20:28:22.591Z] [32MINFO[39M: ::ffff:127.0.0.1 - - [29/Nov/2025:20:28:22 +0000] "POST /api/v1/auth/sign-in HTTP/1.1" 200 188 "-" "axios/1.8.4"
+accessToken:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImRmMTFjNTk1LTA0YjItNDA5Yy1iNGZlLWNkOTYwYzBlNDBmYyIsImlhdCI6MTc2NDQ0ODEwMiwiZXhwIjoxNzY0NDQ5MDAyfQ.mvzcCY8hDlZivKoAHg74dauHcu85tE2K8dL19kVUCWo
+Decoded:  {
+  id: 'df11c595-04b2-409c-b4fe-cd960c0e40fc',
+  iat: 1764448102,
+  exp: 1764449002
+}
+Finding conversations for user: df11c595-04b2-409c-b4fe-cd960c0e40fc as role: BUYER
+Where clause: { userId: 'df11c595-04b2-409c-b4fe-cd960c0e40fc' }
+Found conversations: 1
+=== CONTROLLER DEBUG ===
+User ID: df11c595-04b2-409c-b4fe-cd960c0e40fc
+User Role: BUYER
+Conversations found: 1
+About to call sendResponse...
+Conversations to send: 1
+Conversations data: [
+  {
+    "id": "fdb3f2a0-72a3-4158-ba2c-a9aa5d1eb869",
+    "userId": "df11c595-04b2-409c-b4fe-cd960c0e40fc",
+    "sellerId": "3930ed9d-2c1e-406b-8022-a49e444fbc3e",
+    "status": "OPEN",
+    "createdAt": "2025-11-28T23:30:28.665Z",
+    "updatedAt": "2025-11-29T18:10:54.246Z",
+    "lastMessageAt": "2025-11-29T18:08:37.853Z",
+    "lastMessage": "ok",
+    "userUnread": 0,
+    "sellerUnread": 0,
+    "user": {
+      "id": "df11c595-04b2-409c-b4fe-cd960c0e40fc",
+      "email": "user@gmail.com",
+      "password": "$2b$12$1eWHpZUa/tfUsJg3bqcBG./rh2m2ANH.ReixQhJyMS8g6PF3JzOMa",
+      "name": "user",
+      "avatar": null,
+      "resetPasswordToken": null,
+      "resetPasswordTokenExpiresAt": null,
+      "role": "USER",
+      "isSeller": false,
+      "sellerStatus": null,
+      "createdAt": "2025-11-28T01:34:37.638Z",
+      "updatedAt": "2025-11-28T01:34:37.638Z"
+    },
+    "seller": {
+      "id": "3930ed9d-2c1e-406b-8022-a49e444fbc3e",
+      "email": "Seller@gmail.com",
+      "password": "$2b$12$yVer2g4wAfJ34j/8KcQziezBmcxT.vxP2nLs8KQ2GwVsEBNofDPcK",
+      "name": "Seller",
+      "avatar": null,
+      "resetPasswordToken": null,
+      "resetPasswordTokenExpiresAt": null,
+      "role": "USER",
+      "isSeller": true,
+      "sellerStatus": "APPROVED",
+      "createdAt": "2025-11-28T02:21:11.453Z",
+      "updatedAt": "2025-11-28T02:52:52.686Z"
+    },
+    "messages": [
+      {
+        "id": "2cf3b2bb-7f65-4d76-898d-2458bef540e5",
+        "chatId": "fdb3f2a0-72a3-4158-ba2c-a9aa5d1eb869",
+        "senderId": "3930ed9d-2c1e-406b-8022-a49e444fbc3e",
+        "content": "ok",
+        "type": "TEXT",
+        "url": null,
+        "createdAt": "2025-11-29T18:08:37.853Z",
+        "isRead": true,
+        "readAt": "2025-11-29T18:10:22.341Z",
+        "sender": {
+          "id": "3930ed9d-2c1e-406b-8022-a49e444fbc3e",
+          "email": "Seller@gmail.com",
+          "password": "$2b$12$yVer2g4wAfJ34j/8KcQziezBmcxT.vxP2nLs8KQ2GwVsEBNofDPcK",
+          "name": "Seller",
+          "avatar": null,
+          "resetPasswordToken": null,
+          "resetPasswordTokenExpiresAt": null,
+          "role": "USER",
+          "isSeller": true,
+          "sellerStatus": "APPROVED",
+          "createdAt": "2025-11-28T02:21:11.453Z",
+          "updatedAt": "2025-11-28T02:52:52.686Z"
+        }
+      }
+    ]
+  }
+]
+sendResponse called, returned: undefined
+Response will be sent with data: { conversations: 1 }
+[INFO] Conversations fetched {
+  userId: 'df11c595-04b2-409c-b4fe-cd960c0e40fc',
+  userRole: 'BUYER',
+  count: 1
+}
+[2025-11-29T20:28:22.638Z] [32MINFO[39M: ::ffff:127.0.0.1 - - [29/Nov/2025:20:28:22 +0000] "GET /api/v1/chat/conversations HTTP/1.1" 200 - "-" "axios/1.8.4"
+accessToken:  test
+JsonWebTokenError: jwt malformed
+    at Object.module.exports [as verify] (/media/hamza/Study/Work/ecommerce app fyp/v2/server/node_modules/jsonwebtoken/verify.js:70:17)
+    at /media/hamza/Study/Work/ecommerce app fyp/v2/server/src/shared/middlewares/protect.ts:35:25
+    at Generator.next (<anonymous>)
+    at /media/hamza/Study/Work/ecommerce app fyp/v2/server/src/shared/middlewares/protect.ts:8:71
+    at new Promise (<anonymous>)
+    at __awaiter (/media/hamza/Study/Work/ecommerce app fyp/v2/server/src/shared/middlewares/protect.ts:4:12)
+    at protect (/media/hamza/Study/Work/ecommerce app fyp/v2/server/src/shared/middlewares/protect.ts:27:20)
+    at Layer.handle [as handle_request] (/media/hamza/Study/Work/ecommerce app fyp/v2/server/node_modules/express/lib/router/layer.js:95:5)
+    at next (/media/hamza/Study/Work/ecommerce app fyp/v2/server/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/media/hamza/Study/Work/ecommerce app fyp/v2/server/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/media/hamza/Study/Work/ecommerce app fyp/v2/server/node_modules/express/lib/router/layer.js:95:5)
+    at /media/hamza/Study/Work/ecommerce app fyp/v2/server/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/media/hamza/Study/Work/ecommerce app fyp/v2/server/node_modules/express/lib/router/index.js:346:12)
+    at next (/media/hamza/Study/Work/ecommerce app fyp/v2/server/node_modules/express/lib/router/index.js:280:10)
+    at Function.handle (/media/hamza/Study/Work/ecommerce app fyp/v2/server/node_modules/express/lib/router/index.js:175:3)
+    at router (/media/hamza/Study/Work/ecommerce app fyp/v2/server/node_modules/express/lib/router/index.js:47:12)
+🔴 Error Message: Invalid access token, please log in
+🔴 Error Name: Error
+🔴 Stack Trace: Error: Invalid access token, please log in
+    at /media/hamza/Study/Work/ecommerce app fyp/v2/server/src/shared/middlewares/protect.ts:79:17
+    at Generator.next (<anonymous>)
+    at /media/hamza/Study/Work/ecommerce app fyp/v2/server/src/shared/middlewares/protect.ts:8:71
+    at new Promise (<anonymous>)
+[2025-11-29T20:28:24.687Z] [31MERROR[39M: Invalid access token, please log in
+[ERROR] Error: Invalid access token, please log in {
+  statusCode: 401,
+  stack: 'Error: Invalid access token, please log in\n' +
+    '    at /media/hamza/Study/Work/ecommerce app fyp/v2/server/src/shared/middlewares/protect.ts:79:17\n' +
+    '    at Generator.next (<anonymous>)\n' +
+    '    at /media/hamza/Study/Work/ecommerce app fyp/v2/server/src/shared/middlewares/protect.ts:8:71\n' +
+    '    at new Promise (<anonymous>)\n' +
+    '    at __awaiter (/media/hamza/Study/Work/ecommerce app fyp/v2/server/src/shared/middlewares/protect.ts:4:12)\n' +
+    '    at protect (/media/hamza/Study/Work/ecommerce app fyp/v2/server/src/shared/middlewares/protect.ts:27:20)\n' +
+    '    at Layer.handle [as handle_request] (/media/hamza/Study/Work/ecommerce app fyp/v2/server/node_modules/express/lib/router/layer.js:95:5)\n' +
+    '    at next (/media/hamza/Study/Work/ecommerce app fyp/v2/server/node_modules/express/lib/router/route.js:149:13)\n' +
+    '    at Route.dispatch (/media/hamza/Study/Work/ecommerce app fyp/v2/server/node_modules/express/lib/router/route.js:119:3)\n' +
+    '    at Layer.handle [as handle_request] (/media/hamza/Study/Work/ecommerce app fyp/v2/server/node_modules/express/lib/router/layer.js:95:5)\n' +
+    '    at /media/hamza/Study/Work/ecommerce app fyp/v2/server/node_modules/express/lib/router/index.js:284:15\n' +
+    '    at Function.process_params (/media/hamza/Study/Work/ecommerce app fyp/v2/server/node_modules/express/lib/router/index.js:346:12)\n' +
+    '    at next (/media/hamza/Study/Work/ecommerce app fyp/v2/server/node_modules/express/lib/router/index.js:280:10)\n' +
+    '    at Function.handle (/media/hamza/Study/Work/ecommerce app fyp/v2/server/node_modules/express/lib/router/index.js:175:3)\n' +
+    '    at router (/media/hamza/Study/Work/ecommerce app fyp/v2/server/node_modules/express/lib/router/index.js:47:12)\n' +
+    '    at Layer.handle [as handle_request] (/media/hamza/Study/Work/ecommerce app fyp/v2/server/node_modules/express/lib/router/layer.js:95:5)',
+  method: 'GET',
+  url: '/api/v1/chat/conversations',
+  userId: null,
+  timePeriod: 0
+}
+[2025-11-29T20:28:24.703Z] [32MINFO[39M: ::1 - - [29/Nov/2025:20:28:24 +0000] "GET /api/v1/chat/conversations HTTP/1.1" 401 1933 "-" "curl/8.9.1"
+[INFO] Sign in {
+  userId: 'df11c595-04b2-409c-b4fe-cd960c0e40fc',
+  sessionId: '8L0ErTD1PcZh_Xmtf25O53vVetlzSeTz',
+  timePeriod: 0
+}
+[2025-11-29T20:30:03.309Z] [32MINFO[39M: ::ffff:127.0.0.1 - - [29/Nov/2025:20:30:03 +0000] "POST /api/v1/auth/sign-in HTTP/1.1" 200 188 "-" "axios/1.8.4"
+accessToken:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImRmMTFjNTk1LTA0YjItNDA5Yy1iNGZlLWNkOTYwYzBlNDBmYyIsImlhdCI6MTc2NDQ0ODIwMywiZXhwIjoxNzY0NDQ5MTAzfQ.Oj63NYcSstXn18VKfPObwaJyKbcWHFkvbNXKnoffSHs
+Decoded:  {
+  id: 'df11c595-04b2-409c-b4fe-cd960c0e40fc',
+  iat: 1764448203,
+  exp: 1764449103
+}
+Finding conversations for user: df11c595-04b2-409c-b4fe-cd960c0e40fc as role: BUYER
+Where clause: { userId: 'df11c595-04b2-409c-b4fe-cd960c0e40fc' }
+Found conversations: 1
+=== CONTROLLER DEBUG ===
+User ID: df11c595-04b2-409c-b4fe-cd960c0e40fc
+User Role: BUYER
+Conversations found: 1
+About to call sendResponse...
+Conversations to send: 1
+Conversations data: [
+  {
+    "id": "fdb3f2a0-72a3-4158-ba2c-a9aa5d1eb869",
+    "userId": "df11c595-04b2-409c-b4fe-cd960c0e40fc",
+    "sellerId": "3930ed9d-2c1e-406b-8022-a49e444fbc3e",
+    "status": "OPEN",
+    "createdAt": "2025-11-28T23:30:28.665Z",
+    "updatedAt": "2025-11-29T18:10:54.246Z",
+    "lastMessageAt": "2025-11-29T18:08:37.853Z",
+    "lastMessage": "ok",
+    "userUnread": 0,
+    "sellerUnread": 0,
+    "user": {
+      "id": "df11c595-04b2-409c-b4fe-cd960c0e40fc",
+      "email": "user@gmail.com",
+      "password": "$2b$12$1eWHpZUa/tfUsJg3bqcBG./rh2m2ANH.ReixQhJyMS8g6PF3JzOMa",
+      "name": "user",
+      "avatar": null,
+      "resetPasswordToken": null,
+      "resetPasswordTokenExpiresAt": null,
+      "role": "USER",
+      "isSeller": false,
+      "sellerStatus": null,
+      "createdAt": "2025-11-28T01:34:37.638Z",
+      "updatedAt": "2025-11-28T01:34:37.638Z"
+    },
+    "seller": {
+      "id": "3930ed9d-2c1e-406b-8022-a49e444fbc3e",
+      "email": "Seller@gmail.com",
+      "password": "$2b$12$yVer2g4wAfJ34j/8KcQziezBmcxT.vxP2nLs8KQ2GwVsEBNofDPcK",
+      "name": "Seller",
+      "avatar": null,
+      "resetPasswordToken": null,
+      "resetPasswordTokenExpiresAt": null,
+      "role": "USER",
+      "isSeller": true,
+      "sellerStatus": "APPROVED",
+      "createdAt": "2025-11-28T02:21:11.453Z",
+      "updatedAt": "2025-11-28T02:52:52.686Z"
+    },
+    "messages": [
+      {
+        "id": "2cf3b2bb-7f65-4d76-898d-2458bef540e5",
+        "chatId": "fdb3f2a0-72a3-4158-ba2c-a9aa5d1eb869",
+        "senderId": "3930ed9d-2c1e-406b-8022-a49e444fbc3e",
+        "content": "ok",
+        "type": "TEXT",
+        "url": null,
+        "createdAt": "2025-11-29T18:08:37.853Z",
+        "isRead": true,
+        "readAt": "2025-11-29T18:10:22.341Z",
+        "sender": {
+          "id": "3930ed9d-2c1e-406b-8022-a49e444fbc3e",
+          "email": "Seller@gmail.com",
+          "password": "$2b$12$yVer2g4wAfJ34j/8KcQziezBmcxT.vxP2nLs8KQ2GwVsEBNofDPcK",
+          "name": "Seller",
+          "avatar": null,
+          "resetPasswordToken": null,
+          "resetPasswordTokenExpiresAt": null,
+          "role": "USER",
+          "isSeller": true,
+          "sellerStatus": "APPROVED",
+          "createdAt": "2025-11-28T02:21:11.453Z",
+          "updatedAt": "2025-11-28T02:52:52.686Z"
+        }
+      }
+    ]
+  }
+]
+sendResponse called, returned: undefined
+Response will be sent with data: { conversations: 1 }
+[INFO] Conversations fetched {
+  userId: 'df11c595-04b2-409c-b4fe-cd960c0e40fc',
+  userRole: 'BUYER',
+  count: 1
+}
+[2025-11-29T20:30:03.345Z] [32MINFO[39M: ::ffff:127.0.0.1 - - [29/Nov/2025:20:30:03 +0000] "GET /api/v1/chat/conversations HTTP/1.1" 200 - "-" "axios/1.8.4"
+accessToken:  test
+JsonWebTokenError: jwt malformed
+    at Object.module.exports [as verify] (/media/hamza/Study/Work/ecommerce app fyp/v2/server/node_modules/jsonwebtoken/verify.js:70:17)
+    at /media/hamza/Study/Work/ecommerce app fyp/v2/server/src/shared/middlewares/protect.ts:35:25
+    at Generator.next (<anonymous>)
+    at /media/hamza/Study/Work/ecommerce app fyp/v2/server/src/shared/middlewares/protect.ts:8:71
+    at new Promise (<anonymous>)
+    at __awaiter (/media/hamza/Study/Work/ecommerce app fyp/v2/server/src/shared/middlewares/protect.ts:4:12)
+    at protect (/media/hamza/Study/Work/ecommerce app fyp/v2/server/src/shared/middlewares/protect.ts:27:20)
+    at Layer.handle [as handle_request] (/media/hamza/Study/Work/ecommerce app fyp/v2/server/node_modules/express/lib/router/layer.js:95:5)
+    at next (/media/hamza/Study/Work/ecommerce app fyp/v2/server/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/media/hamza/Study/Work/ecommerce app fyp/v2/server/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/media/hamza/Study/Work/ecommerce app fyp/v2/server/node_modules/express/lib/router/layer.js:95:5)
+    at /media/hamza/Study/Work/ecommerce app fyp/v2/server/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/media/hamza/Study/Work/ecommerce app fyp/v2/server/node_modules/express/lib/router/index.js:346:12)
+    at next (/media/hamza/Study/Work/ecommerce app fyp/v2/server/node_modules/express/lib/router/index.js:280:10)
+    at Function.handle (/media/hamza/Study/Work/ecommerce app fyp/v2/server/node_modules/express/lib/router/index.js:175:3)
+    at router (/media/hamza/Study/Work/ecommerce app fyp/v2/server/node_modules/express/lib/router/index.js:47:12)
+🔴 Error Message: Invalid access token, please log in
+🔴 Error Name: Error
+🔴 Stack Trace: Error: Invalid access token, please log in
+    at /media/hamza/Study/Work/ecommerce app fyp/v2/server/src/shared/middlewares/protect.ts:79:17
+    at Generator.next (<anonymous>)
+    at /media/hamza/Study/Work/ecommerce app fyp/v2/server/src/shared/middlewares/protect.ts:8:71
+    at new Promise (<anonymous>)
+[2025-11-29T20:30:05.388Z] [31MERROR[39M: Invalid access token, please log in
+[ERROR] Error: Invalid access token, please log in {
+  statusCode: 401,
+  stack: 'Error: Invalid access token, please log in\n' +
+    '    at /media/hamza/Study/Work/ecommerce app fyp/v2/server/src/shared/middlewares/protect.ts:79:17\n' +
+    '    at Generator.next (<anonymous>)\n' +
+    '    at /media/hamza/Study/Work/ecommerce app fyp/v2/server/src/shared/middlewares/protect.ts:8:71\n' +
+    '    at new Promise (<anonymous>)\n' +
+    '    at __awaiter (/media/hamza/Study/Work/ecommerce app fyp/v2/server/src/shared/middlewares/protect.ts:4:12)\n' +
+    '    at protect (/media/hamza/Study/Work/ecommerce app fyp/v2/server/src/shared/middlewares/protect.ts:27:20)\n' +
+    '    at Layer.handle [as handle_request] (/media/hamza/Study/Work/ecommerce app fyp/v2/server/node_modules/express/lib/router/layer.js:95:5)\n' +
+    '    at next (/media/hamza/Study/Work/ecommerce app fyp/v2/server/node_modules/express/lib/router/route.js:149:13)\n' +
+    '    at Route.dispatch (/media/hamza/Study/Work/ecommerce app fyp/v2/server/node_modules/express/lib/router/route.js:119:3)\n' +
+    '    at Layer.handle [as handle_request] (/media/hamza/Study/Work/ecommerce app fyp/v2/server/node_modules/express/lib/router/layer.js:95:5)\n' +
+    '    at /media/hamza/Study/Work/ecommerce app fyp/v2/server/node_modules/express/lib/router/index.js:284:15\n' +
+    '    at Function.process_params (/media/hamza/Study/Work/ecommerce app fyp/v2/server/node_modules/express/lib/router/index.js:346:12)\n' +
+    '    at next (/media/hamza/Study/Work/ecommerce app fyp/v2/server/node_modules/express/lib/router/index.js:280:10)\n' +
+    '    at Function.handle (/media/hamza/Study/Work/ecommerce app fyp/v2/server/node_modules/express/lib/router/index.js:175:3)\n' +
+    '    at router (/media/hamza/Study/Work/ecommerce app fyp/v2/server/node_modules/express/lib/router/index.js:47:12)\n' +
+    '    at Layer.handle [as handle_request] (/media/hamza/Study/Work/ecommerce app fyp/v2/server/node_modules/express/lib/router/layer.js:95:5)',
+  method: 'GET',
+  url: '/api/v1/chat/conversations',
+  userId: null,
+  timePeriod: 0
+}
+[2025-11-29T20:30:05.405Z] [32MINFO[39M: ::1 - - [29/Nov/2025:20:30:05 +0000] "GET /api/v1/chat/conversations HTTP/1.1" 401 1933 "-" "curl/8.9.1"
