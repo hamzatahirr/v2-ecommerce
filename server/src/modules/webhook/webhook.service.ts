@@ -28,6 +28,7 @@ import {
   SUBSCRIPTION_STATUS,
 } from "@prisma/client";
 import stripe from "@/infra/payment/stripe";
+import jazzCashService from "@/infra/payment/jazzcash";
 import AppError from "@/shared/errors/AppError";
 import redisClient from "@/infra/cache/redis";
 import { makeLogsService } from "../logs/logs.factory";
@@ -327,6 +328,265 @@ export class WebhookService {
       orderNumbers: result.orders.map((o: any) => o.orderNumber),
       amount,
       testMode: TEST_PAYMENTS,
+    });
+
+    return result;
+  }
+
+  /**
+   * Handle JazzCash payment callback
+   */
+  async handleJazzCashCallback(callbackData: Record<string, string>) {
+    const logsService = this.logsService;
+
+    try {
+      // Process the callback data
+      const callbackResult = await jazzCashService.processPaymentCallback(callbackData);
+
+      if (!callbackResult.isValid) {
+        logsService.error("JazzCash callback - Invalid signature or data", {
+          txnRefNo: callbackResult.txnRefNo,
+          responseCode: callbackResult.responseCode
+        });
+        throw new AppError(400, "Invalid JazzCash callback data");
+      }
+
+      // Get payment metadata from Redis
+      const metadataKey = `jazzcash_payment_${callbackResult.txnRefNo}`;
+      const metadataStr = await redisClient.get(metadataKey);
+
+      if (!metadataStr) {
+        logsService.error("JazzCash callback - Payment metadata not found", {
+          txnRefNo: callbackResult.txnRefNo
+        });
+        throw new AppError(400, "Payment metadata not found");
+      }
+
+      const metadata = JSON.parse(metadataStr);
+      const { userId, cartId, sellerGroups } = metadata;
+
+      if (callbackResult.status === 'completed') {
+        // Process successful payment - create orders similar to Stripe
+        const result = await this.processJazzCashPaymentCompletion(metadata, callbackResult);
+        return result;
+      } else {
+        // Handle failed payment
+        logsService.info("JazzCash callback - Payment failed", {
+          txnRefNo: callbackResult.txnRefNo,
+          responseCode: callbackResult.responseCode,
+          responseMessage: callbackResult.responseMessage
+        });
+
+        // Could update cart status or notify user
+        return { status: 'failed', txnRefNo: callbackResult.txnRefNo };
+      }
+
+    } catch (error) {
+      logsService.error("JazzCash callback processing failed", {
+        error: error instanceof Error ? error.message : 'Unknown error',
+        callbackData: JSON.stringify(callbackData)
+      });
+      throw error;
+    }
+  }
+
+  /**
+   * Process successful JazzCash payment and create orders
+   */
+  private async processJazzCashPaymentCompletion(metadata: any, callbackResult: any) {
+    const { userId, cartId, sellerGroups } = metadata;
+    const logsService = this.logsService;
+
+    // Get cart data
+    const cart = await prisma.cart.findUnique({
+      where: { id: cartId },
+      include: { cartItems: { include: { variant: { include: { product: true } } } } },
+    });
+
+    if (!cart || cart.cartItems.length === 0) {
+      throw new AppError(400, "Cart is empty or not found");
+    }
+
+    // Parse seller groups
+    const sellerGroupsData = JSON.parse(sellerGroups);
+
+    const result = await prisma.$transaction(async (tx) => {
+      // Validate stock
+      for (const item of cart.cartItems) {
+        if (item.variant.stock < item.quantity) {
+          throw new AppError(400, `Insufficient stock for variant ${item.variant.sku}`);
+        }
+      }
+
+      // Group cart items by sellerId
+      const itemsBySeller = new Map<string, any[]>();
+      for (const item of cart.cartItems) {
+        const sellerId = item.variant.product.sellerId || "platform";
+        const key = sellerId;
+        if (!itemsBySeller.has(key)) {
+          itemsBySeller.set(key, []);
+        }
+        itemsBySeller.get(key)!.push(item);
+      }
+
+      const createdOrders: any[] = [];
+      const createdPayments: any[] = [];
+      const createdTransactions: any[] = [];
+      const createdShipments: any[] = [];
+
+      // Create separate order for each seller
+      for (const [sellerKey, items] of itemsBySeller.entries()) {
+        const sellerId = sellerKey === "platform" ? "platform-seller-id" : sellerKey;
+        const orderAmount = items.reduce(
+          (sum, item) => sum + item.quantity * item.variant.price,
+          0
+        );
+
+        // Generate unique order number
+        let orderNumber = generateOrderNumber();
+        let existingOrder = await tx.order.findUnique({
+          where: { orderNumber },
+        });
+        while (existingOrder) {
+          orderNumber = generateOrderNumber();
+          existingOrder = await tx.order.findUnique({
+            where: { orderNumber },
+          });
+        }
+
+        // Create Order
+        const order = await tx.order.create({
+          data: {
+            orderNumber,
+            userId,
+            sellerId,
+            amount: orderAmount,
+            orderItems: {
+              create: items.map((item: any) => ({
+                variantId: item.variantId,
+                quantity: item.quantity,
+                price: item.variant.price,
+                sellerId: item.variant.product.sellerId!,
+              })),
+            },
+          },
+        });
+
+        createdOrders.push(order);
+
+        // Create Payment for this seller's order (JazzCash)
+        const payment = await tx.payment.create({
+          data: {
+            orderId: order.id,
+            userId,
+            sellerId,
+            method: PAYMENT_METHOD.JAZZCASH,
+            amount: orderAmount,
+            status: PAYMENT_STATUS.PAID,
+            jazzCashTxnRef: callbackResult.txnRefNo,
+            gatewayRef: callbackResult.txnRefNo,
+            gatewayResponse: callbackResult,
+          },
+        });
+        createdPayments.push(payment);
+
+        // Create Transaction
+        const transaction = await tx.transaction.create({
+          data: {
+            orderId: order.id,
+            status: TRANSACTION_STATUS.PENDING,
+            transactionDate: new Date(),
+          },
+        });
+        createdTransactions.push(transaction);
+
+        // Create Shipment
+        const shipment = await tx.shipment.create({
+          data: {
+            orderId: order.id,
+            carrier: "Standard Delivery",
+            trackingNumber: Math.random().toString(36).substring(2, 12).toUpperCase(),
+            shippingNotes: null,
+            shippedDate: new Date(),
+            deliveryDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+          },
+        });
+        createdShipments.push(shipment);
+
+        // Update Variant Stock and Product Sales Count
+        for (const item of items) {
+          const variant = await tx.productVariant.findUnique({
+            where: { id: item.variantId },
+            select: { stock: true, product: { select: { id: true, salesCount: true } } },
+          });
+          if (!variant) {
+            throw new AppError(404, `Variant not found: ${item.variantId}`);
+          }
+          await tx.productVariant.update({
+            where: { id: item.variantId },
+            data: { stock: variant.stock - item.quantity },
+          });
+          await tx.product.update({
+            where: { id: variant.product.id },
+            data: { salesCount: variant.product.salesCount + item.quantity },
+          });
+        }
+
+        // Credit seller wallet after order creation (will be held for 7 days)
+        setTimeout(async () => {
+          try {
+            await this.walletService.creditWalletAfterOrderConfirmation(
+              order.id,
+              sellerId,
+              orderAmount
+            );
+            logsService.info("Wallet credited for JazzCash order", {
+              orderId: order.id,
+              sellerId,
+              amount: orderAmount,
+            });
+          } catch (error) {
+            logsService.error("Failed to credit wallet for JazzCash order", {
+              orderId: order.id,
+              sellerId,
+              amount: orderAmount,
+              error: error instanceof Error ? error.message : 'Unknown error',
+            });
+          }
+        }, 100);
+      }
+
+      // Clear the Cart
+      await tx.cartItem.deleteMany({ where: { cartId: cart.id } });
+      await tx.cart.update({
+        where: { id: cart.id },
+        data: { status: CART_STATUS.CONVERTED },
+      });
+
+      return {
+        orders: createdOrders,
+        payments: createdPayments,
+        transactions: createdTransactions,
+        shipments: createdShipments,
+      };
+    });
+
+    // Clean up Redis metadata
+    await redisClient.del(`jazzcash_payment_${callbackResult.txnRefNo}`);
+
+    // Post-transaction actions
+    await redisClient.del("dashboard:year-range");
+    const keys = await redisClient.keys("dashboard:stats:*");
+    if (keys.length > 0) await redisClient.del(keys);
+
+    this.cartService.logCartEvent(cart.id, "CHECKOUT_COMPLETED", userId);
+
+    logsService.info("JazzCash payment processed successfully", {
+      userId,
+      txnRefNo: callbackResult.txnRefNo,
+      orderCount: result.orders.length,
+      orderNumbers: result.orders.map((o: any) => o.orderNumber),
+      amount: callbackResult.amount,
     });
 
     return result;

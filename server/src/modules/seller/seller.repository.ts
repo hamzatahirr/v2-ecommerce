@@ -106,6 +106,12 @@ export class SellerRepository {
       state?: string;
       country?: string;
       zipCode?: string;
+      payoutMethod?: string;
+      payoutAccountTitle?: string;
+      payoutAccountNumber?: string;
+      payoutBankName?: string;
+      payoutBankBranch?: string;
+      payoutVerified?: boolean;
     }
   ) {
     return prisma.sellerProfile.update({

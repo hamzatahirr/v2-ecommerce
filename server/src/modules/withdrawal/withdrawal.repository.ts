@@ -221,4 +221,18 @@ export class WithdrawalRepository {
       completedAmount: stats.find(stat => stat.status === WITHDRAWAL_STATUS.COMPLETED)?._sum.amount || 0
     };
   }
+
+  async getSellerProfile(sellerId: string) {
+    return await prisma.sellerProfile.findUnique({
+      where: { userId: sellerId },
+      select: {
+        payoutMethod: true,
+        payoutAccountTitle: true,
+        payoutAccountNumber: true,
+        payoutBankName: true,
+        payoutBankBranch: true,
+        payoutVerified: true,
+      }
+    });
+  }
 }

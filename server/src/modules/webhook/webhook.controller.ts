@@ -38,11 +38,11 @@ export class WebhookController {
     if (TEST_PAYMENTS) {
       // MOCK MODE: Skip signature verification and construct event from body
       console.log("[MOCK WEBHOOK] Processing webhook in TEST MODE - signature verification skipped");
-      
+
       // In test mode, expect the event type in the request body or header
       const eventType = req.body.type || req.headers["x-test-event-type"] || "checkout.session.completed";
       const eventData = req.body.data || { object: req.body };
-      
+
       event = {
         id: `evt_mock_${Date.now()}`,
         object: "event",
@@ -50,7 +50,7 @@ export class WebhookController {
         data: eventData,
         created: Math.floor(Date.now() / 1000),
       };
-      
+
       this.logsService.info("Webhook - Mock event received (TEST MODE)", {
         eventType: event.type,
         eventId: event.id,
@@ -99,5 +99,49 @@ export class WebhookController {
     }
 
     sendResponse(res, 200, { message: "Webhook received successfully" });
+  });
+
+  handleJazzCashCallback = asyncHandler(async (req: Request, res: Response) => {
+    const callbackData = req.body;
+
+    this.logsService.info("JazzCash callback received", {
+      txnRefNo: callbackData.pp_TxnRefNo,
+      responseCode: callbackData.pp_ResponseCode,
+    });
+
+    try {
+      const result = await this.webhookService.handleJazzCashCallback(callbackData);
+
+      if (result.status === 'completed') {
+        // Redirect to success page
+        const isProduction = process.env.NODE_ENV === "production";
+        const clientUrl = isProduction
+          ? process.env.CLIENT_URL_PROD
+          : process.env.CLIENT_URL_DEV;
+
+        res.redirect(`${clientUrl}/success?type=payment`);
+      } else {
+        // Redirect to failure page
+        const isProduction = process.env.NODE_ENV === "production";
+        const clientUrl = isProduction
+          ? process.env.CLIENT_URL_PROD
+          : process.env.CLIENT_URL_DEV;
+
+        res.redirect(`${clientUrl}/failure?reason=payment_failed`);
+      }
+    } catch (error) {
+      this.logsService.error("JazzCash callback processing failed", {
+        error: error instanceof Error ? error.message : 'Unknown error',
+        callbackData: JSON.stringify(callbackData),
+      });
+
+      // Redirect to failure page on error
+      const isProduction = process.env.NODE_ENV === "production";
+      const clientUrl = isProduction
+        ? process.env.CLIENT_URL_PROD
+        : process.env.CLIENT_URL_DEV;
+
+      res.redirect(`${clientUrl}/failure?reason=processing_error`);
+    }
   });
 }

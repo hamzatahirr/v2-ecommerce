@@ -245,21 +245,27 @@ model OrderItem {
 }
 
 model Payment {
-  id        String         @id @default(uuid())
-  method    PAYMENT_METHOD
-  amount    Float
-  userId    String
-  sellerId  String?
-  orderId   String?        @unique
-  status    PAYMENT_STATUS @default(PENDING)
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @updatedAt
-  order     Order?         @relation("OrderPayment", fields: [orderId], references: [id])
-  seller    User?          @relation("SellerPayments", fields: [sellerId], references: [id])
-  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id             String         @id @default(uuid())
+  method         PAYMENT_METHOD
+  amount         Float
+  userId         String
+  sellerId       String?
+  orderId        String?        @unique
+  status         PAYMENT_STATUS @default(PENDING)
+  // JazzCash specific fields
+  jazzCashTxnRef String?        // JazzCash transaction reference
+  jazzCashTxnId  String?        // JazzCash transaction ID
+  gatewayRef     String?        // Gateway reference (for any payment gateway)
+  gatewayResponse Json?         // Store full gateway response
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  order          Order?         @relation("OrderPayment", fields: [orderId], references: [id])
+  seller         User?          @relation("SellerPayments", fields: [sellerId], references: [id])
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, orderId])
   @@index([sellerId])
+  @@index([jazzCashTxnRef])
 }
 
 model Address {
@@ -446,8 +452,13 @@ model SellerProfile {
   state                    String?
   country                  String?
   zipCode                  String?
-  stripeAccountId          String?  @unique
-  stripeOnboardingComplete Boolean  @default(false)
+  // Payout details for JazzCash and other payment methods
+  payoutMethod             String?  // 'BANK_TRANSFER', 'JAZZCASH', etc.
+  payoutAccountTitle       String?  // Account holder name
+  payoutAccountNumber      String?  // Bank account number or JazzCash mobile
+  payoutBankName           String?  // Bank name
+  payoutBankBranch         String?  // Bank branch (optional)
+  payoutVerified           Boolean  @default(false) // Whether payout details are verified
   totalSales               Float    @default(0)
   totalEarnings            Float    @default(0)
   averageRating            Float    @default(0)
@@ -458,7 +469,7 @@ model SellerProfile {
   user                     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
-  @@index([stripeAccountId])
+  @@index([payoutVerified])
 }
 
 model SellerSubscription {
@@ -503,15 +514,21 @@ model SellerPayout {
   amount           Float
   currency         String    @default("usd")
   status           String    @default("PENDING")
-  stripeTransferId String?   @unique
+  gatewayTxnId     String?   @unique // JazzCash or other gateway transaction ID
+  gatewayRef       String?   // Gateway reference
+  payoutMethod     String    @default("BANK_TRANSFER") // 'BANK_TRANSFER', 'JAZZCASH', etc.
+  payoutDetails    Json?     // Store payout account details used
   payoutDate       DateTime?
+  processedBy      String?   // Admin user who processed the payout
+  notes            String?   // Additional notes
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
   seller           User      @relation("SellerPayouts", fields: [sellerId], references: [id], onDelete: Cascade)
 
   @@index([sellerId])
   @@index([status])
-  @@index([stripeTransferId])
+  @@index([gatewayTxnId])
+  @@index([payoutMethod])
 }
 
 model Wallet {
@@ -673,6 +690,7 @@ enum SECTION_TYPE {
 enum PAYMENT_METHOD {
   STRIPE
   CASH_ON_DELIVERY
+  JAZZCASH
 }
 
 enum WALLET_TRANSACTION_TYPE {

@@ -28,7 +28,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({
   const { showToast } = useToast();
   const router = useRouter();
   const { data: cartData } = useGetCartQuery({});
-  
+
   const [initiateCheckout, { isLoading: isCheckoutLoading }] = useInitiateCheckoutMutation();
 
   const shippingFee = useMemo(
@@ -37,7 +37,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({
   );
   const total = useMemo(() => subtotal + shippingFee, [subtotal, shippingFee]);
   const isLoading = isCheckoutLoading;
-  const [paymentMethod, setPaymentMethod] = React.useState<"STRIPE" | "CASH_ON_DELIVERY">("CASH_ON_DELIVERY");
+  const [paymentMethod, setPaymentMethod] = React.useState<"JAZZCASH" | "CASH_ON_DELIVERY">("CASH_ON_DELIVERY");
 
   const handleInitiateCheckout = async () => {
     try {
@@ -45,9 +45,9 @@ const CartSummary: React.FC<CartSummaryProps> = ({
         paymentMethod: paymentMethod,
         // Add other required checkout data if needed
       };
-      
+
       const result = await initiateCheckout(checkoutData).unwrap();
-      
+
       if (paymentMethod === "CASH_ON_DELIVERY") {
         showToast("COD order placed successfully!", "success");
         // For COD orders, redirect to success page with order info
@@ -56,9 +56,14 @@ const CartSummary: React.FC<CartSummaryProps> = ({
         } else {
           router.push(`/success?type=order`);
         }
-      } else {
-        // Handle Stripe checkout if needed in future
-        showToast("Checkout initiated!", "success");
+      } else if (paymentMethod === "JAZZCASH" && result.paymentUrl) {
+        // Handle JazzCash payment
+        showToast("Redirecting to JazzCash payment...", "info");
+        window.location.href = result.paymentUrl;
+      } else if (paymentMethod === "JAZZCASH" && result.mockResponse) {
+        // PAYMENT BYPASS MODE: Show success for JazzCash
+        showToast("JazzCash payment successful!", "success");
+        router.push(`/success?type=payment`);
       }
     } catch (error: any) {
       console.error("Failed to initiate checkout:", error);
@@ -101,19 +106,19 @@ const CartSummary: React.FC<CartSummaryProps> = ({
             </div>
           </label>
           
-          <label className="flex items-center p-3 border border-gray-200 rounded-lg opacity-50 cursor-not-allowed">
+          <label className="flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
             <input
               type="radio"
               name="paymentMethod"
-              value="STRIPE"
-              checked={false}
-              disabled
+              value="JAZZCASH"
+              checked={paymentMethod === "JAZZCASH"}
+              onChange={(e) => setPaymentMethod(e.target.value as "JAZZCASH" | "CASH_ON_DELIVERY")}
               className="mr-3"
             />
             <div>
-              <span className="font-medium text-gray-500">Credit/Debit Card</span>
-              <span className="text-sm text-gray-400 ml-2">(Currently unavailable)</span>
-              <div className="text-xs text-gray-400 mt-1">Temporarily disabled</div>
+              <span className="font-medium text-gray-900">JazzCash</span>
+              <span className="text-sm text-gray-500 ml-2">(Pay with JazzCash mobile account)</span>
+              <div className="text-xs text-green-600 mt-1">✓ Available</div>
             </div>
           </label>
         </div>
@@ -153,7 +158,13 @@ const CartSummary: React.FC<CartSummaryProps> = ({
           onClick={handleInitiateCheckout}
           className="mt-4 w-full bg-indigo-600 text-white py-2.5 rounded-md font-medium text-sm hover:bg-indigo-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
         >
-          {isLoading ? "Placing Order..." : "Place COD Order"}
+          {isLoading
+            ? paymentMethod === "JAZZCASH"
+              ? "Processing Payment..."
+              : "Placing Order..."
+            : paymentMethod === "JAZZCASH"
+            ? "Pay with JazzCash"
+            : "Place COD Order"}
         </button>
       ) : (
         <Link

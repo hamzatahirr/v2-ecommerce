@@ -62,6 +62,15 @@ export class SellerService {
       );
     }
 
+    // If payout details are being updated, mark as unverified
+    const hasPayoutUpdate = data.payoutMethod || data.payoutAccountTitle ||
+                          data.payoutAccountNumber || data.payoutBankName ||
+                          data.payoutBankBranch;
+
+    if (hasPayoutUpdate) {
+      data.payoutVerified = false;
+    }
+
     return await this.sellerRepository.updateSellerProfile(userId, data);
   }
 

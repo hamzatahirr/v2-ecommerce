@@ -30,4 +30,11 @@ router.post(
   webhookController.handleWebhook
 );
 
+// JazzCash callback endpoint
+router.post(
+  "/jazzcash",
+  bodyParser.urlencoded({ extended: true }),
+  webhookController.handleJazzCashCallback
+);
+
 export default router;

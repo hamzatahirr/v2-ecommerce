@@ -31,9 +31,22 @@ export class CheckoutController {
     let result;
     if (paymentMethod === "CASH_ON_DELIVERY") {
       result = await this.checkoutService.createCashOnDeliveryOrder(cart, userId);
+    } else if (paymentMethod === "JAZZCASH") {
+      const paymentData = await this.checkoutService.createJazzCashPayment(cart, userId);
+
+      if (paymentData.mockResponse) {
+        // PAYMENT BYPASS MODE: Process order directly
+        result = await this.checkoutService.createCashOnDeliveryOrder(cart, userId);
+      } else {
+        // Redirect to JazzCash payment page
+        result = {
+          paymentUrl: paymentData.paymentUrl,
+          txnRefNo: paymentData.txnRefNo
+        };
+      }
     } else {
-      const session = await this.checkoutService.createStripeSession(cart, userId);
-      result = { sessionId: session.id };
+      // Legacy Stripe support (if needed)
+      throw new AppError(400, "Unsupported payment method");
     }
 
     sendResponse(res, 200, {

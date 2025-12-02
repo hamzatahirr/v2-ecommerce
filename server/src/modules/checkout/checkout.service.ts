@@ -1,27 +1,26 @@
 /**
- * CHECKOUT SERVICE - STRIPE PAYMENT MOCKING FOR TESTING
- * =====================================================
- * 
- * This file uses Stripe for checkout session creation.
- * 
- * TO ENABLE MOCK PAYMENTS:
- *   Set TEST_PAYMENTS=true in your .env file
- *   The stripe client in @/infra/payment/stripe will automatically use mocks
- * 
- * TO RESTORE REAL STRIPE:
- *   Set TEST_PAYMENTS=false or remove the variable from .env
- * 
- * When TEST_PAYMENTS=true:
- *   - Checkout sessions are created with mock IDs
- *   - No actual Stripe API calls are made
- *   - Database updates still occur normally when webhooks are processed
- * 
- * After testing, restore real Stripe by setting TEST_PAYMENTS=false
+ * CHECKOUT SERVICE - JAZZCASH PAYMENT INTEGRATION
+ * ===============================================
+ *
+ * This file handles JazzCash payment gateway integration for checkout.
+ *
+ * PAYMENT MODES:
+ * - JAZZCASH_TEST_MODE=true: Use JazzCash sandbox
+ * - PAYMENT_BYPASS=true: Show payment options but skip actual processing
+ *
+ * When PAYMENT_BYPASS=true:
+ *   - Payment options display but transactions are mocked
+ *   - Orders are created successfully for testing
+ *
+ * When JAZZCASH_TEST_MODE=true:
+ *   - Uses JazzCash sandbox environment
+ *   - Real payment flow but with test credentials
  */
 
-import stripe from "@/infra/payment/stripe";
+import jazzCashService from "@/infra/payment/jazzcash";
 import AppError from "@/shared/errors/AppError";
 import prisma from "@/infra/database/database.config";
+import redisClient from "@/infra/cache/redis";
 import { PAYMENT_METHOD } from "@prisma/client";
 
 const PLACEHOLDER_IMAGE = "https://via.placeholder.com/150";
@@ -37,7 +36,7 @@ function validImage(url: string): string {
 export class CheckoutService {
   constructor() {}
 
-  async createStripeSession(cart: any, userId: string) {
+  async createJazzCashPayment(cart: any, userId: string) {
     // Validate stock for all cart items
     for (const item of cart.cartItems) {
       if (item.variant.stock < item.quantity) {
@@ -50,7 +49,7 @@ export class CheckoutService {
 
     // Group cart items by sellerId
     const itemsBySeller = new Map<string, any[]>();
-    
+
     for (const item of cart.cartItems) {
       const sellerId = item.variant.product.sellerId || "platform";
       if (!itemsBySeller.has(sellerId)) {
@@ -59,77 +58,74 @@ export class CheckoutService {
       itemsBySeller.get(sellerId)!.push(item);
     }
 
-    // Create line items with sellerId in metadata
-    const lineItems = cart.cartItems.map((item: any) => {
-      const imageUrl = validImage(safeImage(item.variant.product.images));
-      const sellerId = item.variant.product.sellerId || "platform";
+    // Calculate total amount
+    const totalAmount = cart.cartItems.reduce(
+      (sum: number, item: any) => sum + item.quantity * item.variant.price,
+      0
+    );
 
-      return {
-        price_data: {
-          currency: "usd",
-          product_data: {
-            name: `${item.variant.product.name} (${item.variant.sku})`,
-            images: [imageUrl],
-            metadata: { 
-              variantId: item.variantId,
-              sellerId: sellerId,
-            },
-          },
-          unit_amount: Math.round(item.variant.price * 100),
-        },
-        quantity: item.quantity,
-      };
+    // Generate unique transaction reference
+    const txnRefNo = `JAZZ_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+
+    // Get user details for payment description
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { name: true, email: true }
     });
 
-    const isProduction = process.env.NODE_ENV === "production";
+    // Create payment request
+    const paymentRequest = await jazzCashService.createPaymentRequest({
+      txnRefNo,
+      amount: totalAmount,
+      currency: "PKR", // JazzCash uses PKR
+      billReference: `CART_${cart.id}`,
+      description: `Order payment by ${user?.name || 'Customer'} - ${cart.cartItems.length} items`,
+      customerInfo: {
+        email: user?.email,
+        name: user?.name
+      }
+    });
 
-    const clientUrl = isProduction
-      ? process.env.CLIENT_URL_PROD
-      : process.env.CLIENT_URL_DEV;
+    if ('mockResponse' in paymentRequest) {
+      // PAYMENT BYPASS MODE: Return mock response
+      return {
+        txnRefNo,
+        paymentUrl: null,
+        totalAmount,
+        mockResponse: paymentRequest.mockResponse
+      };
+    }
 
-    // Store seller grouping in metadata for webhook processing
+    // Store seller grouping in metadata for callback processing
     const sellerGroups = Array.from(itemsBySeller.entries()).map(([sellerId, items]) => ({
       sellerId: sellerId === "platform" ? null : sellerId,
       itemCount: items.length,
       totalAmount: items.reduce((sum, item) => sum + item.quantity * item.variant.price, 0),
     }));
 
-    // For multi-vendor, we need to use payment_intent with application_fee_amount
-    // or use separate checkout sessions per seller
-    // For simplicity, we'll use a single session with application fees
-    
-    // Calculate platform fee (e.g., 5% of total)
-    const platformFeePercent = parseFloat(process.env.PLATFORM_FEE_PERCENT || "5");
-    const totalAmount = cart.cartItems.reduce(
-      (sum: number, item: any) => sum + item.quantity * item.variant.price,
-      0
+    // Store transaction metadata in Redis or database for callback processing
+    const paymentMetadata = {
+      userId,
+      cartId: cart.id,
+      txnRefNo,
+      totalAmount,
+      sellerGroups: JSON.stringify(sellerGroups),
+      timestamp: new Date().toISOString()
+    };
+
+    // Store in Redis for callback processing (expires in 24 hours)
+    await redisClient.setex(
+      `jazzcash_payment_${txnRefNo}`,
+      24 * 60 * 60,
+      JSON.stringify(paymentMetadata)
     );
-    const platformFee = Math.round((totalAmount * platformFeePercent / 100) * 100); // in cents
 
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
-      line_items: lineItems,
-      billing_address_collection: "required",
-      shipping_address_collection: {
-        allowed_countries: ["US", "CA", "MX", "EG"],
-      },
-      mode: "payment",
-      payment_intent_data: {
-        application_fee_amount: platformFee,
-        on_behalf_of: undefined, // Will be set per seller in webhook
-        transfer_data: undefined, // Will be set per seller in webhook
-      },
-      success_url: `${clientUrl}/orders`,
-      cancel_url: `${clientUrl}/cancel`,
-      metadata: { 
-        userId, 
-        cartId: cart.id,
-        sellerGroups: JSON.stringify(sellerGroups),
-        platformFee: platformFee.toString(),
-      },
-    });
-
-    return session;
+    return {
+      txnRefNo,
+      paymentUrl: paymentRequest.paymentUrl,
+      totalAmount,
+      requestData: paymentRequest.requestData
+    };
   }
 
   async createCashOnDeliveryOrder(cart: any, userId: string) {

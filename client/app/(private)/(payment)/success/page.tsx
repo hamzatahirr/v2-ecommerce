@@ -1,16 +1,16 @@
 "use client";
 import { motion } from "framer-motion";
-import { CheckCircle, ShoppingCart, Headphones } from "lucide-react";
+import { CheckCircle, ShoppingCart, Headphones, Truck } from "lucide-react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
 const PaymentSucceeded = () => {
-  {/* TESTING: Payment bypassed - START */}
-  {/* 
-  This page is commented out for testing purposes when BYPASS_PAYMENTS is enabled.
-  Orders will redirect to /success instead.
-  */}
-  {/* TESTING: Payment bypassed - END */}
-  
+  const searchParams = useSearchParams();
+  const orderType = searchParams.get("type") || "payment";
+  const orderId = searchParams.get("orderId");
+
+  const isCOD = orderType === "order";
+
   return (
     <motion.div
       initial={{ opacity: 0, y: -50 }}
@@ -30,12 +30,31 @@ const PaymentSucceeded = () => {
 
       {/* Success Message */}
       <h1 className="text-center text-3xl font-semibold text-green-700 mb-4">
-        Your payment was successful!
+        {isCOD ? "Order Placed Successfully!" : "Your payment was successful!"}
       </h1>
 
       <p className="text-center text-lg text-gray-700 mb-6">
-        Thank you for your purchase. Your order has been processed.
+        {isCOD ? (
+          <>
+            Thank you for your order. Your Cash on Delivery order has been placed successfully.
+            {orderId && <span className="block mt-2 text-sm text-gray-600">Order ID: {orderId}</span>}
+          </>
+        ) : (
+          "Thank you for your purchase. Your order has been processed."
+        )}
       </p>
+
+      {isCOD && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 max-w-md">
+          <div className="flex items-center mb-2">
+            <Truck className="text-blue-600 mr-2" size={20} />
+            <span className="font-medium text-blue-800">Cash on Delivery</span>
+          </div>
+          <p className="text-sm text-blue-700">
+            You will pay for your order when it arrives at your doorstep. Our delivery partner will contact you for payment.
+          </p>
+        </div>
+      )}
 
       {/* Helpful Links */}
       <div className="flex space-x-6">

@@ -17,25 +17,41 @@ export class WithdrawalService {
 
     // Get seller's wallet
     const walletBalance = await this.walletService.getWalletBalance(sellerId);
-    
+
     if (walletBalance.availableBalance < amount) {
       throw new AppError(400, `Insufficient available balance. Available: ${walletBalance.availableBalance}, Requested: ${amount}`);
     }
 
+    // Validate seller payout details before allowing withdrawal
+    const sellerProfile = await this.withdrawalRepository.getSellerProfile(sellerId);
+    if (!sellerProfile) {
+      throw new AppError(404, "Seller profile not found");
+    }
+
+    // Check if payout details are complete and verified
+    if (!sellerProfile.payoutAccountTitle || !sellerProfile.payoutAccountNumber || !sellerProfile.payoutVerified) {
+      throw new AppError(400, "Please complete and verify your payout details before requesting withdrawal");
+    }
+
     // Get wallet to get walletId
     const wallet = await this.walletService.getSellerWallet(sellerId);
+
+    // Use payout details from seller profile
+    const payoutDetails = {
+      accountHolder: sellerProfile.payoutAccountTitle,
+      accountNumber: sellerProfile.payoutAccountNumber,
+      bankName: sellerProfile.payoutBankName,
+      bankBranch: sellerProfile.payoutBankBranch,
+      payoutMethod: sellerProfile.payoutMethod,
+    };
 
     // Create withdrawal request
     const withdrawal = await this.withdrawalRepository.createWithdrawal({
       walletId: wallet.id,
       sellerId,
       amount,
-      method,
-      details: details || {
-        accountHolder: "Default Account Holder",
-        accountNumber: "****1234",
-        bankName: "Test Bank"
-      }
+      method: sellerProfile.payoutMethod || method,
+      details: payoutDetails
     });
 
     // Debit the wallet amount (this will be processed when withdrawal is approved)
@@ -114,7 +130,7 @@ export class WithdrawalService {
 
   async processWithdrawal(withdrawalId: string) {
     const withdrawal = await this.withdrawalRepository.findWithdrawalById(withdrawalId);
-    
+
     if (!withdrawal) {
       throw new AppError(404, "Withdrawal not found");
     }
@@ -128,6 +144,45 @@ export class WithdrawalService {
       withdrawalId,
       WITHDRAWAL_STATUS.PROCESSING
     );
+
+    // In a real implementation, you would integrate with JazzCash payout API here
+    // For now, we'll simulate the payout process
+    setTimeout(async () => {
+      try {
+        // Simulate payout processing delay (e.g., bank transfer time)
+        await new Promise(resolve => setTimeout(resolve, 3000));
+
+        // Mark as completed (in real implementation, this would be done via webhook or API response)
+        await this.withdrawalRepository.updateWithdrawalStatus(
+          withdrawalId,
+          WITHDRAWAL_STATUS.COMPLETED,
+          new Date()
+        );
+
+        // Create a payout record
+        await prisma.sellerPayout.create({
+          data: {
+            sellerId: withdrawal.sellerId,
+            amount: withdrawal.amount,
+            currency: withdrawal.currency,
+            status: "COMPLETED",
+            gatewayTxnId: `PAYOUT_${Date.now()}`,
+            payoutMethod: withdrawal.method,
+            payoutDetails: withdrawal.details,
+            payoutDate: new Date(),
+            processedBy: "SYSTEM", // In real app, this would be admin user ID
+          }
+        });
+
+      } catch (error) {
+        console.error('Payout processing failed:', error);
+        // Mark as failed
+        await this.withdrawalRepository.updateWithdrawalStatus(
+          withdrawalId,
+          WITHDRAWAL_STATUS.FAILED
+        );
+      }
+    }, 100);
 
     return updatedWithdrawal;
   }

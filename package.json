@@ -1,0 +1,49 @@
+{
+  "name": "multi-vendor-ecommerce-platform",
+  "version": "1.0.0",
+  "description": "A complete multi-vendor e-commerce marketplace with JazzCash payment integration",
+  "main": "server/dist/server.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
+    "dev:server": "npm run dev --prefix server",
+    "dev:client": "npm run dev --prefix client",
+    "build": "npm run build --prefix client && npm run build --prefix server",
+    "build:client": "npm run build --prefix client",
+    "build:server": "npm run build --prefix server",
+    "start": "node server/dist/server.js",
+    "start:prod": "node server/dist/server.js",
+    "docker:build": "docker build -t ecommerce-platform .",
+    "docker:run": "docker run -p 3000:3000 -p 5000:5000 ecommerce-platform",
+    "docker:dev": "docker-compose up --build",
+    "test": "npm run test --prefix server && npm run test --prefix client",
+    "lint": "npm run lint --prefix server && npm run lint --prefix client",
+    "format": "npm run format --prefix server && npm run format --prefix client"
+  },
+  "keywords": [
+    "ecommerce",
+    "multi-vendor",
+    "marketplace",
+    "jazzcash",
+    "nextjs",
+    "express",
+    "postgresql",
+    "redis"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^7.6.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/multi-vendor-ecommerce.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/multi-vendor-ecommerce/issues"
+  },
+  "homepage": "https://github.com/yourusername/multi-vendor-ecommerce#readme"
+}

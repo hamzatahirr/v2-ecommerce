@@ -1,83 +1,373 @@
-# Node.js Server - Browser/Device Compatibility & Best Practices
+# 🛍️ Multi-Vendor E-Commerce Backend API
 
-This Node.js server has been enhanced with comprehensive browser and device compatibility features, security best practices, and production-ready configurations.
+A comprehensive Node.js/Express backend for a multi-vendor e-commerce marketplace with JazzCash payment integration, real-time chat, commission management, and seller wallet system.
 
 ## 🚀 Features
 
-### Browser & Device Compatibility
+### Core E-Commerce Features
+- **Multi-Vendor Marketplace**: Sellers can create stores and manage products
+- **Product Management**: Categories, attributes, variants, inventory tracking
+- **Order Management**: Complete order lifecycle with seller assignment
+- **User Management**: Role-based access (Superadmin, Admin, Seller, User)
+- **Real-time Chat**: Socket.io powered messaging between buyers and sellers
+- **Review System**: Product and seller reviews and ratings
 
-#### 1. **Enhanced CORS Configuration**
+### Payment & Financial Management
+- **JazzCash Integration**: Complete payment gateway integration with test/bypass modes
+- **Commission System**: Category-based commission rates for platform revenue
+- **Seller Wallets**: Automatic fund crediting with 7-day hold period
+- **Withdrawal Management**: Secure payout requests and processing
+- **Transaction Tracking**: Complete audit trail of all financial operations
 
-- **Multi-origin support**: Configurable allowed origins for different environments
-- **Mobile app support**: Allows requests with no origin (mobile apps, curl)
-- **Flexible headers**: Supports custom headers for device detection and API versioning
-- **Preflight handling**: Proper OPTIONS request handling for complex requests
+### Advanced Features
+- **Webhook Processing**: JazzCash payment callbacks and seller notifications
+- **Analytics Dashboard**: Comprehensive reporting and insights
+- **File Upload**: Cloudinary integration for product images
+- **Email Notifications**: SMTP-based email system
+- **Audit Logs**: Complete system activity tracking
+- **Domain Management**: Allowed domains for seller verification
 
-#### 2. **Device Detection**
+### Technical Features
+- **PostgreSQL Database**: Prisma ORM with comprehensive schema
+- **Redis Caching**: Session management, webhook storage, performance optimization
+- **JWT Authentication**: Secure token-based authentication
+- **Role-Based Access Control**: Granular permissions system
+- **API Versioning**: v1 and v2 API support
+- **Health Checks**: Comprehensive system monitoring
+- **Rate Limiting**: DDoS protection and abuse prevention
 
-- **Automatic detection**: Detects device type (mobile, tablet, desktop)
-- **Platform identification**: Identifies iOS, Android, or web platforms
-- **Browser detection**: Detects browser type and version
-- **Response headers**: Adds device info to response headers for client-side handling
+## 🏗️ Tech Stack
 
-#### 3. **API Versioning**
+- **Runtime**: Node.js with Express.js
+- **Database**: PostgreSQL with Prisma ORM
+- **Cache**: Redis for sessions and performance
+- **Authentication**: JWT with Passport.js
+- **Real-time**: Socket.io for chat functionality
+- **Payments**: JazzCash gateway integration
+- **File Storage**: Cloudinary for image uploads
+- **Email**: SMTP-based notifications
+- **Validation**: Custom middleware with error handling
+- **Logging**: Winston with structured logging
+- **Testing**: Jest for unit and integration tests
 
-- **Multiple version support**: Supports v1, v2, etc.
-- **Flexible versioning**: Version can be specified via URL, headers, or query params
-- **Backward compatibility**: Ensures API changes don't break existing clients
-- **Version validation**: Validates requested versions and provides helpful error messages
+## 📁 Project Structure
 
-### Security Best Practices
+```
+server/
+├── src/
+│   ├── app.ts                 # Express application setup
+│   ├── server.ts              # Server initialization
+│   ├── types.d.ts            # TypeScript type definitions
+│   ├── infra/                # Infrastructure layer
+│   │   ├── database/         # Database configuration
+│   │   ├── redis/            # Redis caching
+│   │   ├── payment/          # JazzCash integration
+│   │   ├── cloudinary/       # File upload service
+│   │   └── winston/          # Logging configuration
+│   ├── modules/              # Business logic modules
+│   │   ├── auth/             # Authentication & authorization
+│   │   ├── user/             # User management
+│   │   ├── seller/           # Seller profile & onboarding
+│   │   ├── product/          # Product catalog management
+│   │   ├── category/         # Product categories
+│   │   ├── cart/             # Shopping cart functionality
+│   │   ├── checkout/         # Order processing & payments
+│   │   ├── order/            # Order management
+│   │   ├── payment/          # Payment processing
+│   │   ├── wallet/           # Seller wallet management
+│   │   ├── withdrawal/       # Payout processing
+│   │   ├── commission/       # Commission rate management
+│   │   ├── analytics/        # Dashboard analytics
+│   │   ├── chat/             # Real-time messaging
+│   │   ├── webhook/          # Payment webhooks
+│   │   ├── logs/             # Audit logging
+│   │   └── reports/          # Business reports
+│   ├── shared/               # Shared utilities
+│   │   ├── middlewares/      # Express middlewares
+│   │   ├── utils/            # Helper functions
+│   │   ├── errors/           # Error handling
+│   │   ├── constants/        # Application constants
+│   │   └── templates/        # Email templates
+│   └── routes/               # API route definitions
+├── prisma/
+│   ├── schema.prisma         # Database schema
+│   └── migrations/           # Database migrations
+├── seeds/                    # Database seeding
+└── JAZZCASH_INTEGRATION_README.md  # Payment integration docs
+```
 
-#### 1. **Enhanced Security Headers**
+## 🚀 Getting Started
 
-- **Content Security Policy**: Prevents XSS attacks
-- **HSTS**: Forces HTTPS connections
-- **Frame protection**: Prevents clickjacking attacks
-- **XSS protection**: Additional XSS filtering
-- **Referrer policy**: Controls referrer information
+### Prerequisites
+- Node.js 18+
+- PostgreSQL 15+
+- Redis 7+
+- npm or yarn
 
-#### 2. **Input Validation & Sanitization**
+### Installation
 
-- **Request size limits**: Prevents large payload attacks
-- **MongoDB sanitization**: Prevents NoSQL injection
-- **XSS cleaning**: Removes malicious scripts
-- **Parameter pollution protection**: Prevents HTTP parameter pollution
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd server
+   ```
 
-#### 3. **Rate Limiting**
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-- **IP-based limiting**: Prevents abuse from single sources
-- **Configurable windows**: 15-minute windows with 100 requests per IP
-- **Standard headers**: Includes rate limit info in response headers
+3. **Environment Setup**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your configuration
+   ```
 
-### Production Readiness
+4. **Database Setup**
+   ```bash
+   # Generate Prisma client
+   npx prisma generate
 
-#### 1. **Health Checks**
+   # Run migrations
+   npx prisma migrate dev
 
-- **Basic health check**: `/health` - Simple status endpoint
-- **Detailed health check**: `/health/detailed` - Full system status
-- **Kubernetes probes**: `/ready` and `/live` endpoints for container orchestration
-- **Dependency monitoring**: Database and Redis connection status
+   # Seed database (optional)
+   npm run seed
+   ```
 
-#### 2. **Graceful Shutdown**
+5. **Start Development Server**
+   ```bash
+   npm run dev
+   ```
 
-- **Signal handling**: Proper SIGTERM and SIGINT handling
-- **Connection cleanup**: Closes server gracefully
-- **Timeout protection**: Forces shutdown after 30 seconds
-- **Error logging**: Comprehensive error tracking
+The server will start on `http://localhost:5000` (configurable via PORT env var).
 
-#### 3. **Enhanced Error Handling**
+## ⚙️ Environment Configuration
 
-- **Device-aware errors**: Different error responses based on device type
-- **Helpful messages**: Provides guidance for common errors
-- **Structured responses**: Consistent error format across all endpoints
-- **Development support**: Stack traces in development mode
+### Required Environment Variables
 
-#### 4. **Request Timeout Handling**
+```bash
+# Server Configuration
+PORT=5000
+NODE_ENV=development
 
-- **Configurable timeouts**: 30-second default timeout
-- **Request/response timeouts**: Separate handling for both
-- **Graceful degradation**: Proper timeout responses
+# Database
+DATABASE_URL="postgresql://username:password@localhost:5432/ecommerce_db"
+
+# Redis
+REDIS_URL=redis://localhost:6379
+
+# JWT Authentication
+JWT_SECRET=your-super-secret-jwt-key
+JWT_EXPIRES_IN=7d
+
+# JazzCash Payment Gateway
+JAZZCASH_API_KEY=your_jazzcash_api_key
+JAZZCASH_SECRET=your_jazzcash_secret_key
+JAZZCASH_MERCHANT_ID=your_merchant_id
+JAZZCASH_RETURN_URL=http://localhost:3000/payment/callback
+JAZZCASH_CANCEL_URL=http://localhost:3000/payment/cancel
+JAZZCASH_TEST_MODE=true
+
+# Payment Testing
+PAYMENT_BYPASS=false
+
+# Client URLs
+CLIENT_URL_DEV=http://localhost:3000
+CLIENT_URL_PROD=https://yourdomain.com
+
+# Cloudinary (File Uploads)
+CLOUDINARY_CLOUD_NAME=your_cloudinary_name
+CLOUDINARY_API_KEY=your_cloudinary_key
+CLOUDINARY_API_SECRET=your_cloudinary_secret
+
+# Email Configuration
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your-email@gmail.com
+SMTP_PASS=your-app-password
+
+# CORS
+ALLOWED_ORIGINS=http://localhost:3000,https://yourdomain.com
+
+# Security
+COOKIE_SECRET=your-cookie-secret
+SESSION_SECRET=your-session-secret
+```
+
+## 📊 API Endpoints
+
+### Authentication
+- `POST /api/v1/auth/login` - User login
+- `POST /api/v1/auth/register` - User registration
+- `POST /api/v1/auth/logout` - User logout
+- `POST /api/v1/auth/refresh` - Refresh JWT token
+
+### Products & Categories
+- `GET /api/v1/products` - List products with filters
+- `POST /api/v1/products` - Create product (seller only)
+- `GET /api/v1/categories` - List categories
+- `POST /api/v1/categories` - Create category (admin only)
+
+### Cart & Checkout
+- `GET /api/v1/cart` - Get user cart
+- `POST /api/v1/cart/items` - Add item to cart
+- `POST /api/v1/checkout` - Initiate checkout with JazzCash
+
+### Orders
+- `GET /api/v1/orders` - List user orders
+- `GET /api/v1/orders/:id` - Get order details
+- `PUT /api/v1/orders/:id/status` - Update order status
+
+### Seller Management
+- `POST /api/v1/sellers/apply` - Apply to become seller
+- `GET /api/v1/sellers/profile` - Get seller profile
+- `PUT /api/v1/sellers/profile` - Update seller profile & payout details
+- `GET /api/v1/sellers/wallet` - Get seller wallet balance
+- `POST /api/v1/sellers/withdrawals` - Request withdrawal
+
+### Admin Dashboard
+- `GET /api/v1/admin/analytics` - Dashboard analytics
+- `GET /api/v1/admin/users` - User management
+- `GET /api/v1/admin/sellers` - Seller management
+- `GET /api/v1/admin/orders` - Order management
+- `PUT /api/v1/admin/withdrawals/:id/approve` - Approve withdrawals
+
+### Real-time Chat
+- `POST /api/v1/chat/messages` - Send message
+- `GET /api/v1/chat/messages/:conversationId` - Get conversation
+
+### Webhooks
+- `POST /api/webhook/jazzcash` - JazzCash payment callbacks
+- `POST /api/webhook` - Legacy webhook support
+
+## 💰 Payment & Commission System
+
+### JazzCash Integration
+- **Test Mode**: Use sandbox environment for development
+- **Bypass Mode**: Skip payments for testing order flow
+- **Production**: Real payment processing with security
+
+### Commission Management
+- **Category-Based**: Different rates per product category
+- **Database-Driven**: Configurable via admin panel
+- **Automatic Calculation**: Applied during order processing
+- **Seller Earnings**: `order_amount - commission`
+
+### Wallet System
+- **Auto-Crediting**: Funds added after successful payment
+- **Hold Period**: 7-day security hold on new earnings
+- **Available Balance**: Funds ready for withdrawal
+- **Pending Balance**: Funds in hold period
+
+## 🧪 Testing & Development
+
+### Database Seeding
+```bash
+npm run seed
+```
+
+### Test Accounts (after seeding)
+| Role | Email | Password | Access |
+|------|-------|----------|---------|
+| Superadmin | `superadmin@example.com` | `password123` | Full system |
+| Admin | `admin@example.com` | `password123` | Product management |
+| Seller | `seller@example.com` | `password123` | Store management |
+| User | `user@example.com` | `password123` | Shopping |
+
+### Health Checks
+```bash
+# Basic health check
+curl http://localhost:5000/health
+
+# Detailed health check
+curl http://localhost:5000/health/detailed
+```
+
+## 🚀 Deployment
+
+### Railway (Recommended)
+```bash
+# Install Railway CLI
+npm install -g @railway/cli
+
+# Login and deploy
+railway login
+railway init
+railway up
+```
+
+### Docker
+```bash
+# Build image
+docker build -t ecommerce-backend .
+
+# Run container
+docker run -p 5000:5000 ecommerce-backend
+```
+
+### Environment-Specific Configs
+- **Development**: Enhanced logging, debug mode
+- **Production**: Optimized performance, security headers
+- **Testing**: Isolated database, mock services
+
+## 🔧 Development Scripts
+
+```bash
+# Development
+npm run dev          # Start with nodemon
+npm run build        # Build for production
+npm run start        # Start production server
+
+# Database
+npm run db:generate  # Generate Prisma client
+npm run db:migrate   # Run migrations
+npm run db:seed      # Seed database
+npm run db:studio    # Open Prisma Studio
+
+# Testing
+npm run test         # Run tests
+npm run test:watch   # Watch mode tests
+npm run test:cov     # Coverage report
+
+# Linting
+npm run lint         # ESLint check
+npm run lint:fix     # Auto-fix linting issues
+```
+
+## 🔐 Security Features
+
+- **JWT Authentication**: Secure token-based auth
+- **Rate Limiting**: DDoS protection (100 requests/15min)
+- **Input Validation**: Comprehensive request validation
+- **CORS Protection**: Configured allowed origins
+- **Security Headers**: XSS, CSRF, clickjacking protection
+- **Audit Logging**: Complete activity tracking
+- **Webhook Verification**: JazzCash callback validation
+
+## 📊 Monitoring & Logging
+
+- **Winston Logging**: Structured JSON logging
+- **Health Checks**: System status monitoring
+- **Error Tracking**: Comprehensive error handling
+- **Performance Monitoring**: Response time tracking
+- **Audit Logs**: User activity logging
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit changes (`git commit -m 'Add amazing feature'`)
+4. Push to branch (`git push origin feature/amazing-feature`)
+5. Open Pull Request
+
+## 📝 License
+
+This project is licensed under the MIT License.
+
+## 📞 Support
+
+For support, email support@yourcompany.com or create an issue in the repository.
 
 ## 📋 Configuration
 

@@ -13,8 +13,13 @@ export interface SellerProfile {
   state?: string | null;
   country?: string | null;
   zipCode?: string | null;
-  stripeAccountId?: string | null;
-  stripeOnboardingComplete: boolean;
+  // Payout details
+  payoutMethod?: string | null;
+  payoutAccountTitle?: string | null;
+  payoutAccountNumber?: string | null;
+  payoutBankName?: string | null;
+  payoutBankBranch?: string | null;
+  payoutVerified: boolean;
   totalSales: number;
   totalEarnings: number;
   averageRating: number;
@@ -46,6 +51,12 @@ export interface SellerUpdateData {
   state?: string;
   country?: string;
   zipCode?: string;
+  // Payout details
+  payoutMethod?: string;
+  payoutAccountTitle?: string;
+  payoutAccountNumber?: string;
+  payoutBankName?: string;
+  payoutBankBranch?: string;
 }
 
 export interface SellerStats {
