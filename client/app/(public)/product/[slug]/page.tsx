@@ -143,6 +143,7 @@ const ProductDetailsPage = () => {
                 attributeGroups={attributeGroups}
                 selectedAttributes={selectedAttributes}
                 resetSelections={resetSelections}
+                seller={product.seller}
               />
             </div>
           </div>

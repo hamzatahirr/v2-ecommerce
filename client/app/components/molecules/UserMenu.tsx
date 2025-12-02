@@ -54,11 +54,11 @@ const UserMenu = ({ menuOpen, closeMenu, user }) => {
     closeMenu();
     
     // Redirect based on role
-    switch (role) {
-      case "ADMIN":
-        router.push("/dashboard");
-        break;
-    }
+    if (role === "ADMIN") {
+      router.push("/dashboard");
+    } else if (role === "USER" && user?.isSeller) {
+      router.push("/seller");
+    } 
   };
 
   const roleOptions = [
@@ -74,7 +74,7 @@ const UserMenu = ({ menuOpen, closeMenu, user }) => {
       label: "Seller Dashboard",
       icon: <Store size={18} className="text-green-500" />,
       href: "/seller",
-      available: useAuth().isSeller,
+      available: user.isSeller,
     },
     {
       role: "ADMIN" as ActiveRole,
@@ -112,12 +112,12 @@ const UserMenu = ({ menuOpen, closeMenu, user }) => {
           icon: <MessageCircle size={18} className="text-blue-500" />,
           show: true,
         },
-        {
-          href: "/support",
-          label: "Contact Support",
-          icon: <Group size={18} className="text-blue-500" />,
-          show: true,
-        },
+        // {
+        //   href: "/support",
+        //   label: "Contact Support",
+        //   icon: <Group size={18} className="text-blue-500" />,
+        //   show: true,
+        // },
       ],
     },
     {
@@ -128,6 +128,12 @@ const UserMenu = ({ menuOpen, closeMenu, user }) => {
           icon: <LayoutDashboard size={18} className="text-purple-500" />,
           show: user?.role === "ADMIN",
         },
+        {
+          href: "/seller",
+          label: "Seller Dashboard",
+          icon: <LayoutDashboard size={18} className="text-purple-500" />,
+          show: user?.isSeller == true && user?.sellerStatus === "APPROVED",
+        }
       ],
     },
   ];

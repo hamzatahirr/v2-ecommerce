@@ -48,7 +48,7 @@ interface UnreadCountResponse {
 export const chatApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     // Start conversation with seller
-    startConversation: builder.mutation<{ data: { conversation: Conversation } }, { sellerId: string }>({
+    startConversation: builder.mutation<{ success: boolean; message: string; conversation: Conversation }, { sellerId: string }>({
       query: (data) => ({
         url: '/chat/conversations',
         method: 'POST',

@@ -48,8 +48,6 @@ const SellerDashboard = () => {
     isLoading: isLoadingAnalytics,
     error: analyticsError,
   } = useGetSellerAnalyticsQuery({ timePeriod });
-  console.log("Seller Analytics Data:", analyticsData);
-  console.log("Seller Analytics Error:", analyticsError);
   // Fetch recent orders
   const {
     data: ordersData,

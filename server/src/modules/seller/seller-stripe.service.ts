@@ -28,53 +28,33 @@ import prisma from "@/infra/database/database.config";
 
 export class SellerStripeService {
   /**
-   * Create a Stripe Connect account for seller onboarding
+   * Get seller's Stripe Connect account dashboard link
    */
-  async createConnectAccount(userId: string) {
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { id: true, email: true, name: true },
-    });
-
-    if (!user) {
-      throw new AppError(404, "User not found");
-    }
-
+  async getDashboardLink(userId: string) {
     const sellerProfile = await prisma.sellerProfile.findUnique({
       where: { userId },
     });
 
     if (!sellerProfile) {
-      throw new AppError(404, "Seller profile not found. Please apply to become a seller first.");
+      throw new AppError(400, "Seller profile not found");
     }
 
-    if (sellerProfile.stripeAccountId) {
-      throw new AppError(400, "Stripe Connect account already exists");
+    // Mock account link when bypass mode is enabled
+    if (process.env.PAYMENT_BYPASS === 'true') {
+      return {
+        url: `${process.env.CLIENT_URL_PROD || process.env.CLIENT_URL_DEV}/seller/dashboard`,
+        type: 'account_onboarding',
+      };
     }
 
-    // Create Stripe Connect account
-    const account = await stripe.accounts.create({
-      type: "express",
-      country: sellerProfile.country || "US",
-      email: user.email || undefined,
-      capabilities: {
-        card_payments: { requested: true },
-        transfers: { requested: true },
-      },
-      business_type: "individual",
-      metadata: {
-        userId,
-        sellerProfileId: sellerProfile.id,
-      },
-    });
-
-    // Update seller profile with Stripe account ID
-    await prisma.sellerProfile.update({
-      where: { userId },
-      data: { stripeAccountId: account.id },
-    });
-
-    return account;
+    // Return false for non-bypass mode when no account exists
+    return {
+      hasAccount: false,
+      isReady: false,
+      detailsSubmitted: false,
+      chargesEnabled: false,
+      payoutsEnabled: false,
+    };
   }
 
   /**
@@ -83,93 +63,26 @@ export class SellerStripeService {
   async createOnboardingLink(userId: string) {
     const sellerProfile = await prisma.sellerProfile.findUnique({
       where: { userId },
-      select: { stripeAccountId: true },
     });
 
-    if (!sellerProfile || !sellerProfile.stripeAccountId) {
-      throw new AppError(400, "Stripe Connect account not found. Please create an account first.");
+    if (!sellerProfile) {
+      throw new AppError(400, "Seller profile not found. Please create a seller profile first.");
     }
 
     const isProduction = process.env.NODE_ENV === "production";
     const clientUrl = isProduction
       ? process.env.CLIENT_URL_PROD
       : process.env.CLIENT_URL_DEV;
-
+    
     // Create account link for onboarding
     const accountLink = await stripe.accountLinks.create({
-      account: sellerProfile.stripeAccountId,
+      account: sellerProfile.id, // Use seller profile ID instead
       refresh_url: `${clientUrl}/seller/onboarding/refresh`,
       return_url: `${clientUrl}/seller/onboarding/success`,
       type: "account_onboarding",
     });
 
     return accountLink;
-  }
-
-  /**
-   * Check if seller's Stripe Connect account is ready to receive payments
-   */
-  async checkAccountStatus(userId: string) {
-    const sellerProfile = await prisma.sellerProfile.findUnique({
-      where: { userId },
-      select: { stripeAccountId: true, stripeOnboardingComplete: true },
-    });
-
-    if (!sellerProfile || !sellerProfile.stripeAccountId) {
-      return {
-        hasAccount: false,
-        isReady: false,
-        detailsSubmitted: false,
-        chargesEnabled: false,
-        payoutsEnabled: false,
-      };
-    }
-
-    const account = await stripe.accounts.retrieve(sellerProfile.stripeAccountId);
-
-    // Type assertion for Stripe account properties
-    const detailsSubmitted = (account as any).details_submitted ?? false;
-    const chargesEnabled = (account as any).charges_enabled ?? false;
-    const payoutsEnabled = (account as any).payouts_enabled ?? false;
-
-    const isReady = detailsSubmitted && chargesEnabled && payoutsEnabled;
-
-    // Update seller profile if onboarding is complete
-    if (isReady && !sellerProfile.stripeOnboardingComplete) {
-      await prisma.sellerProfile.update({
-        where: { userId },
-        data: { stripeOnboardingComplete: true },
-      });
-    }
-
-    return {
-      hasAccount: true,
-      isReady,
-      detailsSubmitted,
-      chargesEnabled,
-      payoutsEnabled,
-      accountId: account.id,
-    };
-  }
-
-  /**
-   * Get seller's Stripe Connect account dashboard link
-   */
-  async getDashboardLink(userId: string) {
-    const sellerProfile = await prisma.sellerProfile.findUnique({
-      where: { userId },
-      select: { stripeAccountId: true },
-    });
-
-    if (!sellerProfile || !sellerProfile.stripeAccountId) {
-      throw new AppError(400, "Stripe Connect account not found");
-    }
-
-    const loginLink = await stripe.accounts.createLoginLink(
-      sellerProfile.stripeAccountId
-    );
-
-    return loginLink;
   }
 }
 

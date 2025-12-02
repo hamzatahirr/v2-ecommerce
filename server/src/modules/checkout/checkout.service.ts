@@ -36,7 +36,7 @@ function validImage(url: string): string {
 export class CheckoutService {
   constructor() {}
 
-  async createJazzCashPayment(cart: any, userId: string) {
+  async createJazzCashPayment(cart: any, userId: string, address?: any) {
     // Validate stock for all cart items
     for (const item of cart.cartItems) {
       if (item.variant.stock < item.quantity) {
@@ -128,7 +128,7 @@ export class CheckoutService {
     };
   }
 
-  async createCashOnDeliveryOrder(cart: any, userId: string) {
+  async createCashOnDeliveryOrder(cart: any, userId: string, address?: any) {
     // Validate stock for all cart items
     for (const item of cart.cartItems) {
       if (item.variant.stock < item.quantity) {
@@ -203,11 +203,11 @@ export class CheckoutService {
             data: {
               orderId: order.id,
               userId,
-              city: "Pending",
-              state: "Pending",
-              country: "Pending",
-              zip: "Pending",
-              street: "Pending - COD Order",
+              city: address?.city || "Pending",
+              state: address?.state || "Pending",
+              country: address?.country || "Pending",
+              zip: address?.zip || "Pending",
+              street: address?.street || "Pending - COD Order",
             },
           });
         }

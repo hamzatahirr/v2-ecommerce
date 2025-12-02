@@ -112,7 +112,7 @@ export class WebhookController {
     try {
       const result = await this.webhookService.handleJazzCashCallback(callbackData);
 
-      if (result.status === 'completed') {
+      if ('status' in result && result.status === 'completed') {
         // Redirect to success page
         const isProduction = process.env.NODE_ENV === "production";
         const clientUrl = isProduction

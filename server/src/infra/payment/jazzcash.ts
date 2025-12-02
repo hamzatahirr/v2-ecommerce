@@ -153,7 +153,7 @@ class JazzCashService {
     };
 
     // Generate secure hash
-    requestData.pp_SecureHash = this.generateSecureHash(requestData);
+    requestData.pp_SecureHash = this.generateSecureHash(requestData as unknown as Record<string, string>);
 
     // Determine payment URL based on environment
     const baseUrl = this.testMode

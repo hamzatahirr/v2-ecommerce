@@ -77,7 +77,13 @@ const Navbar = () => {
                 href="/"
                 className="font-medium text-lg sm:text-xl lg:text-xl text-gray-900 flex-shrink-0"
               >
-                Ecommerce
+              <Image
+                  src="/logo.png"
+                  alt="BuyBuddy"
+                  width={80}
+                  height={50}
+                  className="rounded-full object-cover w-full h-full"
+                />
               </Link>
               {isAuthenticated && (
                 <div className="flex items-center gap-1">
@@ -122,7 +128,7 @@ const Navbar = () => {
               </button>
 
               {/* Become a Seller Link - Show for logged-in non-sellers */}
-              {isAuthenticated && !isSeller && !isAdmin &&(
+              {isAuthenticated && !isSeller &&(
                 <Link
                   href="/become-seller"
                   className="hidden sm:flex items-center gap-1 px-3 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors text-sm font-medium"

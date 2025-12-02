@@ -1,12 +1,12 @@
 "use client";
-import React, { useMemo } from "react";
-import { motion } from "framer-motion";
+import React, { useMemo, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
-import useStorage from "@/app/hooks/state/useStorage";
 import { useSignOutMutation } from "@/app/store/apis/AuthApi";
 import { useAuth } from "@/app/hooks/useAuth";
 import { useGetPendingSellersCountQuery } from "@/app/store/apis/SellerApi";
+import { useSidebar } from "@/app/contexts/SidebarContext";
 import {
   LayoutDashboard,
   ShoppingCart,
@@ -28,11 +28,7 @@ import {
 } from "lucide-react";
 
 const Sidebar = () => {
-  const [isOpen, setIsOpen] = useStorage<boolean>(
-    "sidebarOpen",
-    false,
-    "local"
-  );
+  const { isOpen, setIsOpen, toggleSidebar } = useSidebar();
   const pathname = usePathname();
   const router = useRouter();
   const [signout] = useSignOutMutation();
@@ -42,6 +38,41 @@ const Sidebar = () => {
   const { activeRole, isSeller, isAdmin, isBuyer } = useAuth();
   const isSellerRoute = pathname.startsWith("/seller");
   const isAdminRoute = pathname.startsWith("/dashboard");
+
+  // Close sidebar on mobile when clicking a link
+  const handleLinkClick = () => {
+    // On mobile/tablet, close sidebar when navigating
+    if (window.innerWidth < 768) {
+      setIsOpen(false);
+    }
+  };
+
+  // Close sidebar when clicking outside on mobile
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const sidebar = document.getElementById('sidebar');
+      const hamburger = document.getElementById('hamburger-menu');
+
+      if (
+        isOpen &&
+        window.innerWidth < 768 &&
+        sidebar &&
+        !sidebar.contains(event.target as Node) &&
+        hamburger &&
+        !hamburger.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen && window.innerWidth < 768) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen, setIsOpen]);
 
   // Fetch pending sellers count for badge (only for admin)
   const { data, isLoading, error } = useGetPendingSellersCountQuery(undefined, {
@@ -106,7 +137,6 @@ const Sidebar = () => {
            { name: "Products", href: "/products", icon: Layers },
            { name: "Attributes", href: "/attributes", icon: Section },
            { name: "Orders", href: "/orders", icon: ShoppingCart },
-           { name: "Chats", href: "/chat", icon: ChartArea },
          ],
        },
        {
@@ -122,18 +152,20 @@ const Sidebar = () => {
 
   // Determine which navigation to show based on active role and route
   const sections = 
-    (isSeller) || isSellerRoute
+    (isSeller)
+    //  || isSellerRoute
       ? sellerSections
-      : (isAdmin) || isAdminRoute
+      : (isAdmin) 
+      // || isAdminRoute
       ? adminSections
-      : adminSections; // Default to admin for dashboard routes
+      : adminSections; 
 
   const prependRoute = (href: string) => {
-    if (href.startsWith("/dashboard") || href.startsWith("/seller") || href.startsWith("/chat")) {
+    if (href.startsWith("/dashboard") || href.startsWith("/seller")) {
       return href;
     }
     // Determine base route based on current path
-    if (isSellerRoute) {
+    if (isSeller) {
       return `/seller${href}`;
     }
     return `/dashboard${href}`;
@@ -165,6 +197,7 @@ const Sidebar = () => {
       <Link
         href={fullHref}
         prefetch={false}
+        onClick={handleLinkClick}
         className={`relative group flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-300 ${
           isActive
             ? "bg-indigo-100 text-indigo-600 font-medium shadow-sm"
@@ -188,17 +221,40 @@ const Sidebar = () => {
   };
 
   return (
-    <motion.aside
-      initial={{ width: 80 }}
-      animate={{
-        width: isOpen ? 260 : 80,
-        transition: { duration: 0.3, ease: "easeInOut" },
-      }}
-      className="bg-white border-r border-gray-200 shadow-lg min-h-fit flex flex-col p-4 justify-between md:w-auto w-full md:static fixed top-0 left-0 z-50"
-    >
+    <>
+      {/* Mobile Overlay */}
+      <AnimatePresence>
+        {isOpen && window.innerWidth < 768 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+            onClick={() => setIsOpen(false)}
+          />
+        )}
+      </AnimatePresence>
+
+      <motion.aside
+        id="sidebar"
+        initial={{ width: window.innerWidth >= 768 ? 80 : 0 }}
+        animate={{
+          width: window.innerWidth >= 768
+            ? (isOpen ? 260 : 80)
+            : (isOpen ? 260 : 0),
+          x: window.innerWidth < 768 ? (isOpen ? 0 : -260) : 0,
+          transition: { duration: 0.3, ease: "easeInOut" },
+        }}
+        className={`
+          bg-white border-r border-gray-200 shadow-lg min-h-screen flex flex-col p-4 justify-between
+          z-50 md:static fixed top-0 left-0
+          overflow-x-hidden
+          ${window.innerWidth >= 768 ? (isOpen ? "w-64" : "w-14") : "w-64"}
+        `}
+      >
       <div>
         <button
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={toggleSidebar}
           className="p-2 flex items-center justify-end rounded-lg transition mb-4 w-full"
         >
           <PanelsRightBottom size={24} className="text-gray-700" />
@@ -261,6 +317,7 @@ const Sidebar = () => {
         </button>
       </div>
     </motion.aside>
+    </>
   );
 };
 

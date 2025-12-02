@@ -11,7 +11,7 @@ export class SocketManager {
       cors: {
         origin:
           process.env.NODE_ENV === "production"
-            ? ["https://ecommerce-nu-rosy.vercel.app"]
+            ? process.env.CLIENT_URL_PROD
             : ["http://localhost:3000", "http://localhost:5173", "http://localhost:3001"],
         methods: ["GET", "POST"],
         credentials: true,

@@ -26,6 +26,7 @@ import {
   CART_STATUS,
   SELLER_STATUS,
   SUBSCRIPTION_STATUS,
+  PAYMENT_METHOD,
 } from "@prisma/client";
 import stripe from "@/infra/payment/stripe";
 import jazzCashService from "@/infra/payment/jazzcash";
@@ -700,24 +701,21 @@ export class WebhookService {
       where: { userId },
     });
 
-    if (!sellerProfile || sellerProfile.stripeAccountId !== account.id) {
+    // Stripe Connect fields removed - using simplified seller profile
+    if (!sellerProfile) {
       return;
     }
 
-    const isComplete =
-      account.details_submitted &&
-      account.charges_enabled &&
-      account.payouts_enabled;
-
-    await prisma.sellerProfile.update({
-      where: { userId },
-      data: { stripeOnboardingComplete: isComplete },
+    // Simplified seller profile - no Stripe Connect integration
+    this.logsService.info("Webhook - Connect account update ignored (Stripe Connect disabled)", {
+      userId,
+      accountId: account.id,
+      testMode: TEST_PAYMENTS,
     });
 
     this.logsService.info("Webhook - Connect account updated" + (TEST_PAYMENTS ? " (TEST MODE)" : ""), {
       userId,
       accountId: account.id,
-      isComplete,
       testMode: TEST_PAYMENTS,
     });
   }
@@ -731,45 +729,15 @@ export class WebhookService {
       return;
     }
 
-    const sellerProfile = await prisma.sellerProfile.findFirst({
-      where: { stripeAccountId: accountId },
-    });
-
-    if (!sellerProfile) {
-      this.logsService.info("Webhook - Payout for unknown account", {
-        accountId,
-        transferId: transfer.id,
-      });
-      return;
-    }
-
-    await prisma.sellerPayout.create({
-      data: {
-        sellerId: sellerProfile.userId,
-        amount: transfer.amount / 100,
-        currency: transfer.currency || "usd",
-        status: transfer.reversed ? "REVERSED" : transfer.status === "paid" ? "PAID" : "PENDING",
-        stripeTransferId: transfer.id,
-        payoutDate: transfer.status === "paid" ? new Date() : null,
-      },
-    });
-
-    if (transfer.status === "paid" && !transfer.reversed) {
-      await prisma.sellerProfile.update({
-        where: { userId: sellerProfile.userId },
-        data: {
-          totalEarnings: {
-            increment: transfer.amount / 100,
-          },
-        },
-      });
-    }
-
-    this.logsService.info("Webhook - Seller payout processed" + (TEST_PAYMENTS ? " (TEST MODE)" : ""), {
-      sellerId: sellerProfile.userId,
+    // Stripe Connect payout handling disabled
+    this.logsService.info("Webhook - Seller payout ignored (Stripe Connect disabled)", {
+      accountId,
       transferId: transfer.id,
-      amount: transfer.amount / 100,
-      status: transfer.status,
+      testMode: TEST_PAYMENTS,
+    });
+
+    this.logsService.info("Webhook - Seller payout ignored (Stripe Connect disabled)", {
+      transferId: transfer.id,
       testMode: TEST_PAYMENTS,
     });
   }

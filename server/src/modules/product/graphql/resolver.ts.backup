@@ -83,15 +83,6 @@ export const productResolvers = {
         skip,
         include: {
           category: true,
-          seller: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-              isSeller: true,
-              sellerStatus: true,
-            },
-          },
           variants: true,
           reviews: true,
         },
@@ -149,15 +140,6 @@ export const productResolvers = {
         skip,
         include: {
           category: true,
-          seller: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-              isSeller: true,
-              sellerStatus: true,
-            },
-          },
           variants: true,
           reviews: true,
         },
@@ -182,15 +164,6 @@ export const productResolvers = {
         skip,
         include: {
           category: true,
-          seller: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-              isSeller: true,
-              sellerStatus: true,
-            },
-          },
           variants: true,
           reviews: true,
         },
@@ -215,15 +188,6 @@ export const productResolvers = {
         skip,
         include: {
           category: true,
-          seller: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-              isSeller: true,
-              sellerStatus: true,
-            },
-          },
           variants: true,
           reviews: true,
         },
@@ -248,15 +212,6 @@ export const productResolvers = {
         skip,
         include: {
           category: true,
-          seller: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-              isSeller: true,
-              sellerStatus: true,
-            },
-          },
           variants: true,
           reviews: true,
         },

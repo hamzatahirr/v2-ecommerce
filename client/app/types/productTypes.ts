@@ -10,6 +10,13 @@ export interface Product {
   averageRating: number;
   reviewCount: number;
   description: string | null;
+  seller?: {
+    id: string;
+    name: string;
+    email: string;
+    isSeller: boolean;
+    sellerStatus: string;
+  } | null;
   variants: {
     id: string;
     sku: string;

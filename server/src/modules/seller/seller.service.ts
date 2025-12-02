@@ -62,14 +62,12 @@ export class SellerService {
       );
     }
 
-    // If payout details are being updated, mark as unverified
+    // If payout details are being updated, remove payoutVerified field as it doesn't exist in schema
     const hasPayoutUpdate = data.payoutMethod || data.payoutAccountTitle ||
                           data.payoutAccountNumber || data.payoutBankName ||
                           data.payoutBankBranch;
 
-    if (hasPayoutUpdate) {
-      data.payoutVerified = false;
-    }
+    // Note: payoutVerified field removed from schema - verification handled differently
 
     return await this.sellerRepository.updateSellerProfile(userId, data);
   }

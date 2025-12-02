@@ -26,7 +26,7 @@ const FooterLogo = () => (
       fontWeight="bold"
       fill="currentColor"
     >
-      SS-Commerce
+      BuyBuddy
     </text>
   </svg>
 );
@@ -63,9 +63,9 @@ const Footer = () => {
             </div>
 
             <p className="text-gray-400 mt-6 text-sm leading-relaxed">
-              Discover high-quality products at SS-Commerce. Shop with
+              Discover high-quality products at BuyBuddy. Shop with
               confidence and enjoy premium selections tailored just for you.
-              Fast shipping, secure payments, and exceptional customer service.
+              Campus friendly shopping made easy.
             </p>
 
             <div className="mt-8 flex flex-col space-y-4">
@@ -75,7 +75,7 @@ const Footer = () => {
                   className="text-indigo-400 mr-3 mt-0.5 flex-shrink-0"
                 />
                 <p className="text-sm text-gray-400">
-                  123 Commerce Street, Shopping District, 10001
+                  Lahore
                 </p>
               </div>
               <div className="flex items-center">
@@ -83,14 +83,14 @@ const Footer = () => {
                   size={18}
                   className="text-indigo-400 mr-3 flex-shrink-0"
                 />
-                <p className="text-sm text-gray-400">+1 (555) 123-4567</p>
+                <p className="text-sm text-gray-400">+92 309 0433744</p>
               </div>
               <div className="flex items-center">
                 <Mail
                   size={18}
                   className="text-indigo-400 mr-3 flex-shrink-0"
                 />
-                <p className="text-sm text-gray-400">support@ss-commerce.com</p>
+                <p className="text-sm text-gray-400">support@buybuddy.com</p>
               </div>
             </div>
 
@@ -144,117 +144,7 @@ const Footer = () => {
                     </li>
                   )}
                 </ul>
-              </div>
-
-              {/* Company */}
-              <div>
-                <h3 className="font-semibold text-lg text-white mb-6 relative inline-block">
-                  Company
-                  <span className="absolute -bottom-2 left-0 h-0.5 w-8 bg-indigo-500"></span>
-                </h3>
-                <ul className="space-y-3">
-                  <li>
-                    <Link
-                      href="/about"
-                      className="text-gray-400 hover:text-white text-sm flex items-center group transition-all duration-200"
-                    >
-                      <span className="h-1 w-0 bg-indigo-500 rounded-full mr-0 group-hover:w-2 group-hover:mr-2 transition-all duration-200"></span>
-                      About Us
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/contact"
-                      className="text-gray-400 hover:text-white text-sm flex items-center group transition-all duration-200"
-                    >
-                      <span className="h-1 w-0 bg-indigo-500 rounded-full mr-0 group-hover:w-2 group-hover:mr-2 transition-all duration-200"></span>
-                      Contact Us
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/careers"
-                      className="text-gray-400 hover:text-white text-sm flex items-center group transition-all duration-200"
-                    >
-                      <span className="h-1 w-0 bg-indigo-500 rounded-full mr-0 group-hover:w-2 group-hover:mr-2 transition-all duration-200"></span>
-                      Careers
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/blog"
-                      className="text-gray-400 hover:text-white text-sm flex items-center group transition-all duration-200"
-                    >
-                      <span className="h-1 w-0 bg-indigo-500 rounded-full mr-0 group-hover:w-2 group-hover:mr-2 transition-all duration-200"></span>
-                      Blog
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/press"
-                      className="text-gray-400 hover:text-white text-sm flex items-center group transition-all duration-200"
-                    >
-                      <span className="h-1 w-0 bg-indigo-500 rounded-full mr-0 group-hover:w-2 group-hover:mr-2 transition-all duration-200"></span>
-                      Press
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-
-              {/* Customer Service */}
-              <div>
-                <h3 className="font-semibold text-lg text-white mb-6 relative inline-block">
-                  Support
-                  <span className="absolute -bottom-2 left-0 h-0.5 w-8 bg-indigo-500"></span>
-                </h3>
-                <ul className="space-y-3">
-                  <li>
-                    <Link
-                      href="/help"
-                      className="text-gray-400 hover:text-white text-sm flex items-center group transition-all duration-200"
-                    >
-                      <span className="h-1 w-0 bg-indigo-500 rounded-full mr-0 group-hover:w-2 group-hover:mr-2 transition-all duration-200"></span>
-                      Help Center
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/shipping"
-                      className="text-gray-400 hover:text-white text-sm flex items-center group transition-all duration-200"
-                    >
-                      <span className="h-1 w-0 bg-indigo-500 rounded-full mr-0 group-hover:w-2 group-hover:mr-2 transition-all duration-200"></span>
-                      Shipping Info
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/returns"
-                      className="text-gray-400 hover:text-white text-sm flex items-center group transition-all duration-200"
-                    >
-                      <span className="h-1 w-0 bg-indigo-500 rounded-full mr-0 group-hover:w-2 group-hover:mr-2 transition-all duration-200"></span>
-                      Returns & Exchanges
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/track-order"
-                      className="text-gray-400 hover:text-white text-sm flex items-center group transition-all duration-200"
-                    >
-                      <span className="h-1 w-0 bg-indigo-500 rounded-full mr-0 group-hover:w-2 group-hover:mr-2 transition-all duration-200"></span>
-                      Track Order
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/size-guide"
-                      className="text-gray-400 hover:text-white text-sm flex items-center group transition-all duration-200"
-                    >
-                      <span className="h-1 w-0 bg-indigo-500 rounded-full mr-0 group-hover:w-2 group-hover:mr-2 transition-all duration-200"></span>
-                      Size Guide
-                    </Link>
-                  </li>
-                </ul>
-              </div>
+              </div>              
             </div>
           </div>
 
@@ -265,27 +155,8 @@ const Footer = () => {
               <span className="absolute -bottom-2 left-0 h-0.5 w-8 bg-indigo-500"></span>
             </h3>
             <p className="text-gray-400 text-sm leading-relaxed mb-6">
-              Subscribe to get exclusive offers, new product updates, and
-              special discounts.
+              Become a seller and start your journey with us today!
             </p>
-            <form className="space-y-3" onSubmit={(e) => e.preventDefault()}>
-              <div className="relative">
-                <input
-                  type="email"
-                  placeholder="Your email address"
-                  className="w-full bg-gray-800/50 border border-gray-700 rounded-lg p-3 pl-4 pr-12 text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
-                />
-                <button
-                  type="submit"
-                  className="absolute right-1.5 top-1/2 -translate-y-1/2 bg-indigo-600 hover:bg-indigo-700 text-white p-1.5 rounded-md transition-colors"
-                >
-                  <Send size={16} />
-                </button>
-              </div>
-              <p className="text-gray-500 text-xs">
-                By subscribing, you agree to our Privacy Policy.
-              </p>
-            </form>
 
             <div className="mt-8">
               <h4 className="text-sm font-medium text-gray-300 mb-4">
@@ -297,25 +168,25 @@ const Footer = () => {
                     icon: <Facebook size={18} />,
                     name: "Facebook",
                     bg: "bg-blue-600",
-                    href: "https://facebook.com/ss-commerce",
+                    href: "https://facebook.com/",
                   },
                   {
                     icon: <Twitter size={18} />,
                     name: "Twitter",
                     bg: "bg-sky-500",
-                    href: "https://twitter.com/ss-commerce",
+                    href: "https://twitter.com/",
                   },
                   {
                     icon: <Instagram size={18} />,
                     name: "Instagram",
                     bg: "bg-pink-600",
-                    href: "https://instagram.com/ss-commerce",
+                    href: "https://instagram.com/",
                   },
                   {
                     icon: <Youtube size={18} />,
                     name: "YouTube",
                     bg: "bg-red-600",
-                    href: "https://youtube.com/ss-commerce",
+                    href: "https://youtube.com/",
                   },
                 ].map((social, idx) => (
                   <a
@@ -340,10 +211,8 @@ const Footer = () => {
             {[
               "Visa",
               "Mastercard",
-              "PayPal",
-              "Apple Pay",
               "Google Pay",
-              "Stripe",
+              "Jazzcash",
             ].map((method, idx) => (
               <div key={idx} className="text-xs text-gray-500 font-medium">
                 {method}
@@ -353,14 +222,14 @@ const Footer = () => {
 
           <div className="flex flex-col md:flex-row text-center md:text-left items-center space-y-2 md:space-y-0 md:space-x-8 text-sm">
             <p className="text-gray-400">
-              © {currentYear} SS-Commerce. All rights reserved.
+              © {currentYear} BuyBuddy. All rights reserved.
             </p>
             <div className="flex space-x-4 text-gray-500">
               {[
-                { name: "Terms", href: "/terms" },
-                { name: "Privacy", href: "/privacy" },
-                { name: "Cookies", href: "/cookies" },
-                { name: "Sitemap", href: "/sitemap" },
+                { name: "Terms", href: "/" },
+                { name: "Privacy", href: "/" },
+                { name: "Cookies", href: "/" },
+                { name: "Sitemap", href: "/" },
               ].map((item, idx) => (
                 <Link
                   key={idx}

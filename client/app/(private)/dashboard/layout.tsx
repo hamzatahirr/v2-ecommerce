@@ -2,9 +2,11 @@
 import { Shield, User } from "lucide-react";
 import BreadCrumb from "@/app/components/feedback/BreadCrumb";
 import Sidebar from "../../components/layout/Sidebar";
+import HamburgerMenu from "../../components/layout/HamburgerMenu";
 import DashboardSearchBar from "@/app/components/molecules/DashboardSearchbar";
 import { useAuth } from "@/app/hooks/useAuth";
 import Image from "next/image";
+import { SidebarProvider } from "@/app/contexts/SidebarContext";
 
 export default function AdminLayout({
   children,
@@ -26,12 +28,16 @@ export default function AdminLayout({
   }
   
   return (
-    <div className="flex min-h-screen flex-col md:flex-row">
-      <Sidebar />
-      
-      <div className="flex-1 flex flex-col">
-        <header className="flex items-center justify-between p-4 border-b border-gray-200 bg-white">
-          <BreadCrumb />
+    <SidebarProvider>
+      <div className="flex min-h-screen flex-col md:flex-row">
+        <Sidebar />
+
+        <div className="flex-1 flex flex-col">
+          <header className="flex items-center justify-between p-4 border-b border-gray-200 bg-white">
+            <div className="flex items-center gap-4">
+              <HamburgerMenu />
+              <BreadCrumb />
+            </div>
           <div className="flex items-center gap-4 sm:gap-6">
             <DashboardSearchBar />
             <div className="relative w-9 h-9 flex items-center justify-center rounded-full bg-gray-100">
@@ -57,8 +63,9 @@ export default function AdminLayout({
           </div>
         </header>
         
-        <main className="flex-1 p-4 sm:p-6 overflow-y-auto">{children}</main>
+          <main className="flex-1 p-4 sm:p-6 overflow-y-auto">{children}</main>
+        </div>
       </div>
-    </div>
+    </SidebarProvider>
   );
 }

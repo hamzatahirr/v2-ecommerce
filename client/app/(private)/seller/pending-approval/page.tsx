@@ -1,9 +1,11 @@
 "use client";
 
+import MainLayout from "@/app/components/templates/MainLayout";
 import { AlertTriangle, Clock, CheckCircle } from "lucide-react";
 
 export default function SellerPendingApproval() {
   return (
+    <MainLayout>
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
@@ -56,5 +58,6 @@ export default function SellerPendingApproval() {
         </div>
       </div>
     </div>
+    </MainLayout>
   );
 }

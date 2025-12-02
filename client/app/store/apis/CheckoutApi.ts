@@ -3,8 +3,17 @@ import { apiSlice } from "../slices/ApiSlice";
 export const checkoutApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     initiateCheckout: builder.mutation({
-      query: (data?: { paymentMethod?: "STRIPE" | "CASH_ON_DELIVERY" }) => {
-        const { paymentMethod = "STRIPE" } = data || {};
+      query: (data?: { 
+        paymentMethod?: "JAZZCASH" | "CASH_ON_DELIVERY";
+        address?: {
+          street: string;
+          city: string;
+          state: string;
+          country: string;
+          zip: string;
+        };
+      }) => {
+        const { paymentMethod = "STRIPE", address } = data || {};
 
         // TESTING: Payment bypassed - START
         // When BYPASS_PAYMENTS is enabled, skip Stripe checkout
@@ -13,7 +22,7 @@ export const checkoutApi = apiSlice.injectEndpoints({
           return {
             url: "/checkout",
             method: "POST",
-            body: { paymentMethod },
+            body: { paymentMethod, address },
             credentials: "include",
             // Backend should handle bypass logic
           };
@@ -23,7 +32,7 @@ export const checkoutApi = apiSlice.injectEndpoints({
         return {
           url: "/checkout",
           method: "POST",
-          body: { paymentMethod },
+          body: { paymentMethod, address },
           credentials: "include",
         };
       },

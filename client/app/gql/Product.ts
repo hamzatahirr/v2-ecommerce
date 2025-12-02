@@ -77,6 +77,13 @@ export const GET_SINGLE_PRODUCT = gql`
       averageRating
       reviewCount
       description
+      seller {
+        id
+        name
+        email
+        isSeller
+        sellerStatus
+      }
       variants {
         id
         sku

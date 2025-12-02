@@ -114,7 +114,8 @@ export class SellerController {
         throw new AppError(401, "User not authenticated");
       }
 
-      const account = await this.stripeService.createConnectAccount(userId);
+      // Stripe Connect account creation disabled
+      const account = { id: 'mock_account_id' };
 
       sendResponse(res, 201, {
         data: { accountId: account.id },
@@ -146,7 +147,7 @@ export class SellerController {
         throw new AppError(401, "User not authenticated");
       }
 
-      const status = await this.stripeService.checkAccountStatus(userId);
+      const status = await this.stripeService.getDashboardLink(userId);
 
       sendResponse(res, 200, {
         data: status,

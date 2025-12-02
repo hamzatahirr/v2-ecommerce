@@ -35,13 +35,13 @@ export function withAuth<P extends Record<string, unknown>>(
         
         // Check admin route protection
         if (options?.requireAdmin && !isAdmin) {
-          router.push(options?.redirectTo || "/unauthorized");
+          router.push(options?.redirectTo || "/");
           return;
         }
         
         // Check seller access
         if (options?.requireSeller && !isSeller) {
-          router.push(options?.redirectTo || "/unauthorized");
+          router.push(options?.redirectTo || "/");
           return;
         }
         
@@ -55,12 +55,12 @@ export function withAuth<P extends Record<string, unknown>>(
         
         // Auto-redirect based on route patterns
         if (pathname?.startsWith("/seller") && !isSeller) {
-          router.push("/shop");
+          router.push("/");
           return;
         }
         
         if (pathname?.startsWith("/dashboard") && !isAdmin) {
-          router.push("/shop");
+          router.push("/");
           return;
         }
       }

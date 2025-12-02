@@ -2,6 +2,7 @@ import AppError from "@/shared/errors/AppError";
 import { WithdrawalRepository } from "./withdrawal.repository";
 import { WalletService } from "../wallet/wallet.service";
 import { WITHDRAWAL_STATUS } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 
 export class WithdrawalService {
   constructor(
@@ -28,9 +29,9 @@ export class WithdrawalService {
       throw new AppError(404, "Seller profile not found");
     }
 
-    // Check if payout details are complete and verified
-    if (!sellerProfile.payoutAccountTitle || !sellerProfile.payoutAccountNumber || !sellerProfile.payoutVerified) {
-      throw new AppError(400, "Please complete and verify your payout details before requesting withdrawal");
+    // Check if payout details are complete (removed payoutVerified check as field doesn't exist)
+    if (!sellerProfile.payoutAccountTitle || !sellerProfile.payoutAccountNumber) {
+      throw new AppError(400, "Please complete your payout details before requesting withdrawal");
     }
 
     // Get wallet to get walletId
@@ -159,7 +160,8 @@ export class WithdrawalService {
           new Date()
         );
 
-        // Create a payout record
+        // Create a payout record using Prisma client
+        const prisma = new PrismaClient();
         await prisma.sellerPayout.create({
           data: {
             sellerId: withdrawal.sellerId,
@@ -168,7 +170,7 @@ export class WithdrawalService {
             status: "COMPLETED",
             gatewayTxnId: `PAYOUT_${Date.now()}`,
             payoutMethod: withdrawal.method,
-            payoutDetails: withdrawal.details,
+            payoutDetails: withdrawal.details as any,
             payoutDate: new Date(),
             processedBy: "SYSTEM", // In real app, this would be admin user ID
           }

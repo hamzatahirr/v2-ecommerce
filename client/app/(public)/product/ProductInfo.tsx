@@ -5,6 +5,7 @@ import useToast from "@/app/hooks/ui/useToast";
 import { Product } from "@/app/types/productTypes";
 import { Palette, Ruler, Info, Package, Check, X } from "lucide-react";
 import { motion } from "framer-motion";
+import ContactSellerButton from "./ContactSellerButton";
 
 interface ProductInfoProps {
   id: string;
@@ -18,6 +19,13 @@ interface ProductInfoProps {
   attributeGroups: Record<string, { values: Set<string> }>;
   selectedAttributes: Record<string, string>;
   resetSelections: () => void;
+  seller?: {
+    id: string;
+    name: string;
+    email: string;
+    isSeller: boolean;
+    sellerStatus: string;
+  } | null;
 }
 
 const ProductInfo: React.FC<ProductInfoProps> = ({
@@ -31,6 +39,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
   attributeGroups,
   selectedAttributes,
   resetSelections,
+  seller,
 }) => {
   const { showToast } = useToast();
   const [addToCart, { isLoading }] = useAddToCartMutation();
@@ -377,16 +386,8 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
             "Select a Variant"
           )}
         </button>
-        <button
-          disabled={!stock || !selectedVariant}
-          className={`w-full py-3 sm:py-4 text-sm sm:text-base font-semibold border-2 rounded-xl transition-all duration-300 ${
-            stock && selectedVariant
-              ? "border-indigo-600 text-indigo-600 hover:bg-indigo-50 hover:shadow-lg transform hover:scale-[1.02]"
-              : "border-gray-300 text-gray-400 cursor-not-allowed"
-          }`}
-        >
-          Buy Now
-        </button>
+        
+        <ContactSellerButton seller={seller || null} />
       </div>
     </div>
   );
