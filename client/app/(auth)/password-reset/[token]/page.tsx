@@ -1,9 +1,9 @@
 "use client";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import Input from "@/app/components/atoms/Input";
-import Button from "@/app/components/atoms/Button";
-import { useResetPasswordMutation } from "@/app/store/apis/AuthApi";
+import Input from "../../../components/atoms/Input";
+import Button from "../../../components/atoms/Button";
+import { useResetPasswordMutation } from "../../../store/apis/AuthApi";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 

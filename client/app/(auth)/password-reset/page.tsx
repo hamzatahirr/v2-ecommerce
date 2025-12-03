@@ -1,10 +1,10 @@
 "use client";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import Input from "@/app/components/atoms/Input";
-import Button from "@/app/components/atoms/Button";
+import Input from "../../components/atoms/Input";
+import Button from "../../components/atoms/Button";
+import axiosInstance from "../../utils/axiosInstance";
 import Link from "next/link";
-import axiosInstance from "@/app/utils/axiosInstance";
 
 const PasswordReset = () => {
   const { control, handleSubmit, reset } = useForm({
