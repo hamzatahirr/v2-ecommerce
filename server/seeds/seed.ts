@@ -30,6 +30,8 @@ async function cleanup() {
   await prisma.productVariant.deleteMany();
   await prisma.product.deleteMany();
   await prisma.category.deleteMany();
+  await prisma.allowedDomain.deleteMany();
+  await prisma.section.deleteMany();
   await prisma.user.deleteMany();
 
   console.log("✅ Cleanup completed");
@@ -45,10 +47,10 @@ async function main() {
   const hashedPassword = await bcrypt.hash("password123", 12);
 
   const admin = await prisma.user.upsert({
-    where: { email: "admin@example.com" },
+    where: { email: "admin@buybuddy.com" },
     update: {},
     create: {
-      email: "admin@example.com",
+      email: "admin@buybuddy.com",
       password: hashedPassword,
       name: "Admin User",
       role: "ADMIN",
@@ -57,10 +59,10 @@ async function main() {
 
   // Create multiple sellers for multi-vendor system
   const seller1 = await prisma.user.upsert({
-    where: { email: "seller1@techstore.com" },
+    where: { email: "seller1@buybuddy.com" },
     update: {},
     create: {
-      email: "seller1@techstore.com",
+      email: "seller1@buybuddy.com",
       password: hashedPassword,
       name: "Tech Store Seller",
       role: "USER",
@@ -70,10 +72,10 @@ async function main() {
   });
 
   const seller2 = await prisma.user.upsert({
-    where: { email: "seller2@fashionhub.com" },
+    where: { email: "seller2@buybuddy.com" },
     update: {},
     create: {
-      email: "seller2@fashionhub.com",
+      email: "seller2@buybuddy.com",
       password: hashedPassword,
       name: "Fashion Hub Seller",
       role: "USER",
@@ -83,10 +85,10 @@ async function main() {
   });
 
   const seller3 = await prisma.user.upsert({
-    where: { email: "seller3@homegoods.com" },
+    where: { email: "seller3@buybuddy.com" },
     update: {},
     create: {
-      email: "seller3@homegoods.com",
+      email: "seller3@buybuddy.com",
       password: hashedPassword,
       name: "Home Goods Seller",
       role: "USER",
@@ -96,10 +98,10 @@ async function main() {
   });
 
   const seller4 = await prisma.user.upsert({
-    where: { email: "seller4@sportsplus.com" },
+    where: { email: "seller4@buybuddy.com" },
     update: {},
     create: {
-      email: "seller4@sportsplus.com",
+      email: "seller4@buybuddy.com",
       password: hashedPassword,
       name: "Sports Plus Seller",
       role: "USER",
@@ -110,10 +112,10 @@ async function main() {
 
   // Create regular users
   const user1 = await prisma.user.upsert({
-    where: { email: "user1@example.com" },
+    where: { email: "user1@buybuddy.com" },
     update: {},
     create: {
-      email: "user1@example.com",
+      email: "user1@buybuddy.com",
       password: hashedPassword,
       name: "John Doe",
       role: "USER",
@@ -121,10 +123,10 @@ async function main() {
   });
 
   const user2 = await prisma.user.upsert({
-    where: { email: "user2@example.com" },
+    where: { email: "user2@buybuddy.com" },
     update: {},
     create: {
-      email: "user2@example.com",
+      email: "user2@buybuddy.com",
       password: hashedPassword,
       name: "Jane Smith",
       role: "USER",
@@ -259,6 +261,22 @@ async function main() {
       stripeCustomerId: "cus_fashionhub456",
     },
   });
+
+  // 7. Create allowed domains for user registration
+  const allowedDomains = [
+    "buybuddy.com",
+  ];
+
+  for (const domain of allowedDomains) {
+    await prisma.allowedDomain.upsert({
+      where: { domain },
+      update: {},
+      create: {
+        domain,
+        isActive: true,
+      },
+    });
+  }
 
   // 2. Create categories
   const electronicsCategory = await prisma.category.upsert({
@@ -2080,6 +2098,109 @@ async function main() {
     },
   });
 
+  // 8. Create homepage sections for better UI
+  await prisma.section.upsert({
+    where: { id: 1 },
+    update: {},
+    create: {
+      type: "HERO",
+      title: "Welcome to BuyBuddy",
+      description: "Your trusted marketplace for quality products",
+      images: ["https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1600"],
+      link: "/shop",
+      ctaText: "Shop Now",
+      isVisible: true,
+      primaryColor: "#3B82F6",
+      secondaryColor: "#10B981",
+    },
+  });
+
+  await prisma.section.upsert({
+    where: { id: 2 },
+    update: {},
+    create: {
+      type: "PROMOTIONAL",
+      title: "Flash Sale",
+      description: "Up to 50% off on selected items",
+      images: ["https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1600"],
+      link: "/shop?sale=true",
+      ctaText: "View Deals",
+      isVisible: true,
+      primaryColor: "#EF4444",
+      secondaryColor: "#F59E0B",
+    },
+  });
+
+  await prisma.section.upsert({
+    where: { id: 3 },
+    update: {},
+    create: {
+      type: "BENEFITS",
+      title: "Why Choose Us",
+      description: "Fast delivery, secure payments, and quality products",
+      icons: "truck,shield,star",
+      isVisible: true,
+      primaryColor: "#6366F1",
+      secondaryColor: "#8B5CF6",
+    },
+  });
+
+  await prisma.section.upsert({
+    where: { id: 4 },
+    update: {},
+    create: {
+      type: "NEW_ARRIVALS",
+      title: "New Arrivals",
+      description: "Check out our latest products",
+      link: "/shop?new=true",
+      ctaText: "Explore New",
+      isVisible: true,
+      primaryColor: "#10B981",
+      secondaryColor: "#059669",
+    },
+  });
+
+  // 9. Create sample reviews for products
+  const sampleReviews = [
+    {
+      productId: createdProducts[0]?.id, // iPhone 16 Pro
+      userId: user1.id,
+      rating: 5,
+      comment: "Amazing phone! The camera quality is outstanding."
+    },
+    {
+      productId: createdProducts[4]?.id, // Cotton T-Shirt
+      userId: user2.id,
+      rating: 4,
+      comment: "Very comfortable and good quality fabric."
+    },
+    {
+      productId: createdProducts[10]?.id, // Nike Air Max
+      userId: user1.id,
+      rating: 5,
+      comment: "Perfect fit and very comfortable for running."
+    },
+    {
+      productId: createdProducts[14]?.id, // Wooden Chair
+      userId: user2.id,
+      rating: 4,
+      comment: "Good quality wood, easy to assemble."
+    }
+  ];
+
+  for (const review of sampleReviews) {
+    if (review.productId) {
+      await prisma.review.create({
+        data: {
+          userId: review.userId,
+          productId: review.productId,
+          rating: review.rating,
+          comment: review.comment,
+        },
+      });
+    }
+  }
+
   console.log("✅ Database seeded successfully!");
   console.log("\n📋 Created:");
   console.log(`- Users: Admin, 4 Sellers, 2 Regular Users`);
@@ -2091,12 +2212,15 @@ async function main() {
   console.log(`- Seller Wallets: 3 wallets with balances`);
   console.log(`- Seller Subscriptions: 2 active subscriptions`);
   console.log(`- Commission Rates: Set for all categories`);
+  console.log(`- Allowed Domains: ${allowedDomains.length} domains for user registration`);
+  console.log(`- Homepage Sections: 4 sections (Hero, Promotional, Benefits, New Arrivals)`);
+  console.log(`- Sample Reviews: Added for popular products`);
 }
 
 main()
   .catch((e) => {
     console.error("❌ Error seeding database:", e);
-    process.exit(1);
+    return;
   })
   .finally(async () => {
     await prisma.$disconnect();
