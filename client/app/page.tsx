@@ -24,6 +24,10 @@ const Home = () => {
   const { data, loading, error } = useQuery(GET_PRODUCTS_SUMMARY, {
     variables: { first: 100 },
     fetchPolicy: "no-cache",
+    errorPolicy: 'all',
+    onError: (err) => {
+      console.error("GraphQL query error:", err);
+    }
   });
 
   const { featured, trending, newArrivals, bestSellers } = useMemo(() => {
@@ -31,6 +35,21 @@ const Home = () => {
       return { featured: [], trending: [], newArrivals: [], bestSellers: [] };
     return groupProductsByFlag(data.products.products);
   }, [data]);
+
+  // Show error state if GraphQL fails
+  if (error && !loading) {
+    return (
+      <MainLayout>
+        <HeroSection />
+        <div className="flex items-center justify-center min-h-[50vh]">
+          <div className="text-center">
+            <p className="text-lg text-red-500 mb-4">Unable to load products</p>
+            <p className="text-sm text-gray-600">Please check your connection and try again</p>
+          </div>
+        </div>
+      </MainLayout>
+    );
+  }
 
   if (loading) {
     return (

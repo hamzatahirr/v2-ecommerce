@@ -1,15 +1,14 @@
-const DEV_API_URL = "http://localhost:5000/api/v1";
-const PROD_API_URL = "https://proud-eagerness-production-ea88.up.railway.app/api/v1";
+const API_PATH = "/api/v1";
 
 export const API_BASE_URL =
   process.env.NODE_ENV === "production"
-    ? process.env.NEXT_PUBLIC_API_URL_PROD || PROD_API_URL
-    : process.env.NEXT_PUBLIC_API_URL_DEV || DEV_API_URL;
+    ? `${process.env.NEXT_PUBLIC_API_URL_PROD}${API_PATH}` 
+    : `${process.env.NEXT_PUBLIC_API_URL_DEV}${API_PATH}`; ;
 
 export const AUTH_API_BASE_URL =
   process.env.NODE_ENV === "production"
-    ? process.env.NEXT_PUBLIC_API_URL_PROD || PROD_API_URL
-    : process.env.NEXT_PUBLIC_API_URL_DEV || DEV_API_URL;
+    ? `${process.env.NEXT_PUBLIC_API_URL_PROD}${API_PATH}`
+    : `${process.env.NEXT_PUBLIC_API_URL_DEV}${API_PATH}`; ;
 
 export const GRAPHQL_URL = `${API_BASE_URL}/graphql`;
 

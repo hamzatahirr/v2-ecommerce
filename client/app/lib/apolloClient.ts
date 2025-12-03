@@ -39,7 +39,7 @@ export const initializeApollo = (initialState = null) => {
       // Add default options to handle errors gracefully
       defaultOptions: {
         watchQuery: {
-          errorPolicy: 'ignore',
+          errorPolicy: 'all',
           notifyOnNetworkStatusChange: true,
         },
         query: {

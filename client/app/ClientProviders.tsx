@@ -1,7 +1,7 @@
 "use client";
 import { Provider } from "react-redux";
 import { store } from "./store/store";
-import { ApolloProvider } from "@apollo/client";
+import { ApolloProvider, ApolloClient, InMemoryCache } from "@apollo/client";
 import { Suspense, useEffect, useState } from "react";
 import { initializeApollo } from "./lib/apolloClient";
 import Toast from "./components/feedback/Toast";
@@ -12,8 +12,22 @@ import ErrorBoundary from "./components/ErrorBoundary";
 function ApolloProviderWithErrorBoundary({ children }: { children: React.ReactNode }) {
   const [client, setClient] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
+  const [timeoutReached, setTimeoutReached] = useState(false);
 
   useEffect(() => {
+    const timeoutId: NodeJS.Timeout = setTimeout(() => {
+      if (!client) {
+        console.warn("Apollo Client initialization timeout - proceeding without GraphQL");
+        setTimeoutReached(true);
+        // Create a minimal client to allow the app to continue
+        const fallbackClient = new ApolloClient({
+          cache: new InMemoryCache(),
+          ssrMode: typeof window === 'undefined',
+        });
+        setClient(fallbackClient);
+      }
+    }, 5000); // 5 second timeout
+
     try {
       const apolloClient = initializeApollo();
       setClient(apolloClient);
@@ -21,9 +35,11 @@ function ApolloProviderWithErrorBoundary({ children }: { children: React.ReactNo
       console.error("Apollo Client initialization failed:", err);
       setError("Failed to initialize Apollo Client");
     }
+
+    return () => clearTimeout(timeoutId);
   }, []);
 
-  if (error) {
+  if (error && !timeoutReached) {
     return (
       <ErrorBoundary>
         <div className="flex items-center justify-center min-h-screen">
