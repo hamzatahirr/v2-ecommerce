@@ -74,14 +74,15 @@ const Navbar = () => {
             <div className="flex items-center gap-2">
               <Link
                 href="/"
-                className="font-medium text-lg sm:text-xl lg:text-xl text-gray-900 flex-shrink-0"
+                className="font-medium text-lg sm:text-xl lg:text-xl text-gray-900 flex-shrink-0 w-20 h-12 sm:w-24 sm:h-14"
               >
               <Image
                   src="/logo.png"
                   alt="BuyBuddy"
                   width={80}
                   height={50}
-                  className="rounded-full object-cover w-full h-full"
+                  className="rounded-full object-contain"
+                  sizes="(max-width: 640px) 80px, 96px"
                 />
               </Link>
               {isAuthenticated && (
@@ -111,12 +112,12 @@ const Navbar = () => {
             </div>
 
             {/* Desktop Search Bar */}
-            <div className="hidden md:flex flex-1 max-w-lg mx-8">
+            <div className="hidden md:flex flex-1 max-w-lg mx-4 sm:mx-8">
               <SearchBar />
             </div>
 
             {/* Right section */}
-            <div className="flex items-center space-x-2 sm:space-x-4">
+            <div className="flex items-center gap-2 sm:gap-4">
               {/* Mobile Search Button */}
               <button
                 onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
@@ -160,13 +161,13 @@ const Navbar = () => {
                     aria-label="User menu"
                   >
                     {user?.avatar ? (
-                      <div className="w-7 h-7 rounded-full bg-gray-200 overflow-hidden border border-gray-300">
+                        <div className="w-7 h-7 rounded-full bg-gray-200 overflow-hidden border border-gray-300">
                         <Image
                           src={user.avatar}
                           alt="User Profile"
                           width={28}
                           height={28}
-                          className="rounded-full object-cover w-full h-full"
+                          className="rounded-full object-cover"
                           onError={(e) => {
                             e.currentTarget.src = generateUserAvatar(user.name);
                           }}
@@ -179,7 +180,7 @@ const Navbar = () => {
                           alt="User Profile"
                           width={35}
                           height={35}
-                          className="rounded-full object-cover w-full h-full"
+                          className="rounded-full object-cover"
                         />
                       </div>
                     )}
@@ -227,7 +228,7 @@ const Navbar = () => {
           {mobileMenuOpen && (
             <div
               ref={mobileMenuRef}
-              className="md:hidden absolute top-full left-0 right-0 bg-white shadow-lg border-t border-gray-200"
+              className="md:hidden fixed top-full left-0 right-0 bg-white shadow-lg border-t border-gray-200 z-40"
             >
               <div className="px-4 py-2 space-y-2">
                 {!isAuthenticated && (

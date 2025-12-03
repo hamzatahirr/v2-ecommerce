@@ -25,9 +25,7 @@ const nextConfig: NextConfig = {
 
   output: "standalone",
   trailingSlash: false,
-  experimental: {
-    serverComponentsExternalPackages: [],
-  },
+  serverExternalPackages: [],
 };
 
 export default nextConfig;
