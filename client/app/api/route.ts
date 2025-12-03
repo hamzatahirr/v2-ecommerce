@@ -1,10 +1,9 @@
 import { NextResponse } from 'next/server';
 
 export async function GET() {
-  // Simple health check - if this endpoint responds, the app is running
   return NextResponse.json({
-    status: 'healthy',
+    status: 'ok',
+    message: 'Service is running',
     timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'unknown',
   });
 }

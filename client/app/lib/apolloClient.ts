@@ -16,40 +16,51 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 console.log("GRAPHQL_URL: ", GRAPHQL_URL);
 
 export const initializeApollo = (initialState = null) => {
-  const httpLink = new HttpLink({
-    uri: GRAPHQL_URL,
-    credentials: "include",
-  });
+  try {
+    const httpLink = new HttpLink({
+      uri: GRAPHQL_URL,
+      credentials: "include",
+    });
 
-  // Create or reuse Apollo Client instance with error handling
-  const client = new ApolloClient({
-    link: from([errorLink, httpLink]),
-    cache: new InMemoryCache({
-      typePolicies: {
-        Product: {
-          fields: {
-            variants: {
-              merge: true,
+    // Create or reuse Apollo Client instance with error handling
+    const client = new ApolloClient({
+      link: from([errorLink, httpLink]),
+      cache: new InMemoryCache({
+        typePolicies: {
+          Product: {
+            fields: {
+              variants: {
+                merge: true,
+              },
             },
           },
         },
+      }).restore(initialState || {}),
+      // Add default options to handle errors gracefully
+      defaultOptions: {
+        watchQuery: {
+          errorPolicy: 'ignore',
+          notifyOnNetworkStatusChange: true,
+        },
+        query: {
+          errorPolicy: 'all',
+        },
       },
-    }).restore(initialState || {}),
-    // Add default options to handle errors gracefully
-    defaultOptions: {
-      watchQuery: {
-        errorPolicy: 'ignore',
-        notifyOnNetworkStatusChange: true,
-      },
-      query: {
-        errorPolicy: 'all',
-      },
-    },
-    // Disable SSR queries that might fail
-    ssrMode: typeof window === 'undefined',
-  });
+      // Disable SSR queries that might fail
+      ssrMode: typeof window === 'undefined',
+      // Add connectToDevTools only in development
+      connectToDevTools: process.env.NODE_ENV === 'development',
+    });
 
-  return client;
+    return client;
+  } catch (error) {
+    console.error("Failed to initialize Apollo Client:", error);
+    // Return a minimal client that won't crash the app
+    return new ApolloClient({
+      cache: new InMemoryCache(),
+      ssrMode: typeof window === 'undefined',
+    });
+  }
 };
 
 export default initializeApollo(); // Default export for client-side usage
