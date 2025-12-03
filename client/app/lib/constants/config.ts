@@ -1,4 +1,4 @@
-const API_PATH = "/api/v1";
+const API_PATH = "api/v1";
 
 export const API_BASE_URL =
   process.env.NODE_ENV === "production"
