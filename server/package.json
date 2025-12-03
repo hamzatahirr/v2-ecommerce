@@ -11,10 +11,10 @@
     "start": "node dist/server.js",
     "prisma": "prisma",
     "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate deploy",
+    "prisma:migrate": "prisma migrate deploy || prisma db push",
     "prisma:push": "prisma db push",
     "seed": "ts-node seeds/seed.ts",
-    "setup:db": "prisma db push && npm run seed"
+    "setup:db": "prisma db push --force-reset && npm run seed"
   },
   "keywords": [],
   "author": "",

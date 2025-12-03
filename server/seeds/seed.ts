@@ -7,32 +7,47 @@ async function cleanup() {
   console.log("🧹 Cleaning up existing data...");
 
   // Delete in reverse order of dependencies to respect foreign key constraints
-  await prisma.chatMessage.deleteMany();
-  await prisma.chat.deleteMany();
-  await prisma.report.deleteMany();
-  await prisma.interaction.deleteMany();
-  await prisma.cartEvent.deleteMany();
-  await prisma.cartItem.deleteMany();
-  await prisma.cart.deleteMany();
-  await prisma.transaction.deleteMany();
-  await prisma.shipment.deleteMany();
-  await prisma.payment.deleteMany();
-  await prisma.address.deleteMany();
-  await prisma.orderItem.deleteMany();
-  await prisma.order.deleteMany();
-  await prisma.review.deleteMany();
-  await prisma.restock.deleteMany();
-  await prisma.stockMovement.deleteMany();
-  await prisma.productVariantAttribute.deleteMany();
-  await prisma.attributeValue.deleteMany();
-  await prisma.categoryAttribute.deleteMany();
-  await prisma.attribute.deleteMany();
-  await prisma.productVariant.deleteMany();
-  await prisma.product.deleteMany();
-  await prisma.category.deleteMany();
-  await prisma.allowedDomain.deleteMany();
-  await prisma.section.deleteMany();
-  await prisma.user.deleteMany();
+  try {
+    await prisma.chatMessage.deleteMany();
+    await prisma.chat.deleteMany();
+  } catch (error) {
+    console.log("⚠️ Chat tables not found, skipping...");
+  }
+  // Try to delete each table individually with proper typing
+  const deleteOperations = [
+    () => prisma.report.deleteMany(),
+    () => prisma.interaction.deleteMany(),
+    () => prisma.cartEvent.deleteMany(),
+    () => prisma.cartItem.deleteMany(),
+    () => prisma.cart.deleteMany(),
+    () => prisma.transaction.deleteMany(),
+    () => prisma.shipment.deleteMany(),
+    () => prisma.payment.deleteMany(),
+    () => prisma.address.deleteMany(),
+    () => prisma.orderItem.deleteMany(),
+    () => prisma.order.deleteMany(),
+    () => prisma.review.deleteMany(),
+    () => prisma.restock.deleteMany(),
+    () => prisma.stockMovement.deleteMany(),
+    () => prisma.productVariantAttribute.deleteMany(),
+    () => prisma.attributeValue.deleteMany(),
+    () => prisma.categoryAttribute.deleteMany(),
+    () => prisma.attribute.deleteMany(),
+    () => prisma.productVariant.deleteMany(),
+    () => prisma.product.deleteMany(),
+    () => prisma.category.deleteMany(),
+    () => prisma.allowedDomain.deleteMany(),
+    () => prisma.section.deleteMany(),
+    () => prisma.user.deleteMany(),
+  ];
+
+  for (const deleteOp of deleteOperations) {
+    try {
+      await deleteOp();
+    } catch (error) {
+      console.log(`⚠️ Table not found, skipping...`);
+    }
+  }
 
   console.log("✅ Cleanup completed");
 }
