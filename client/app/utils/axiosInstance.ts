@@ -1,11 +1,13 @@
 import axios, { AxiosInstance } from "axios";
 
+const API_PATH = "/api/v1";
+
 // Dynamic base URL based on environment
 const getBaseURL = () => {
   if (typeof window !== "undefined") {
     // Client-side: use environment variables
     return process.env.NODE_ENV === "production"
-      ? "https://full-stack-ecommerce-n5at.onrender.com/api/v1"
+      ? `${process.env.NEXT_PUBLIC_API_URL_PROD}${API_PATH}`
       : "http://localhost:5000/api/v1";
   }
   // Server-side: default to development

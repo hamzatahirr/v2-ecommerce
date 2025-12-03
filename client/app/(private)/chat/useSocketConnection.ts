@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { io, Socket } from "socket.io-client";
 // import { addMessage, markMessagesAsRead, setTypingUser, clearTypingUser, updateUnreadCount } from "../store/slices/chatSlice";
+const API_PATH = "/api/v1";
 
 export const useSocketConnection = (conversationId: string | null) => {
   const socketRef = useRef<Socket | null>(null);
@@ -10,7 +11,7 @@ export const useSocketConnection = (conversationId: string | null) => {
     // Determine backend URL
     const serverUrl =
       process.env.NODE_ENV === "production"
-        ? "https://ecommerce-nu-rosy.vercel.app"
+        ? `${process.env.NEXT_PUBLIC_API_URL_PROD}${API_PATH}`
         : "http://localhost:5000";
 
     console.log("Socket server URL:", serverUrl);
