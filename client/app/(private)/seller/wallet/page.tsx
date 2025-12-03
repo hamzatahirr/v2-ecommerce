@@ -20,8 +20,8 @@ function WalletPage() {
   const formatPrice = useFormatPrice();
   const [showTransactions, setShowTransactions] = useState(false);
 
-  const { data: walletData, isLoading: walletLoading } = useGetSellerWalletQuery();
-  const { data: balanceData } = useGetWalletBalanceQuery();
+  const { data: walletData, isLoading: walletLoading } = useGetSellerWalletQuery(undefined);
+  const { data: balanceData } = useGetWalletBalanceQuery(undefined);
   const { data: transactionsData } = useGetWalletTransactionsQuery({ page: 1, limit: 10 });
 
   if (walletLoading) {

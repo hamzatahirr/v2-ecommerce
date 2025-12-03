@@ -183,7 +183,6 @@ const UsersDashboard = () => {
             <AdminActionGuard action="update_user" showFallback={false}>
               <button
                 onClick={() => {
-                  setEditingUser(row);
                   form.reset(row);
                   setIsModalOpen(true);
                 }}
@@ -225,7 +224,6 @@ const UsersDashboard = () => {
     try {
       await updateUser(data).unwrap();
       setIsModalOpen(false);
-      setEditingUser(null);
       showToast("User updated successfully", "success");
     } catch (err: any) {
       console.error("Failed to update user:", err);
@@ -263,7 +261,7 @@ const UsersDashboard = () => {
   };
 
   return (
-    <PermissionGuard allowedRoles={["ADMIN"]}>
+    <PermissionGuard requireAdmin={true}>
       <div className="min-h-screen p-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

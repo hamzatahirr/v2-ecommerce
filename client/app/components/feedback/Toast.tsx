@@ -48,7 +48,9 @@ const Toast = () => {
     });
 
     return () => {
-      Object.values(timeoutRefs.current).forEach(clearTimeout);
+      Object.values(timeoutRefs.current).forEach((timeout: any) => {
+      if (timeout) clearTimeout(timeout);
+    });
       timeoutRefs.current = {};
     };
   }, [toasts, dispatch]);

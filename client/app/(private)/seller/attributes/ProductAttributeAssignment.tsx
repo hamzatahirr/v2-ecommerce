@@ -14,6 +14,7 @@ import ProductAssignmentSection from "./ProductAssignmentSection";
 interface Attribute {
   id: string;
   name: string;
+  values?: { id: string; value: string }[];
 }
 
 interface AssignFormData {
@@ -90,10 +91,12 @@ const ProductAttributeAssignment: React.FC<ProductAttributeAssignmentProps> = ({
     }
   };
 
-  const handleAttributeChange = (value: string) => {
-    setValue("attributeId", value);
-    setValue("productId", "");
-    setValue("valueId", "");
+  const handleAttributeChange = (value: string | null) => {
+    if (value) {
+      setValue("attributeId", value);
+      setValue("productId", "");
+      setValue("valueId", "");
+    }
   };
 
   const handleProductChange = (value: string) => {

@@ -94,6 +94,57 @@ export const orderApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["Order", "Seller"],
     }),
+
+    // Seller-specific endpoints
+    getSellerOrders: builder.query({
+      query: (params) => {
+        const queryString = new URLSearchParams();
+        
+        if (params) {
+          Object.entries(params).forEach(([key, value]) => {
+            if (value !== undefined && value !== null) {
+              queryString.set(key, String(value));
+            }
+          });
+        }
+
+        return {
+          url: `/seller/orders?${queryString.toString()}`,
+          method: "GET",
+          credentials: "include",
+        };
+      },
+      providesTags: ["Order", "Seller"],
+    }),
+
+    getSellerOrder: builder.query({
+      query: (orderId) => ({
+        url: `/seller/orders/${orderId}`,
+        method: "GET",
+        credentials: "include",
+      }),
+      providesTags: ["Order", "Seller"],
+    }),
+
+    updateOrderStatus: builder.mutation({
+      query: ({ orderId, status }) => ({
+        url: `/seller/orders/${orderId}/status`,
+        method: "PATCH",
+        body: { status },
+        credentials: "include",
+      }),
+      invalidatesTags: ["Order", "Seller"],
+    }),
+
+    updateShippingInfo: builder.mutation({
+      query: ({ orderId, shippingInfo }) => ({
+        url: `/seller/orders/${orderId}/shipping`,
+        method: "PATCH",
+        body: shippingInfo,
+        credentials: "include",
+      }),
+      invalidatesTags: ["Order", "Seller"],
+    }),
   }),
 });
 
@@ -108,4 +159,8 @@ export const {
   useRejectOrderMutation,
   useShipOrderMutation,
   useCompleteOrderMutation,
+  useGetSellerOrdersQuery,
+  useGetSellerOrderQuery,
+  useUpdateOrderStatusMutation,
+  useUpdateShippingInfoMutation,
 } = orderApi;

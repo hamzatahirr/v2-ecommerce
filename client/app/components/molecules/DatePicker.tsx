@@ -93,7 +93,7 @@ const DatePicker = ({
   const handleMonthSelect = (selectedMonth: {
     label: string;
     value: string;
-  }) => {
+  } | null) => {
     if (selectedMonth !== null) {
       const monthIndex = months.indexOf(selectedMonth);
       setCurrentMonth(new Date(currentMonth.getFullYear(), monthIndex, 1));
@@ -157,7 +157,7 @@ const DatePicker = ({
                       <Dropdown
                         options={months}
                         value={field.value}
-                        onChange={handleMonthSelect}
+                        onChange={handleMonthSelect as any}
                         className="text-xs font-medium"
                       />
                     )}

@@ -6,7 +6,7 @@ interface User {
   name: string;
   email: string;
   role: 'USER' | 'ADMIN'; // Only USER or ADMIN
-  isSeller?: boolean;
+  isSeller: boolean;
   sellerStatus?: 'PENDING' | 'APPROVED' | 'REJECTED' | 'SUSPENDED';
   avatar: string | null;
 }
@@ -53,7 +53,10 @@ const authSlice = createSlice({
       }
       
       // Enhance user data with persisted seller status if missing
-      user = enhanceUserWithSellerStatus(user);
+      const enhancedUser = enhanceUserWithSellerStatus(user);
+      if (enhancedUser) {
+        user = enhancedUser;
+      }
       
       // Ensure isSeller is a boolean (default to false if undefined)
       if (typeof user.isSeller !== 'boolean') {

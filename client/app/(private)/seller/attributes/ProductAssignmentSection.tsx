@@ -51,7 +51,7 @@ const ProductAssignmentSection: React.FC<{
                 value={field.value}
                 onChange={(value) => {
                   field.onChange(value);
-                  onProductChange?.(value);
+                  if (value) onProductChange?.(value);
                 }}
                 label="Choose a product"
               />

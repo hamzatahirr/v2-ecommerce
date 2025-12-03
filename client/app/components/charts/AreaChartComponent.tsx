@@ -27,7 +27,7 @@ const AreaChartComponent: React.FC<Props> = ({
     colors: [color],
     dataLabels: { enabled: false },
     stroke: {
-      curve: "smooth",
+      curve: "smooth" as any,
       width: 2,
     },
     xaxis: {

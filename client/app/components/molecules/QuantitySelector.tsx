@@ -24,8 +24,8 @@ const QuantitySelector = ({
     onChange(newQty); // update form state
     try {
       await updateCartItem({ id: itemId, quantity: newQty }).unwrap();
-    } catch (err) {
-      showToast(err.data?.message || "Failed to update quantity", "error");
+    } catch (err: any) {
+      showToast(err?.data?.message || "Failed to update quantity", "error");
       onChange(value);
     }
   };

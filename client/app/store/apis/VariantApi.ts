@@ -30,7 +30,7 @@ export const variantApi = apiSlice.injectEndpoints({
     // Get variant restock history
     getVariantRestockHistory: builder.query({
       query: (variantId: string) => `/variants/${variantId}/restock-history`,
-      providesTags: ['RestockHistory'],
+      providesTags: ['Variant'],
     }),
   }),
 });

@@ -91,6 +91,7 @@ const ManageProduct = () => {
 
         <ProductHeader
           product={product}
+          stock={product?.stock || 0}
           isDeleting={isDeleting}
           onDelete={() => setIsConfirmModalOpen(true)}
         />
