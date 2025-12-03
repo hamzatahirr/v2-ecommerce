@@ -20,7 +20,7 @@ const productController = makeProductController();
  *       200:
  *         description: A list of products.
  */
-router.get("/", protect, productController.getAllProducts);
+router.get("/", productController.getAllProducts);
 
 /**
  * @swagger
