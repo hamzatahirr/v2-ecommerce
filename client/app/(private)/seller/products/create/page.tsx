@@ -2,7 +2,6 @@
 import { ArrowLeft } from "lucide-react";
 import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
-import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   useGetAllCategoriesQuery,
@@ -13,7 +12,6 @@ import { ProductFormData } from "@/app/(private)/dashboard/products/product.type
 import ProductForm from "@/app/(private)/dashboard/products/ProductForm";
 import useToast from "@/app/hooks/ui/useToast";
 import CustomLoader from "@/app/components/feedback/CustomLoader";
-import { withSellerAuth } from "@/app/components/HOC/WithSellerAuth";
 
 const SellerCreateProduct = () => {
   const router = useRouter();
@@ -183,5 +181,5 @@ const SellerCreateProduct = () => {
   );
 };
 
-export default withSellerAuth(SellerCreateProduct);
+export default SellerCreateProduct;
 

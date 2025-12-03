@@ -7,9 +7,8 @@ import {
 } from "@/app/store/apis/LogsApi";
 import React, { useState } from "react";
 import LogContext from "./LogContext";
-import { withAuth } from "@/app/components/HOC/WithAuth";
 
-const LogsDashboard = () => {
+function LogsDashboard() {
   const { data, isLoading, error } = useGetAllLogsQuery({});
   const [clearLogs, { isLoading: isClearingLogs }] = useClearLogsMutation();
   const [deleteLog, { isLoading: isDeletingLog }] = useDeleteLogMutation();
@@ -173,4 +172,4 @@ const LogsDashboard = () => {
   );
 };
 
-export default withAuth(LogsDashboard);
+export default LogsDashboard;

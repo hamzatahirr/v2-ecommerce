@@ -1,7 +1,9 @@
 "use client";
-import { withAuth } from "@/app/components/HOC/WithAuth";
 import MainLayout from "@/app/components/templates/MainLayout";
 import { useGetMeQuery } from "@/app/store/apis/UserApi";
+import { useAuth } from "@/app/hooks/useAuth";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import {
   User,
   Shield,
@@ -20,11 +22,18 @@ import { useState } from "react";
 
 const UserProfile = () => {
   const { data, isLoading, error } = useGetMeQuery(undefined);
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
+  const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
 
-  console.log("user => ", data);
+  useEffect(() => {
+    if (!authLoading && !isAuthenticated) {
+      router.push("/sign-in");
+    }
+  }, [authLoading, isAuthenticated, router]);
 
-  if (isLoading) {
+  if (authLoading || isLoading) {
+
     return (
       <MainLayout>
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 py-4 sm:py-8 px-3 sm:px-4">
@@ -61,7 +70,11 @@ const UserProfile = () => {
     );
   }
 
-  if (error || !data?.user) {
+  if (!isAuthenticated) {
+    return null;
+  }
+
+  if (error || !data) {
     return (
       <MainLayout>
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 py-4 sm:py-8 px-3 sm:px-4">
@@ -85,7 +98,7 @@ const UserProfile = () => {
     );
   }
 
-  const { user } = data;
+  const user = data;
 
   // Generate initials for avatar fallback
   const getInitials = (name: string) => {
@@ -107,7 +120,6 @@ const UserProfile = () => {
   const getRoleColor = (role: string) => {
     const colors = {
       USER: "bg-blue-100 text-blue-800 border-blue-200",
-      ADMIN: "bg-purple-100 text-purple-800 border-purple-200",
       ADMIN: "bg-purple-100 text-purple-800 border-purple-200",
     };
     return colors[role as keyof typeof colors] || colors.USER;
@@ -395,4 +407,4 @@ const UserProfile = () => {
   );
 };
 
-export default withAuth(UserProfile);
+export default UserProfile;

@@ -7,7 +7,6 @@ import {
   ShoppingCart,
   Menu,
   X,
-  CircleUserRound,
   Search,
   LogOut,
 } from "lucide-react";
@@ -21,7 +20,7 @@ import { useAppDispatch } from "@/app/store/hooks";
 import { useSignOutMutation } from "@/app/store/apis/AuthApi";
 import { logout } from "@/app/store/slices/AuthSlice";
 import { generateUserAvatar } from "@/app/utils/placeholderImage";
-import { Store, Shield, ShoppingBag, TrendingUp, MessageCircle } from "lucide-react";
+import { Store, Shield, ShoppingBag, TrendingUp } from "lucide-react";
 
 const Navbar = () => {
   const pathname = usePathname();

@@ -13,16 +13,20 @@ import {
 } from "@/app/store/apis/CommissionApi";
 import Table from "@/app/components/layout/Table";
 import { motion } from "framer-motion";
-import { Tag, Trash2, Plus, Percent, Edit, Settings } from "lucide-react";
+import { Tag, Trash2, Plus, Percent } from "lucide-react";
 import { useForm } from "react-hook-form";
 import Modal from "@/app/components/organisms/Modal";
 import ConfirmModal from "@/app/components/organisms/ConfirmModal";
 import CategoryForm, { CategoryFormData } from "./CategoryForm";
 import useToast from "@/app/hooks/ui/useToast";
-import { withAuth } from "@/app/components/HOC/WithAuth";
+import { useAuth } from "@/app/hooks/useAuth";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const CategoriesDashboard = () => {
   const { showToast } = useToast();
+  const { isAuthenticated, isLoading: authLoading, isAdmin } = useAuth();
+  const router = useRouter();
   const { data, isLoading, error } = useGetAllCategoriesQuery({});
   const { data: commissionsData } = useGetCommissionsQuery({});
   const [createCategory, { isLoading: isCreating }] =
@@ -49,6 +53,24 @@ const CategoriesDashboard = () => {
   const form = useForm<CategoryFormData>({
     defaultValues: { name: "", description: "", images: [] },
   });
+
+  useEffect(() => {
+    if (!authLoading && (!isAuthenticated || !isAdmin)) {
+      router.push("/");
+    }
+  }, [authLoading, isAuthenticated, isAdmin, router]);
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated || !isAdmin) {
+    return null;
+  }
 
   const getCommissionForCategory = (categoryId: string) => {
     return commissions.find(c => c.categoryId === categoryId);
@@ -418,4 +440,4 @@ const CategoriesDashboard = () => {
   );
 };
 
-export default withAuth(CategoriesDashboard);
+export default CategoriesDashboard;

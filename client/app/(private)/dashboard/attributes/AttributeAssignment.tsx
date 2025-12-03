@@ -89,10 +89,12 @@ const AttributeAssignment: React.FC<AttributeAssignmentProps> = ({
 
 
 
-  const handleAttributeChange = (value: string) => {
-    setValue("attributeId", value);
-    setValue("categoryId", "");
-    setValue("isRequired", false);
+  const handleAttributeChange = (value: string | null) => {
+    if (value) {
+      setValue("attributeId", value);
+      setValue("categoryId", "");
+      setValue("isRequired", false);
+    }
   };
 
   return (

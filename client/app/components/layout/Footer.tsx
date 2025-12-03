@@ -7,7 +7,6 @@ import {
   Mail,
   MapPin,
   Phone,
-  Send,
   Users,
   Shield,
   Truck,

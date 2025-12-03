@@ -5,19 +5,14 @@ import { useForm } from "react-hook-form";
 import { motion } from "framer-motion";
 import {
   Store,
-  Building2,
   CreditCard,
   Save,
   Upload,
-  Image as ImageIcon,
   Phone,
   MapPin,
-  FileText,
-  Hash,
   Globe,
 } from "lucide-react";
 import MainLayout from "@/app/components/templates/MainLayout";
-import { withSellerAuth } from "@/app/components/HOC/WithSellerAuth";
 import Input from "@/app/components/atoms/Input";
 import TextArea from "@/app/components/atoms/TextArea";
 import Button from "@/app/components/atoms/Button";
@@ -474,4 +469,4 @@ const SellerSettings = () => {
   );
 };
 
-export default withSellerAuth(SellerSettings);
+export default SellerSettings;

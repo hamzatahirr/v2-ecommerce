@@ -2,7 +2,6 @@
 import { Archive, Loader2, Save } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { List } from "lodash";
 
 interface ProductSummaryProps {
   product: {

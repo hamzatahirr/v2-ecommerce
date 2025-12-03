@@ -18,9 +18,10 @@ import useFormatPrice from "@/app/hooks/ui/useFormatPrice";
 import { useLazyExportAnalyticsQuery } from "@/app/store/apis/AnalyticsApi";
 import { useQuery } from "@apollo/client";
 import { GET_ALL_ANALYTICS } from "@/app/gql/Dashboard";
+
 import CustomLoader from "@/app/components/feedback/CustomLoader";
 import ListCard from "@/app/components/organisms/ListCard";
-import { withAuth } from "@/app/components/HOC/WithAuth";
+
 
 // Dynamically import charting components with SSR disabled
 const AreaChart = dynamic(
@@ -57,6 +58,8 @@ const AnalyticsDashboard = () => {
     },
   });
   const formatPrice = useFormatPrice();
+  const [exportType, setExportType] = useState<string>("all");
+  const [exportFormat] = useState<string>("csv");
 
   const timePeriodOptions = [
     { label: "Last 7 Days", value: "last7days" },
@@ -65,11 +68,18 @@ const AnalyticsDashboard = () => {
     { label: "All Time", value: "allTime" },
   ];
 
+  const yearOptions = [
+    { label: "All", value: "all" },
+    { label: "2024", value: "2024" },
+    { label: "2023", value: "2023" },
+    { label: "2022", value: "2022" },
+  ];
+
   const { timePeriod, year, startDate, endDate, useCustomRange } = watch();
 
   const queryParams = {
-    timePeriod: timePeriod || "allTime",
-    year: useCustomRange ? undefined : year ? parseInt(year, 10) : undefined,
+    timePeriod,
+    year: useCustomRange && year ? year : undefined,
     startDate: useCustomRange && startDate ? startDate : undefined,
     endDate: useCustomRange && endDate ? endDate : undefined,
   };
@@ -78,23 +88,11 @@ const AnalyticsDashboard = () => {
     variables: { params: queryParams },
   });
 
-  const [exportType, setExportType] = useState<string>("all");
-  const [exportFormat] = useState<string>("csv");
-
-  console.log("Analytics data => ", data);
-  console.log("error loading analytics => ", error);
-
-  const minYear = data?.yearRange?.minYear || 2020;
-  const maxYear = data?.yearRange?.maxYear || 2020;
-
-  const yearOptions = Array.from({ length: maxYear - minYear + 1 }, (_, i) => ({
-    label: (minYear + i).toString(),
-    value: (minYear + i).toString(),
-  }));
-
   const [, { isLoading: isExporting, error: exportError }] =
     useLazyExportAnalyticsQuery();
 
+  console.log("Analytics data => ", data);
+  console.log("error loading analytics => ", error);
   console.log("export error => ", exportError);
 
   const handleExport = async () => {};
@@ -107,6 +105,8 @@ const AnalyticsDashboard = () => {
     console.error("GraphQL Error:", error);
     return <div>Error loading analytics data</div>;
   }
+
+
 
   // Chart and list data
   const mostSoldProducts = {
@@ -375,4 +375,4 @@ const AnalyticsDashboard = () => {
   );
 };
 
-export default withAuth(AnalyticsDashboard);
+export default AnalyticsDashboard;

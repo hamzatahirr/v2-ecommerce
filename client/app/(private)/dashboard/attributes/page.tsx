@@ -6,7 +6,6 @@ import AttributeAssignment from "./AttributeAssignment";
 import DashboardHeader from "./DashboardHeader";
 import { useGetAllAttributesQuery } from "@/app/store/apis/AttributeApi";
 import AttributesBoardView from "./AttributesBoardView";
-import { withAuth } from "@/app/components/HOC/WithAuth";
 
 const AttributesDashboard: React.FC = () => {
   const { data, isLoading, error } = useGetAllAttributesQuery(undefined);
@@ -52,4 +51,4 @@ const AttributesDashboard: React.FC = () => {
   );
 };
 
-export default withAuth(AttributesDashboard);
+export default AttributesDashboard;

@@ -12,12 +12,10 @@ import {
   CheckCircle,
   Truck,
   XCircle,
-  ArrowRight,
   User,
   Store,
 } from "lucide-react";
 import Link from "next/link";
-import { withSellerAuth } from "@/app/components/HOC/WithSellerAuth";
 import OrderCardSkeleton from "@/app/components/feedback/OrderCardSkeleton";
 import OrderFilters from "@/app/components/molecules/OrderFilters";
 
@@ -390,4 +388,4 @@ const SellerOrders = () => {
   );
 };
 
-export default withSellerAuth(SellerOrders);
+export default SellerOrders;

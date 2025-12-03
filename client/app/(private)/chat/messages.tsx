@@ -2,12 +2,10 @@
 
 import React from "react";
 import { useGetMyConversationsQuery } from "@/app/store/apis/ChatApi";
-import { useGetMeQuery } from "@/app/store/apis/UserApi";
+
 import Link from "next/link";
 
 export default function MessagesPage() {
-  const { data: userData } = useGetMeQuery(undefined);
-  const user = userData;
   const { data: conversationsData, isLoading } = useGetMyConversationsQuery(undefined);
   const conversations = conversationsData?.conversations || [];
 

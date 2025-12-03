@@ -1,17 +1,8 @@
 "use client";
-import dynamic from "next/dynamic";
-import StatsCard from "@/app/components/organisms/StatsCard";
-import Dropdown from "@/app/components/molecules/Dropdown";
-import { BarChart2, DollarSign, LineChart, Users, Globe, Plus, User, Store, Shield } from "lucide-react";
+import { BarChart2, Globe, Plus, User, Store, Shield } from "lucide-react";
 import { motion } from "framer-motion";
-import { Controller, useForm } from "react-hook-form";
 import React, { useState } from "react";
-import useFormatPrice from "@/app/hooks/ui/useFormatPrice";
-import { useQuery } from "@apollo/client";
-import { GET_ANALYTICS_OVERVIEW } from "@/app/gql/Dashboard";
-import CustomLoader from "@/app/components/feedback/CustomLoader";
-import ListCard from "@/app/components/organisms/ListCard";
-import { withAuth } from "@/app/components/HOC/WithAuth";
+
 import { useAuth } from "@/app/hooks/useAuth";
 import { useCreateDomainMutation } from "@/app/store/apis/AllowedDomainsApi";
 import useToast from "@/app/hooks/ui/useToast";
@@ -270,4 +261,4 @@ const Dashboard = () => {
   );
 };
 
-export default withAuth(Dashboard);
+export default Dashboard;

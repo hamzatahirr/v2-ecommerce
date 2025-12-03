@@ -2,7 +2,6 @@
 import { ArrowLeft, AlertCircle, XCircle } from "lucide-react";
 import { motion } from "framer-motion";
 import ProductHeader from "../ProductHeader";
-import ProductSummary from "../ProductSummary";
 import ProductEditForm from "../ProductEditForm";
 import ConfirmModal from "@/app/components/organisms/ConfirmModal";
 import { useProductDetail } from "@/app/hooks/miscellaneous/useProductDetails";
@@ -23,11 +22,6 @@ const ManageProduct = () => {
     onSubmit,
     handleDelete,
     router,
-    selectedVariant,
-    handleVariantChange,
-    resetSelections,
-    attributeGroups,
-    selectedAttributes,
   } = useProductDetail();
 
   if (productsLoading || categoriesLoading) {

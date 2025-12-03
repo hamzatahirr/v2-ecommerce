@@ -7,7 +7,7 @@ import { useCreateAttributeMutation } from "@/app/store/apis/AttributeApi";
 
 const AttributeForm: React.FC = () => {
   const { showToast } = useToast();
-  const [createAttribute, { isLoading: isCreatingAttribute, error }] =
+  const [createAttribute, { isLoading: isCreatingAttribute }] =
     useCreateAttributeMutation();
 
   const [newAttribute, setNewAttribute] = useState({

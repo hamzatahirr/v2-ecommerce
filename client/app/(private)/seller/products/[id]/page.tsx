@@ -7,7 +7,6 @@ import ProductEditForm from "@/app/(private)/dashboard/products/ProductEditForm"
 import ConfirmModal from "@/app/components/organisms/ConfirmModal";
 import { useSellerProductDetails } from "@/app/hooks/miscellaneous/useSellerProductDetails";
 import CustomLoader from "@/app/components/feedback/CustomLoader";
-import { withSellerAuth } from "@/app/components/HOC/WithSellerAuth";
 // import { useAuth } from "@/app/hooks/useAuth";
 
 const SellerManageProduct = () => {
@@ -26,11 +25,6 @@ const SellerManageProduct = () => {
     onSubmit,
     handleDelete,
     router,
-    selectedVariant,
-    handleVariantChange,
-    resetSelections,
-    attributeGroups,
-    selectedAttributes,
     isOwner,
   } = useSellerProductDetails();
 
@@ -167,5 +161,5 @@ const SellerManageProduct = () => {
   );
 };
 
-export default withSellerAuth(SellerManageProduct);
+export default SellerManageProduct;
 

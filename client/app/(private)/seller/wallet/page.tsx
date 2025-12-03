@@ -1,27 +1,22 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { 
   Wallet, 
-  ArrowUpRight, 
-  ArrowDownLeft, 
   Clock, 
-  CheckCircle, 
   AlertCircle,
   TrendingUp,
   DollarSign
 } from "lucide-react";
-import { useAuth } from "@/app/hooks/useAuth";
+
 import { 
   useGetWalletBalanceQuery,
   useGetWalletTransactionsQuery,
   useGetSellerWalletQuery
 } from "@/app/store/apis/WalletApi";
 import useFormatPrice from "@/app/hooks/ui/useFormatPrice";
-import { withSellerAuth } from "@/app/components/HOC/WithSellerAuth";
 
 function WalletPage() {
-  const { user } = useAuth();
   const formatPrice = useFormatPrice();
   const [showTransactions, setShowTransactions] = useState(false);
 
@@ -174,4 +169,4 @@ function WalletPage() {
   );
 }
 
-export default withSellerAuth(WalletPage);
+export default WalletPage;

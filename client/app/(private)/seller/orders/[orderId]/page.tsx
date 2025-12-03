@@ -11,7 +11,6 @@ import {
   useUpdateShippingInfoMutation,
 } from "@/app/store/apis/OrderApi";
 import CustomLoader from "@/app/components/feedback/CustomLoader";
-import { withSellerAuth } from "@/app/components/HOC/WithSellerAuth";
 import { useState, useEffect } from "react";
 import useToast from "@/app/hooks/ui/useToast";
 import Dropdown from "@/app/components/molecules/Dropdown";
@@ -235,5 +234,5 @@ const SellerOrderDetailPage = () => {
   );
 };
 
-export default withSellerAuth(SellerOrderDetailPage);
+export default SellerOrderDetailPage;
 

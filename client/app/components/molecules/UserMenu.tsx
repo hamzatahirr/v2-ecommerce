@@ -10,7 +10,6 @@ import {
   LogOut,
   ShoppingCart,
   ChevronRight,
-  Group,
   Store,
   ShoppingBag,
   Shield,
@@ -29,7 +28,7 @@ const UserMenu = ({ menuOpen, closeMenu, user }) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const menuRef = useRef(null);
-  const { activeRole, availableRoles, hasMultipleRoles } = useAuth();
+  const { activeRole, hasMultipleRoles } = useAuth();
 
   useClickOutside(menuRef, () => closeMenu());
 

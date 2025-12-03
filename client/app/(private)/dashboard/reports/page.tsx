@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from "react";
 import { useLazyGenerateReportQuery } from "@/app/store/apis/ReportsApi";
 import Dropdown from "@/app/components/molecules/Dropdown";
-import { withAuth } from "@/app/components/HOC/WithAuth";
 
 interface DropdownOption {
   label: string;
@@ -244,4 +243,4 @@ const ReportsDashboard: React.FC = () => {
   );
 };
 
-export default withAuth(ReportsDashboard);
+export default ReportsDashboard;

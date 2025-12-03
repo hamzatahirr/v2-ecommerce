@@ -1,12 +1,10 @@
 import { useEffect, useRef } from "react";
 import { io, Socket } from "socket.io-client";
-import { useDispatch } from "react-redux";
 // import { addMessage, markMessagesAsRead, setTypingUser, clearTypingUser, updateUnreadCount } from "../store/slices/chatSlice";
 
 export const useSocketConnection = (conversationId: string | null) => {
   const socketRef = useRef<Socket | null>(null);
   const userRef = useRef<{ isSeller?: boolean } | null>(null);
-  const dispatch = useDispatch();
 
   useEffect(() => {
     // Determine backend URL
@@ -113,69 +111,8 @@ export const useSocketConnection = (conversationId: string | null) => {
     }
   };
 
-  const emitStopTyping = (conversationId: string) => {
-    if (socketRef.current && conversationId) {
-      socketRef.current.emit('stopTyping', { conversationId });
-      console.log('Stopped typing for conversation:', conversationId);
-    }
-  };
-
-  const markAsRead = (conversationId: string) => {
-    if (socketRef.current && conversationId) {
-      socketRef.current.emit('markAsRead', { conversationId });
-      console.log('Marked conversation as read:', conversationId);
-    }
-  };
-
-  // Listen for real-time events
-  const onNewMessage = (callback: (message: any) => void) => {
-    socketRef.current?.on('newMessage', callback);
-  };
-
-  const onUserTyping = (callback: (data: any) => void) => {
-    socketRef.current?.on('userTyping', callback);
-  };
-
-  const onUserStoppedTyping = (callback: () => void) => {
-    socketRef.current?.on('userStoppedTyping', callback);
-  };
-
-  const onMessagesRead = (callback: (data: any) => void) => {
-    socketRef.current?.on('messagesRead', callback);
-  };
-
-  const onUnreadCountUpdate = (callback: (data: any) => void) => {
-    socketRef.current?.on('unreadCountUpdate', callback);
-  };
-
   const onNewConversation = (callback: (conversation: any) => void) => {
     socketRef.current?.on('newConversation', callback);
-  };
-
-  // Redux integration helpers (commented out for now)
-  const handleNewMessage = (message: any) => {
-    console.log('New message received:', message);
-    // dispatch(addMessage(message));
-  };
-
-  const handleMessagesRead = (data: any) => {
-    console.log('Messages read:', data);
-    // dispatch(markMessagesAsRead({ conversationId: data.conversationId }));
-  };
-
-  const handleUserTyping = (data: any) => {
-    console.log('User typing:', data);
-    // dispatch(setTypingUser(data));
-  };
-
-  const handleUserStoppedTyping = () => {
-    console.log('User stopped typing');
-    // dispatch(clearTypingUser());
-  };
-
-  const handleUnreadCountUpdate = (data: any) => {
-    console.log('Unread count updated:', data);
-    // dispatch(updateUnreadCount(data.count));
   };
 
   return {

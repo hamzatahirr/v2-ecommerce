@@ -1,8 +1,8 @@
 "use client";
 import Table from "@/app/components/layout/Table";
 import { useState, useMemo } from "react";
-import { Eye, Search } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { Search } from "lucide-react";
+
 import {
   useGetAllSellersQuery,
   useGetPendingSellersCountQuery,
@@ -10,7 +10,6 @@ import {
   useRejectSellerMutation,
   useSuspendSellerMutation,
 } from "@/app/store/apis/SellerApi";
-import { withAuth } from "@/app/components/HOC/WithAuth";
 import CustomLoader from "@/app/components/feedback/CustomLoader";
 import { motion } from "framer-motion";
 
@@ -31,12 +30,11 @@ const getSellerStatusColor = (status: string) => {
 };
 
 const SellersDashboard = () => {
-  const router = useRouter();
   const [activeTab, setActiveTab] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
 
   // Fetch pending count for badge
-  const { data: pendingCountData , isLoading : loading , error : e } = useGetPendingSellersCountQuery();
+  const { data: pendingCountData } = useGetPendingSellersCountQuery();
 
   // Mutations for updating seller status
   const [approveSeller] = useApproveSellerMutation();
@@ -292,5 +290,5 @@ const SellersDashboard = () => {
   );
 };
 
-export default withAuth(SellersDashboard);
+export default SellersDashboard;
 

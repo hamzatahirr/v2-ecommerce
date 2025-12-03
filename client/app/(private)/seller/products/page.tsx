@@ -7,13 +7,12 @@ import {
 } from "@/app/store/apis/ProductApi";
 import { useState } from "react";
 import ProductModal from "@/app/(private)/dashboard/products/ProductModal";
-import { Trash2, Edit, Upload, X, Plus } from "lucide-react";
+import { Trash2, Edit, X, Plus } from "lucide-react";
 import ConfirmModal from "@/app/components/organisms/ConfirmModal";
 import useToast from "@/app/hooks/ui/useToast";
 import ProductFileUpload from "@/app/(private)/dashboard/products/ProductFileUpload";
 import { usePathname, useRouter } from "next/navigation";
 import { ProductFormData } from "@/app/(private)/dashboard/products/product.types";
-import { withSellerAuth } from "@/app/components/HOC/WithSellerAuth";
 
 const SellerProductsDashboard = () => {
   const { showToast } = useToast();
@@ -226,4 +225,4 @@ const SellerProductsDashboard = () => {
   );
 };
 
-export default withSellerAuth(SellerProductsDashboard);
+export default SellerProductsDashboard;

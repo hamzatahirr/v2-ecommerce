@@ -2,10 +2,10 @@
 
 import React from "react";
 import { useForm, Controller } from "react-hook-form";
-import { TagsIcon, Box } from "lucide-react";
+import { TagsIcon } from "lucide-react";
 import useToast from "@/app/hooks/ui/useToast";
 import Dropdown from "@/app/components/molecules/Dropdown";
-import { useGetSellerProductsQuery, useGetSellerProductVariantsQuery } from "@/app/store/apis/ProductApi";
+import { useGetSellerProductsQuery } from "@/app/store/apis/ProductApi";
 import {
   useAssignAttributeToProductMutation,
 } from "@/app/store/apis/AttributeApi";
@@ -43,11 +43,6 @@ const ProductAttributeAssignment: React.FC<ProductAttributeAssignmentProps> = ({
 
   // API queries
   const { data: productsData, isLoading: isLoadingProducts } = useGetSellerProductsQuery(undefined);
-  const selectedProductId = watch("productId");
-  const { data: variantsData, isLoading: isLoadingVariants } = useGetSellerProductVariantsQuery(
-    selectedProductId,
-    { skip: !selectedProductId }
-  );
 
   // Mutations
   const [assignAttributeToProduct, { isLoading: isAssigningToProduct }] =

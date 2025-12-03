@@ -7,7 +7,7 @@ export function withSellerAuth<P extends Record<string, unknown>>(
   Component: React.ComponentType<P>
 ) {
   return function SellerAuthWrapper(props: P) {
-    const { user, isAuthenticated, isLoading, isSeller } = useAuth();
+    const { isAuthenticated, isLoading, isSeller } = useAuth();
     const router = useRouter();
 
     useEffect(() => {

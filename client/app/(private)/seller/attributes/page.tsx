@@ -4,7 +4,6 @@ import { Loader2 } from "lucide-react";
 import ProductAttributeAssignment from "./ProductAttributeAssignment";
 import DashboardHeader from "@/app/(private)/dashboard/attributes/DashboardHeader";
 import { useGetAllAttributesQuery } from "@/app/store/apis/AttributeApi";
-import { withSellerAuth } from "@/app/components/HOC/WithSellerAuth";
 
 const SellerAttributesPage: React.FC = () => {
   const { data, isLoading, error } = useGetAllAttributesQuery(undefined);
@@ -39,4 +38,4 @@ const SellerAttributesPage: React.FC = () => {
   );
 };
 
-export default withSellerAuth(SellerAttributesPage);
+export default SellerAttributesPage;

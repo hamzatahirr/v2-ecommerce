@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { 
   Plus, 
@@ -11,7 +11,7 @@ import {
   Shield,
   AlertTriangle
 } from "lucide-react";
-import { useAuth } from "@/app/hooks/useAuth";
+
 import { 
   useGetAllowedDomainsQuery, 
   useCreateDomainMutation, 
@@ -20,11 +20,14 @@ import {
   useToggleDomainStatusMutation 
 } from "@/app/store/apis/AllowedDomainsApi";
 import useToast from "@/app/hooks/ui/useToast";
-import { withAdminAuth } from "@/app/components/HOC/WithAuth";
+import { useAuth } from "@/app/hooks/useAuth";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 function AllowedDomainsPage() {
-  const { user } = useAuth();
   const { showToast } = useToast();
+  const { isAuthenticated, isLoading: authLoading, isAdmin } = useAuth();
+  const router = useRouter();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editingDomain, setEditingDomain] = useState<any>(null);
   const [formData, setFormData] = useState({
@@ -36,6 +39,24 @@ function AllowedDomainsPage() {
   const [updateDomain] = useUpdateDomainMutation();
   const [deleteDomain] = useDeleteDomainMutation();
   const [toggleDomainStatus] = useToggleDomainStatusMutation();
+
+  useEffect(() => {
+    if (!authLoading && (!isAuthenticated || !isAdmin)) {
+      router.push("/");
+    }
+  }, [authLoading, isAuthenticated, isAdmin, router]);
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated || !isAdmin) {
+    return null;
+  }
 
   const handleCreateDomain = async () => {
     try {
@@ -307,4 +328,4 @@ function AllowedDomainsPage() {
   );
 }
 
-export default withAdminAuth(AllowedDomainsPage);
+export default AllowedDomainsPage;

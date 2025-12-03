@@ -9,7 +9,6 @@ import React from "react";
 import useFormatPrice from "@/app/hooks/ui/useFormatPrice";
 import CustomLoader from "@/app/components/feedback/CustomLoader";
 import ListCard from "@/app/components/organisms/ListCard";
-import { withSellerAuth } from "@/app/components/HOC/WithSellerAuth";
 import {
   useGetSellerAnalyticsQuery,
   useGetSellerOrdersQuery,
@@ -323,4 +322,4 @@ const SellerDashboard = () => {
   );
 };
 
-export default withSellerAuth(SellerDashboard);
+export default SellerDashboard;

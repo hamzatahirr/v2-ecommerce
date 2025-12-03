@@ -25,13 +25,11 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
   onSubmit,
   isLoading,
   submitLabel = "Save",
-  existingImages = [],
 }) => {
   const {
     control,
     handleSubmit,
     setValue,
-    watch,
     formState: { errors },
   } = form;
 
@@ -94,10 +92,8 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
           control={control}
           errors={errors}
           setValue={setValue}
-          watch={watch}
           name="images"
           maxFiles={5}
-          existingImages={existingImages}
           disabled={isLoading}
         />
       </div>

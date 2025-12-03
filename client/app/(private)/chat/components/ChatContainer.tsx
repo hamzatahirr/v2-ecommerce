@@ -18,7 +18,6 @@ import CallInProgressScreen from "@/app/(private)/chat/CallInProgressScreen";
 
 import { useGetMeQuery } from "@/app/store/apis/UserApi";
 import { useWebRTCCall } from "@/app/(private)/chat/useWebRTCCall";
-import CustomLoader from "@/app/components/feedback/CustomLoader";
 
 interface ChatProps {
   chatId: string;
@@ -127,7 +126,7 @@ const ChatContainer: React.FC<ChatProps> = ({ chatId }) => {
       <div className="flex items-center justify-center h-full text-gray-500">
         <div className="text-center">
           <div className="text-lg font-medium mb-2">Conversation not found</div>
-          <div className="text-sm">The conversation you're trying to access doesn't exist or you don't have permission to view it.</div>
+          <div className="text-sm">The conversation you&apos;re trying to access doesn&apos;t exist or you don&apos;t have permission to view it.</div>
         </div>
       </div>
     );

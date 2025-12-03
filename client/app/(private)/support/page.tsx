@@ -6,7 +6,6 @@ import {
 } from "@/app/store/apis/ChatApi";
 import ChatContainer from "@/app/(private)/chat";
 import MainLayout from "@/app/components/templates/MainLayout";
-import { withAuth } from "@/app/components/HOC/WithAuth";
 
 const SupportPage = () => {
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
@@ -96,4 +95,4 @@ const SupportPage = () => {
   );
 };
 
-export default withAuth(SupportPage);
+export default SupportPage;

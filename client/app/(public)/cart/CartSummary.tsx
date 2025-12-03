@@ -21,7 +21,6 @@ const CartSummary: React.FC<CartSummaryProps> = ({
   shippingRate = 0.01,
   currency = "$",
   totalItems,
-  cartId,
 }) => {
   const { isAuthenticated } = useAuth();
   const { showToast } = useToast();

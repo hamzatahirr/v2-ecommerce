@@ -15,11 +15,7 @@ import {
   LogOut,
   PanelsRightBottom,
   Boxes,
-  ChartCandlestick,
-  ClipboardPlus,
-  ClipboardCheck,
   Section,
-  ChartArea,
   Settings,
   Store,
   Wallet,
@@ -32,12 +28,10 @@ const Sidebar = () => {
   const pathname = usePathname();
   const router = useRouter();
   const [signout] = useSignOutMutation();
-  const { user } = useAuth();
 
   // Get role information from useAuth hook
-  const { activeRole, isSeller, isAdmin, isBuyer } = useAuth();
+  const { isSeller, isAdmin } = useAuth();
   const isSellerRoute = pathname.startsWith("/seller");
-  const isAdminRoute = pathname.startsWith("/dashboard");
 
   // Close sidebar on mobile when clicking a link
   const handleLinkClick = () => {
@@ -75,7 +69,7 @@ const Sidebar = () => {
   }, [isOpen, setIsOpen]);
 
   // Fetch pending sellers count for badge (only for admin)
-  const { data, isLoading, error } = useGetPendingSellersCountQuery(undefined, {
+  const { data } = useGetPendingSellersCountQuery(undefined, {
     skip: isSeller || isSellerRoute,
   });
   const pendingCount = data?.total || 0;

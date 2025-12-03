@@ -16,7 +16,6 @@ import {
   Trash2,
   X,
   UserPlus,
-  Crown,
   Shield,
 } from "lucide-react";
 import useToast from "@/app/hooks/ui/useToast";
@@ -26,7 +25,6 @@ import CreateAdminForm, { CreateAdminFormData } from "./CreateAdminForm";
 import ConfirmModal from "@/app/components/organisms/ConfirmModal";
 import { usePathname } from "next/navigation";
 import ToggleableText from "@/app/components/atoms/ToggleableText";
-import { withAuth } from "@/app/components/HOC/WithAuth";
 import PermissionGuard from "@/app/components/auth/PermissionGuard";
 import RoleHierarchyGuard from "@/app/components/auth/RoleHierarchyGuard";
 import AdminActionGuard from "@/app/components/auth/AdminActionGuard";
@@ -49,7 +47,6 @@ const UsersDashboard = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCreateAdminModalOpen, setIsCreateAdminModalOpen] = useState(false);
-  const [editingUser, setEditingUser] = useState<UserFormData | null>(null);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState<string | number | null>(
     null
@@ -426,4 +423,4 @@ const UsersDashboard = () => {
   );
 };
 
-export default withAuth(UsersDashboard);
+export default UsersDashboard;

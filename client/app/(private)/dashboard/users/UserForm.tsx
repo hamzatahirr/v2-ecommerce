@@ -1,7 +1,7 @@
 "use client";
 
 import { Controller, UseFormReturn } from "react-hook-form";
-import { Users, Shield, Crown } from "lucide-react";
+import { Users, Shield } from "lucide-react";
 import { useAuth } from "@/app/hooks/useAuth";
 
 export interface UserFormData {

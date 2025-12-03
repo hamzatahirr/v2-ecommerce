@@ -14,7 +14,7 @@ import useToast from "@/app/hooks/ui/useToast";
 import ProductFileUpload from "./ProductFileUpload";
 import { usePathname } from "next/navigation";
 import { ProductFormData } from "./product.types";
-import { withAuth } from "@/app/components/HOC/WithAuth";
+
 
 const ProductsDashboard = () => {
   const { showToast } = useToast();
@@ -312,4 +312,4 @@ const ProductsDashboard = () => {
   );
 };
 
-export default withAuth(ProductsDashboard);
+export default ProductsDashboard;

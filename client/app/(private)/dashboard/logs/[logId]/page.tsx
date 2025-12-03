@@ -3,7 +3,6 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import { useGetLogByIdQuery } from "@/app/store/apis/LogsApi";
-import { withAuth } from "@/app/components/HOC/WithAuth";
 
 const formatTimestamp = (timestamp: string): string => {
   try {
@@ -20,11 +19,7 @@ const formatTimestamp = (timestamp: string): string => {
 const shortenId = (id: string): string =>
   id ? `${id.substring(0, 8)}...` : "";
 
-interface LogDetailsProps {
-  params: { logId: string };
-}
-
-const LogDetails: React.FC<LogDetailsProps> = ({ params }) => {
+const LogDetails = ({ params }: { params: Promise<{ logId: string }> }) => {
   const { logId } = React.use(params);
   const router = useRouter();
   const { data, isLoading, error } = useGetLogByIdQuery(logId);
@@ -123,4 +118,4 @@ const LogDetails: React.FC<LogDetailsProps> = ({ params }) => {
   );
 };
 
-export default withAuth(LogDetails);
+export default LogDetails;

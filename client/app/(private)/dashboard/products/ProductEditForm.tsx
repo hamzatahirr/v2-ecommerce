@@ -24,7 +24,7 @@ const ProductEditForm: React.FC<ProductEditFormProps> = ({
   });
 
   // Fetch category-specific attributes when category is selected
-  const { data: categoryAttributesData, isLoading: attributesLoading } = 
+  const { data: categoryAttributesData } = 
     useGetAttributesByCategoryQuery(categoryId, {
       skip: !categoryId,
     });
