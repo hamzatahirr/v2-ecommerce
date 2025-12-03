@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build && ./copy-static.sh",
     "start": "PORT=$PORT HOSTNAME=0.0.0.0 node .next/standalone/server.js",
     "lint": "next lint"
   },

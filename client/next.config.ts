@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: false,
   },
   images: {
+    unoptimized: true,
     domains: [
       "m.media-amazon.com",
       "www.bestbuy.com",
@@ -23,6 +24,7 @@ const nextConfig: NextConfig = {
   },
 
   output: "standalone",
+  trailingSlash: false,
 };
 
 export default nextConfig;

@@ -1,5 +1,5 @@
 const DEV_API_URL = "http://localhost:5000/api/v1";
-const PROD_API_URL = "https://v2-ecommerce-production.up.railway.app/api/v1";
+const PROD_API_URL = "https://proud-eagerness-production-ea88.up.railway.app/api/v1";
 
 export const API_BASE_URL =
   process.env.NODE_ENV === "production"
