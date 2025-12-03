@@ -13,7 +13,8 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate deploy",
     "prisma:push": "prisma db push",
-    "seed": "ts-node seeds/seed.ts"
+    "seed": "ts-node seeds/seed.ts",
+    "setup:db": "prisma db push && npm run seed"
   },
   "keywords": [],
   "author": "",
