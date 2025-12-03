@@ -8,6 +8,7 @@
     "dev:server": "npm run dev --prefix server",
     "dev:client": "npm run dev --prefix client",
     "build": "npm run build --prefix client && npm run build --prefix server",
+    "postbuild": "cd server && npm run prisma:push && npm run seed",
     "build:client": "npm run build --prefix client",
     "build:server": "npm run build --prefix server",
     "start": "node server/dist/server.js",
