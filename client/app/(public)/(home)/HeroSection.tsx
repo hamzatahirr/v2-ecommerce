@@ -26,7 +26,7 @@ const HeroSection = ({ isPreview = false }: HeroSectionProps) => {
   const sliderData = [
     {
       image: SliderImg1,
-      title: "Discover Amazing Deals",
+      title: "Discover Amazing Products",
       subtitle: "Chat with sellers directly and save big",
       ctaText: "Shop Now",
       ctaLink: "/shop",
