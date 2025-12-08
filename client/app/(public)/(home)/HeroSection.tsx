@@ -4,6 +4,9 @@ import SliderImg1 from "@/app/assets/images/laptop-slider.jpg";
 import SliderImg2 from "@/app/assets/images/furniture-slider.jpeg";
 import SliderImg3 from "@/app/assets/images/shirt-slider.jpg";
 import SliderImg4 from "@/app/assets/images/shoes-slider.jpeg";
+import SliderImg2_updated from "@/app/assets/images/slider2_updated.jpeg";
+import SliderImg3_updated from "@/app/assets/images/slider3_updated.jpeg";
+import SliderImg4_updated from "@/app/assets/images/slider4_updated.jpeg";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
@@ -33,15 +36,15 @@ const HeroSection = ({ isPreview = false }: HeroSectionProps) => {
       badge: "New Arrivals",
     },
     {
-      image: SliderImg2,
-      title: "Premium Quality Products",
+      image: SliderImg2_updated,
+      title: "Buy From Fellow Students",
       subtitle: "Handpicked items for your lifestyle",
       ctaText: "Explore",
       ctaLink: "/shop",
       badge: "Featured",
     },
     {
-      image: SliderImg3,
+      image: SliderImg3_updated,
       title: "Become a Seller Today",
       subtitle: "Start your own online store with us",
       ctaText: "Learn More",
@@ -49,7 +52,7 @@ const HeroSection = ({ isPreview = false }: HeroSectionProps) => {
       badge: "Limited Time",
     },
     {
-      image: SliderImg4,
+      image: SliderImg4_updated,
       title: "Privacy & Security",
       subtitle: "Your data is safe with us",
       ctaText: "Learn More",
