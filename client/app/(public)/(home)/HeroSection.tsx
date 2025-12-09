@@ -1,5 +1,6 @@
 "use client";
 
+import SliderImg1 from "@/app/assets/images/laptop-slider.jpg";
 import SliderImg2_updated from "@/app/assets/images/slider2_updated.jpg";
 import SliderImg3_updated from "@/app/assets/images/slider3_updated.jpg";
 import SliderImg4_updated from "@/app/assets/images/slider4_updated.jpg";
