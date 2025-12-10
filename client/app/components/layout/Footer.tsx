@@ -62,9 +62,8 @@ const Footer = () => {
             </div>
 
             <p className="text-gray-400 mt-6 text-sm leading-relaxed">
-              Discover high-quality products at BuyBuddy. Shop with
-              confidence and enjoy premium selections tailored just for you.
-              Campus friendly shopping made easy.
+              BuyBuddy is the authorized digital marketplace for the university community. 
+              This platform facilitates direct commerce, Allowing students from a university to buy from their verified student entrepreneurs who list and sell their small-scale ventures.
             </p>
 
             <div className="mt-8 flex flex-col space-y-4">
@@ -97,11 +96,11 @@ const Footer = () => {
             <div className="mt-8 grid grid-cols-3 gap-4">
               <div className="text-center">
                 <Truck className="h-6 w-6 text-indigo-400 mx-auto mb-2" />
-                <p className="text-xs text-gray-400">Fast Shipping</p>
+                <p className="text-xs text-gray-400">Strong Community</p>
               </div>
               <div className="text-center">
                 <Shield className="h-6 w-6 text-indigo-400 mx-auto mb-2" />
-                <p className="text-xs text-gray-400">Secure Payment</p>
+                <p className="text-xs text-gray-400">Empowering Students</p>
               </div>
               <div className="text-center">
                 <Users className="h-6 w-6 text-indigo-400 mx-auto mb-2" />
