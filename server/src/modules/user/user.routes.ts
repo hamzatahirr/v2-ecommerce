@@ -141,7 +141,7 @@ router.get(
 router.put(
   "/:id",
   protect,
-  authorizeRole("USER"),
+  authorizeRole("USER", "ADMIN"),
   authorizeRoleHierarchy("USER"),
   validateDto(UpdateUserDto),
   userController.updateMe
@@ -177,7 +177,6 @@ router.delete(
   protect,
   authorizeRole("ADMIN"),
   authorizeRoleHierarchy("USER"),
-  validateDto(UserIdDto),
   userController.deleteUser
 );
 
