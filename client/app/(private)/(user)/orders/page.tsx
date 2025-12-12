@@ -18,9 +18,7 @@ import {
 import Link from "next/link";
 import OrderCardSkeleton from "@/app/components/feedback/OrderCardSkeleton";
 import OrderFilters from "@/app/components/molecules/OrderFilters";
-import { useAuth } from "@/app/hooks/useAuth";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { VerificationGuard } from "@/app/hooks/VerificationGuard";
 
 // Status badge component
 const StatusBadge = ({ status }: { status: string }) => {
@@ -195,8 +193,6 @@ const OrderCard = ({ order }: { order: any }) => {
 
 const UserOrders = () => {
   const { data, isLoading, error } = useGetUserOrdersQuery({});
-  const { isAuthenticated, isLoading: authLoading } = useAuth();
-  const router = useRouter();
   const orders = data?.orders || [];
 
   // Filter and sort state
@@ -222,30 +218,23 @@ const UserOrders = () => {
     return filtered;
   }, [orders, statusFilter, sortOrder]);
 
-  useEffect(() => {
-    if (!authLoading && !isAuthenticated) {
-      router.push("/sign-in");
-    }
-  }, [authLoading, isAuthenticated, router]);
-
-  if (authLoading || isLoading) {
+  if (isLoading) {
     return (
-      <MainLayout>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
-          {[...Array(6)].map((_, index) => (
-            <OrderCardSkeleton key={index} />
-          ))}
-        </div>
-      </MainLayout>
+      <VerificationGuard>
+        <MainLayout>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
+            {[...Array(6)].map((_, index) => (
+              <OrderCardSkeleton key={index} />
+            ))}
+          </div>
+        </MainLayout>
+      </VerificationGuard>
     );
   }
 
-  if (!isAuthenticated) {
-    return null;
-  }
-
   return (
-    <MainLayout>
+    <VerificationGuard>
+      <MainLayout>
       <div className="max-w-7xl mx-auto w-full px-3 sm:px-4 py-4 sm:py-8">
         {/* Header */}
         <motion.div
@@ -318,7 +307,8 @@ const UserOrders = () => {
           </div>
         )}
       </div>
-    </MainLayout>
+      </MainLayout>
+    </VerificationGuard>
   );
 };
 

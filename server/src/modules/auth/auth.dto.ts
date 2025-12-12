@@ -1,4 +1,4 @@
-import { IsEmail, IsIn, IsNotEmpty, IsOptional, MinLength, IsBoolean } from "class-validator";
+import { IsEmail, IsIn, IsNotEmpty, IsOptional, MinLength, IsBoolean, Matches } from "class-validator";
 import { Role } from "@/shared/types/userTypes";
 
 export class RegisterDto {
@@ -15,6 +15,7 @@ export class RegisterDto {
   email!: string;
 
   @MinLength(6)
+  @Matches(/[a-zA-Z0-9]/, { message: "Password must contain at least one letter or number" })
   password!: string;
 
   @IsOptional()
@@ -31,6 +32,7 @@ export class SigninDto {
   email!: string;
 
   @MinLength(6)
+  @Matches(/[a-zA-Z0-9]/, { message: "Password must contain at least one letter or number" })
   password!: string;
 }
 

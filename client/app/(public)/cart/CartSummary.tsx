@@ -3,8 +3,7 @@ import { useInitiateCheckoutMutation } from "@/app/store/apis/CheckoutApi";
 import React, { useMemo, useState } from "react";
 import useToast from "@/app/hooks/ui/useToast";
 import { motion } from "framer-motion";
-import Link from "next/link";
-import { useAuth } from "@/app/hooks/useAuth";
+import { VerificationGuard } from "@/app/hooks/VerificationGuard";
 import { useRouter } from "next/navigation";
 import AddressForm, { AddressFormData } from "@/app/components/molecules/AddressForm";
 
@@ -22,7 +21,6 @@ const CartSummary: React.FC<CartSummaryProps> = ({
   currency = "$",
   totalItems,
 }) => {
-  const { isAuthenticated } = useAuth();
   const { showToast } = useToast();
   const router = useRouter();
 
@@ -42,7 +40,8 @@ const CartSummary: React.FC<CartSummaryProps> = ({
 
   // ENV flag to disable JazzCash
   const isJazzCashDisabled =
-    process.env.NEXT_PUBLIC_BYPASS_PAYMENTS === "true";
+    // process.env.BYPASS_PAYMENTS === 
+    true;
 
   // Safety: If JazzCash is disabled but was previously selected, revert to COD
   React.useEffect(() => {
@@ -90,12 +89,13 @@ const CartSummary: React.FC<CartSummaryProps> = ({
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.4 }}
-      className="bg-white rounded-lg p-6 sm:p-8 border border-gray-200"
-    >
+    <VerificationGuard>
+      <motion.div
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.4 }}
+        className="bg-white rounded-lg p-6 sm:p-8 border border-gray-200"
+      >
       <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">
         Order Summary
       </h2>
@@ -201,36 +201,27 @@ const CartSummary: React.FC<CartSummaryProps> = ({
         </div>
       </div>
 
-      {isAuthenticated ? (
-        <button
-          disabled={isLoading || totalItems === 0}
-          onClick={() => {
-            if (addressData) {
-              handleInitiateCheckout();
-            } else {
-              setShowAddressForm(true);
-            }
-          }}
-          className="mt-4 w-full bg-indigo-600 text-white py-2.5 rounded-md font-medium text-sm hover:bg-indigo-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
-        >
-          {isLoading
-            ? paymentMethod === "JAZZCASH"
-              ? "Processing Payment..."
-              : "Placing Order..."
-            : addressData
-            ? paymentMethod === "JAZZCASH"
-              ? "Pay with JazzCash"
-              : "Place COD Order"
-            : "Enter Shipping Address"}
-        </button>
-      ) : (
-        <Link
-          href="/sign-in"
-          className="mt-4 w-full inline-block text-center bg-gray-300 text-gray-800 py-2.5 rounded-md font-medium text-sm hover:bg-gray-400 transition-colors"
-        >
-          Sign in to Checkout
-        </Link>
-      )}
+      <button
+        disabled={isLoading || totalItems === 0}
+        onClick={() => {
+          if (addressData) {
+            handleInitiateCheckout();
+          } else {
+            setShowAddressForm(true);
+          }
+        }}
+        className="mt-4 w-full bg-indigo-600 text-white py-2.5 rounded-md font-medium text-sm hover:bg-indigo-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+      >
+        {isLoading
+          ? paymentMethod === "JAZZCASH"
+            ? "Processing Payment..."
+            : "Placing Order..."
+          : addressData
+          ? paymentMethod === "JAZZCASH"
+            ? "Pay with JazzCash"
+            : "Place COD Order"
+          : "Enter Shipping Address"}
+      </button>
 
       {/* Address Form Modal/Overlay */}
       {showAddressForm && (
@@ -268,7 +259,8 @@ const CartSummary: React.FC<CartSummaryProps> = ({
           </div>
         </div>
       )}
-    </motion.div>
+      </motion.div>
+    </VerificationGuard>
   );
 };
 

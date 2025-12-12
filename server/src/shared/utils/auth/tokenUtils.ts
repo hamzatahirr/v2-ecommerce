@@ -3,12 +3,12 @@ import redisClient from "@/infra/cache/redis";
 
 export function generateAccessToken(id: string) {
   return jwt.sign({ id }, process.env.JWT_ACCESS_SECRET!, {
-    expiresIn: "15m",
+    expiresIn: "24h",
   });
 }
 
 export function generateRefreshToken(id: string, absExp?: number) {
-  const absoluteExpiration = absExp || Math.floor(Date.now() / 1000) + 86400;
+  const absoluteExpiration = absExp || Math.floor(Date.now() / 1000) + 604800;
   const ttl = absoluteExpiration - Math.floor(Date.now() / 1000);
 
   return jwt.sign(

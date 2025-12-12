@@ -22,12 +22,26 @@ import { logout } from "@/app/store/slices/AuthSlice";
 import { generateUserAvatar } from "@/app/utils/placeholderImage";
 import { Store, Shield, ShoppingBag, TrendingUp } from "lucide-react";
 
+// Helper function to get verification status styling
+const getVerificationRingStyle = (verificationStatus?: string) => {
+  switch (verificationStatus) {
+    case 'PENDING':
+      return 'ring-2 ring-yellow-400 ring-offset-2 ring-offset-white';
+    case 'REJECTED':
+      return 'ring-2 ring-red-400 ring-offset-2 ring-offset-white';
+    case 'APPROVED':
+      return 'ring-2 ring-green-400 ring-offset-2 ring-offset-white';
+    default:
+      return 'ring-2 ring-gray-300 ring-offset-2 ring-offset-white';
+  }
+};
+
 const Navbar = () => {
   const pathname = usePathname();
   const dispatch = useAppDispatch();
   const [signout] = useSignOutMutation();
   const router = useRouter();
-  const { user, isLoading, isAuthenticated, isSeller, isAdmin } = useAuth();
+  const { user, isLoading, isAuthenticated, isSeller, isAdmin, verificationStatus } = useAuth();
   const { data: cartData } = useGetCartCountQuery(undefined);
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -161,7 +175,7 @@ const Navbar = () => {
                     aria-label="User menu"
                   >
                     {user?.avatar ? (
-                        <div className="w-7 h-7 rounded-full bg-gray-200 overflow-hidden border border-gray-300">
+                        <div className={`w-7 h-7 rounded-full bg-gray-200 overflow-hidden border border-gray-300 ${getVerificationRingStyle(verificationStatus)}`}>
                         <Image
                           src={user.avatar}
                           alt="User Profile"
@@ -174,7 +188,7 @@ const Navbar = () => {
                         />
                       </div>
                     ) : (
-                      <div className="w-[35px] h-[35px] rounded-full overflow-hidden border border-gray-300">
+                      <div className={`w-[35px] h-[35px] rounded-full overflow-hidden border border-gray-300 ${getVerificationRingStyle(verificationStatus)}`}>
                         <Image
                           src={generateUserAvatar(user?.name || "User")}
                           alt="User Profile"

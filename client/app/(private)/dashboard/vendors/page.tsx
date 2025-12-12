@@ -47,7 +47,23 @@ const SellersDashboard = () => {
     searchQuery: searchQuery || undefined,
   });
 
-  const sellers = data?.sellers || [];
+  const allSellers = data?.sellers || [];
+   const sellers =
+    allSellers?.map((seller: any) => ({
+      id: seller.id,
+      userId: seller.id,
+      storeName: seller.sellerProfile?.storeName ?? "-",
+      ownerName: seller.name ?? "-",
+      email: seller.email ?? "-",
+      appliedDate: seller.createdAt ?? null,
+      status: seller.sellerStatus ?? "UNKNOWN",
+      user: {
+        id: seller.id,
+        name: seller.name,
+        email: seller.email,
+      },
+    })) || [];
+
   const pendingCount = pendingCountData?.total || 0;
   // console.log("Sellers Data:", sellers);
 
@@ -83,17 +99,17 @@ const SellersDashboard = () => {
     {
       id: "approved",
       label: "Approved",
-      count: sellers.filter((s) => s.sellerStatus === "APPROVED").length,
+      count: sellers.filter((s) => s.status === "APPROVED").length,
     },
     {
       id: "rejected",
       label: "Rejected",
-      count: sellers.filter((s) => s.sellerStatus === "REJECTED").length,
+      count: sellers.filter((s) => s.status === "REJECTED").length,
     },
     {
       id: "suspended",
       label: "Suspended",
-      count: sellers.filter((s) => s.sellerStatus === "SUSPENDED").length,
+      count: sellers.filter((s) => s.status === "SUSPENDED").length,
     },
   ];
 
@@ -164,8 +180,8 @@ const SellersDashboard = () => {
     return sellers.filter(
       (seller) =>
         seller.email?.toLowerCase().includes(query) ||
-        seller.name?.toLowerCase().includes(query) ||
-        seller.sellerProfile?.storeName?.toLowerCase().includes(query)
+        seller.ownerName?.toLowerCase().includes(query) ||
+        seller?.storeName?.toLowerCase().includes(query)
 
     );
   }, [sellers, searchQuery]);
@@ -258,7 +274,7 @@ const SellersDashboard = () => {
         >
           <p className="text-sm text-gray-500 mb-1">Approved</p>
           <p className="text-2xl font-semibold text-green-600">
-            {sellers.filter((s) => s.sellerStatus === "APPROVED").length}
+            {sellers.filter((s) => s.status === "APPROVED").length}
           </p>
         </motion.div>
         <motion.div
@@ -269,7 +285,7 @@ const SellersDashboard = () => {
         >
           <p className="text-sm text-gray-500 mb-1">Rejected</p>
           <p className="text-2xl font-semibold text-red-600">
-            {sellers.filter((s) => s.sellerStatus === "REJECTED").length}
+            {sellers.filter((s) => s.status === "REJECTED").length}
           </p>
         </motion.div>
       </div>

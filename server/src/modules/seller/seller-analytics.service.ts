@@ -81,6 +81,16 @@ export class SellerAnalyticsService {
       throw new AppError(404, "Seller profile not found");
     }
 
+    // Validate endDate if provided
+    let endDate: Date | undefined;
+    if (query.endDate) {
+      const parsedDate = new Date(query.endDate);
+      if (isNaN(parsedDate.getTime())) {
+        throw new AppError(400, "Invalid endDate format");
+      }
+      endDate = parsedDate;
+    }
+
     const {
       currentStartDate,
       previousStartDate,
@@ -102,7 +112,7 @@ export class SellerAnalyticsService {
             sellerId,
             orderDate: {
               gte: currentStartDate,
-              lte: query.endDate ? new Date(query.endDate) : new Date(),
+              lte: endDate || new Date(),
             },
           },
           include: {
@@ -119,7 +129,7 @@ export class SellerAnalyticsService {
             sellerId,
             createdAt: {
               gte: currentStartDate,
-              lte: query.endDate ? new Date(query.endDate) : new Date(),
+              lte: endDate || new Date(),
             },
           },
           include: {
@@ -256,7 +266,26 @@ export class SellerAnalyticsService {
       startDate?: string;
       endDate?: string;
     }
-  ): Promise<SellerProductPerformance[]> {
+  ): Promise<any> {
+    // Verify seller exists
+    const sellerProfile = await prisma.sellerProfile.findUnique({
+      where: { userId: sellerId },
+    });
+
+    if (!sellerProfile) {
+      throw new AppError(404, "Seller profile not found");
+    }
+
+    // Validate endDate if provided
+    let endDate: Date | undefined;
+    if (query.endDate) {
+      const parsedDate = new Date(query.endDate);
+      if (isNaN(parsedDate.getTime())) {
+        throw new AppError(400, "Invalid endDate format");
+      }
+      endDate = parsedDate;
+    }
+
     const {
       currentStartDate,
       yearStart,
@@ -273,7 +302,7 @@ export class SellerAnalyticsService {
         sellerId,
         createdAt: {
           gte: currentStartDate,
-          lte: query.endDate ? new Date(query.endDate) : new Date(),
+          lte: endDate || new Date(),
         },
       },
       include: {
@@ -381,18 +410,29 @@ export class SellerAnalyticsService {
     year?: number;
     startDate?: string;
     endDate?: string;
-  }): Promise<Array<{
-    sellerId: string;
-    sellerName: string;
-    storeName: string;
-    totalRevenue: number;
-    totalOrders: number;
-    totalSales: number;
-    totalCustomers: number;
-    averageRating: number;
-    reviewCount: number;
-    totalProducts: number;
-  }>> {
+  }): Promise<
+    Array<{
+      sellerId: string;
+      sellerName: string;
+      storeName: string;
+      totalRevenue: number;
+      totalOrders: number;
+      totalSales: number;
+      averageRating: number;
+      reviewCount: number;
+      totalProducts: number;
+    }>
+  > {
+    // Validate endDate if provided
+    let endDate: Date | undefined;
+    if (query.endDate) {
+      const parsedDate = new Date(query.endDate);
+      if (isNaN(parsedDate.getTime())) {
+        throw new AppError(400, "Invalid endDate format");
+      }
+      endDate = parsedDate;
+    }
+
     const {
       currentStartDate,
       yearStart,
@@ -424,7 +464,7 @@ export class SellerAnalyticsService {
               sellerId: seller.id,
               orderDate: {
                 gte: currentStartDate,
-                lte: query.endDate ? new Date(query.endDate) : new Date(),
+                lte: endDate || new Date(),
               },
             },
             include: {
@@ -438,7 +478,7 @@ export class SellerAnalyticsService {
               sellerId: seller.id,
               createdAt: {
                 gte: currentStartDate,
-                lte: query.endDate ? new Date(query.endDate) : new Date(),
+                lte: endDate || new Date(),
               },
             },
           }),

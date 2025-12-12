@@ -1,15 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { enhanceUserWithSellerStatus, clearSellerStatus } from "@/app/utils/sellerStatusUtils";
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: 'USER' | 'ADMIN'; // Only USER or ADMIN
-  isSeller: boolean;
-  sellerStatus?: 'PENDING' | 'APPROVED' | 'REJECTED' | 'SUSPENDED';
-  avatar: string | null;
-}
+import { User } from "@/app/types/authTypes";
 
 export type ActiveRole = "USER" | "ADMIN"; // Simplified - no more role switching
 

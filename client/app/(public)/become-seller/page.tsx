@@ -17,12 +17,13 @@ import Input from "@/app/components/atoms/Input";
 import TextArea from "@/app/components/atoms/TextArea";
 import Button from "@/app/components/atoms/Button";
 import Link from "next/link";
-import { useAuth } from "@/app/hooks/useAuth";
+import { VerificationGuard } from "@/app/hooks/VerificationGuard";
 import useToast from "@/app/hooks/ui/useToast";
 import CustomLoader from "@/app/components/feedback/CustomLoader";
 import { useBecomeSellerMutation } from "@/app/store/apis/SellerApi";
 import { useAppDispatch } from "@/app/store/hooks";
 import { setUser } from "@/app/store/slices/AuthSlice";
+import { useAuth } from "@/app/hooks/useAuth";
 
 interface BecomeSellerForm {
   storeName: string;
@@ -79,14 +80,19 @@ const BecomeSeller = () => {
       // Update user in Redux store if user data is returned
       if (result.user) {
         dispatch(setUser({ user: result.user }));
+        
+        // Wait a moment for state to update, then redirect
+        showToast("Successfully became a seller! Welcome to the seller community.", "success");
+        
+        setTimeout(() => {
+          router.push("/seller");
+        }, 2000);
+      } else {
+        showToast("Successfully became a seller! Please refresh to see seller features.", "success");
+        setTimeout(() => {
+          router.push("/seller");
+        }, 2000);
       }
-
-      showToast("Successfully became a seller! Welcome to the seller community.", "success");
-      
-      // Redirect to seller dashboard
-      setTimeout(() => {
-        router.push("/seller");
-      }, 1500);
     } catch (err: any) {
       console.error("Failed to become seller:", err);
       showToast(
@@ -106,41 +112,43 @@ const BecomeSeller = () => {
 
   if (!isAuthenticated) {
     return (
-      <MainLayout>
-        <div className="min-h-screen flex items-center justify-center p-4 sm:p-6 bg-gradient-to-br from-indigo-50 via-purple-50 to-blue-50">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="w-full max-w-md bg-white rounded-lg shadow-lg p-6 sm:p-8"
-          >
-            <div className="text-center mb-6">
-              <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Store className="w-8 h-8 text-indigo-600" />
+      <VerificationGuard allowPending={false}>
+        <MainLayout>
+          <div className="min-h-screen flex items-center justify-center p-4 sm:p-6 bg-gradient-to-br from-indigo-50 via-purple-50 to-blue-50">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="w-full max-w-md bg-white rounded-lg shadow-lg p-6 sm:p-8"
+            >
+              <div className="text-center mb-6">
+                <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Store className="w-8 h-8 text-indigo-600" />
+                </div>
+                <h2 className="text-2xl font-semibold text-gray-800 mb-2">
+                  Sign In Required
+                </h2>
+                <p className="text-gray-600">
+                  Please sign in to your account to become a seller.
+                </p>
               </div>
-              <h2 className="text-2xl font-semibold text-gray-800 mb-2">
-                Sign In Required
-              </h2>
-              <p className="text-gray-600">
-                Please sign in to your account to become a seller.
-              </p>
-            </div>
-            <div className="space-y-3">
-              <Link
-                href="/sign-in?redirect=/become-seller"
-                className="block w-full py-3 bg-indigo-600 text-white rounded-md font-medium hover:bg-indigo-700 transition-colors text-center"
-              >
-                Sign In
-              </Link>
-              <Link
-                href="/sign-up"
-                className="block w-full py-3 bg-gray-100 text-gray-800 rounded-md font-medium hover:bg-gray-200 transition-colors text-center"
-              >
-                Create Account
-              </Link>
-            </div>
-          </motion.div>
-        </div>
-      </MainLayout>
+              <div className="space-y-3">
+                <Link
+                  href="/sign-in?redirect=/become-seller"
+                  className="block w-full py-3 bg-indigo-600 text-white rounded-md font-medium hover:bg-indigo-700 transition-colors text-center"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/sign-up"
+                  className="block w-full py-3 bg-gray-100 text-gray-800 rounded-md font-medium hover:bg-gray-200 transition-colors text-center"
+                >
+                  Create Account
+                </Link>
+              </div>
+            </motion.div>
+          </div>
+        </MainLayout>
+      </VerificationGuard>
     );
   }
 
@@ -163,7 +171,8 @@ const BecomeSeller = () => {
   ];
 
   return (
-    <MainLayout>
+    <VerificationGuard>
+      <MainLayout>
       <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-blue-50 py-8 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
@@ -324,7 +333,8 @@ const BecomeSeller = () => {
           </div>
         </div>
       </div>
-    </MainLayout>
+      </MainLayout>
+    </VerificationGuard>
   );
 };
 

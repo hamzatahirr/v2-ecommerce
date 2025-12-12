@@ -11,12 +11,23 @@ export class OrderService {
   
   private walletService = makeWalletService();
 
-  async getAllOrders(sellerId?: string, userRole?: string) {
+  async getAllOrders(
+    sellerId?: string, 
+    userRole?: string,
+    options?: {
+      page?: number;
+      limit?: number;
+      status?: string;
+    }
+  ) {
     // Sellers can only see their own orders, ADMIN can see all
     const filterSellerId = userRole === "ADMIN" ? undefined : sellerId;
     
-    const orders = await this.orderRepository.findAllOrders(filterSellerId);
-    return orders || [];
+    const orders = await this.orderRepository.findAllOrders(
+      filterSellerId,
+      options
+    );
+    return orders || { orders: [], totalPages: 1, totalResults: 0, currentPage: 1, resultsPerPage: 10 };
   }
 
   async getUserOrders(userId: string, sellerId?: string, userRole?: string) {

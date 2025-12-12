@@ -1,4 +1,3 @@
-/// <reference types="express" />
 import { USER_VERIFICATION_STATUS, SELLER_STATUS } from "@prisma/client";
 
 declare global {

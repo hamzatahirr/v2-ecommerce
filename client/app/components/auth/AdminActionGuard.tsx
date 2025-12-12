@@ -1,5 +1,5 @@
 "use client";
-import { ReactNode } from "react";
+import React, { ReactNode } from "react";
 import { useAuth } from "@/app/hooks/useAuth";
 import { Crown, AlertTriangle } from "lucide-react";
 

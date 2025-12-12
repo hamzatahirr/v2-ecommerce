@@ -44,7 +44,8 @@ export class AuthService {
       );
     }
 
-    const existingUser = await this.authRepository.findUserByEmail(email);
+    const normalizedEmail = email.toLowerCase().trim();
+    const existingUser = await this.authRepository.findUserByEmail(normalizedEmail);
 
     if (existingUser) {
       throw new AppError(
@@ -56,7 +57,7 @@ export class AuthService {
     password = await passwordUtils.hashPassword(password);
 
     const newUser = await this.authRepository.createUser({
-      email,
+      email: normalizedEmail,
       name,
       password,
       role: ROLE.USER,
@@ -93,7 +94,8 @@ export class AuthService {
     accessToken: string;
     refreshToken: string;
   }> {
-    const user = await this.authRepository.findUserByEmailWithPassword(email);
+    const normalizedEmail = email.toLowerCase().trim();
+    const user = await this.authRepository.findUserByEmailWithPassword(normalizedEmail);
 
     if (!user) {
       throw new BadRequestError("User not found.");

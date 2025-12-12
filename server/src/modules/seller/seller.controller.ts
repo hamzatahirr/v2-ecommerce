@@ -98,11 +98,43 @@ export class SellerController {
         throw new AppError(401, "User not authenticated");
       }
 
-      const stats = await this.sellerService.getSellerStatsByUserId(userId);
+      sendResponse(res, 200, {
+        data: await this.sellerService.getSellerStats(userId),
+        message: "Seller stats retrieved successfully",
+      });
+      this.logsService.info("Seller stats retrieved", {
+        userId,
+      });
+    }
+  );
+
+  getSellerOrders = asyncHandler(
+    async (req: Request, res: Response): Promise<void> => {
+      const userId = req.user?.id;
+      if (!userId) {
+        throw new AppError(401, "User not authenticated");
+      }
+
+      const { page = 1, limit = 10, status } = req.query;
+
+      const orders = await this.sellerService.getSellerOrders(
+        userId,
+        {
+          page: parseInt(page as string) || 1,
+          limit: parseInt(limit as string) || 10,
+          status: status as string,
+        }
+      );
 
       sendResponse(res, 200, {
-        data: { stats },
-        message: "Seller statistics fetched successfully",
+        data: { orders },
+        message: "Orders retrieved successfully",
+      });
+      this.logsService.info("Seller orders retrieved", {
+        userId,
+        page,
+        limit,
+        status,
       });
     }
   );
@@ -254,6 +286,100 @@ export class SellerController {
       sendResponse(res, 200, {
         data: analytics,
         message: "Review analytics retrieved successfully",
+      });
+    }
+  );
+
+  getSellerOrder = asyncHandler(
+    async (req: Request, res: Response): Promise<void> => {
+      const userId = req.user?.id;
+      const { orderId } = req.params;
+      
+      if (!userId) {
+        throw new AppError(401, "User not authenticated");
+      }
+
+      if (!orderId) {
+        throw new AppError(400, "Order ID is required");
+      }
+
+      const order = await this.sellerService.getSellerOrder(userId, orderId);
+
+      sendResponse(res, 200, {
+        data: { order },
+        message: "Order retrieved successfully",
+      });
+
+      this.logsService.info("Seller order retrieved", {
+        userId,
+        orderId,
+      });
+    }
+  );
+
+  updateOrderStatus = asyncHandler(
+    async (req: Request, res: Response): Promise<void> => {
+      const userId = req.user?.id;
+      const { orderId } = req.params;
+      const { status } = req.body;
+      
+      if (!userId) {
+        throw new AppError(401, "User not authenticated");
+      }
+
+      if (!orderId) {
+        throw new AppError(400, "Order ID is required");
+      }
+
+      if (!status) {
+        throw new AppError(400, "Status is required");
+      }
+
+      const updatedOrder = await this.sellerService.updateSellerOrderStatus(userId, orderId, status);
+
+      sendResponse(res, 200, {
+        data: { order: updatedOrder },
+        message: "Order status updated successfully",
+      });
+
+      this.logsService.info("Seller order status updated", {
+        userId,
+        orderId,
+        status,
+      });
+    }
+  );
+
+  updateShippingInfo = asyncHandler(
+    async (req: Request, res: Response): Promise<void> => {
+      const userId = req.user?.id;
+      const { orderId } = req.params;
+      const { trackingNumber, shippingNotes } = req.body;
+      
+      if (!userId) {
+        throw new AppError(401, "User not authenticated");
+      }
+
+      if (!orderId) {
+        throw new AppError(400, "Order ID is required");
+      }
+
+      const shippingInfo = {
+        trackingNumber,
+        shippingNotes,
+      };
+
+      const updatedOrder = await this.sellerService.updateSellerOrderShipping(userId, orderId, shippingInfo);
+
+      sendResponse(res, 200, {
+        data: { order: updatedOrder },
+        message: "Shipping information updated successfully",
+      });
+
+      this.logsService.info("Seller order shipping info updated", {
+        userId,
+        orderId,
+        trackingNumber,
       });
     }
   );

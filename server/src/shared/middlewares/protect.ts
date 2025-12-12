@@ -2,23 +2,8 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import AppError from "../errors/AppError";
 import prisma from "@/infra/database/database.config";
-import { User } from "../types/userTypes";
+import { JwtUser } from "../types/userTypes";
 import { SELLER_STATUS } from "@prisma/client";
-
-// Extend Express Request to include user with seller info
-declare global {
-  namespace Express {
-    interface Request {
-      user?: {
-        id: string;
-        role: string;
-        isSeller?: boolean;
-        sellerStatus?: SELLER_STATUS | null;
-        currentProfile?: "buyer" | "seller";
-      };
-    }
-  }
-}
 
 const protect = async (
   req: Request,
@@ -35,17 +20,18 @@ const protect = async (
     const decoded = jwt.verify(
       accessToken,
       process.env.ACCESS_TOKEN_SECRET!
-    ) as User;
+    ) as JwtUser;
 
     console.log("Decoded: ", decoded);
 
     const user = await prisma.user.findUnique({
       where: { id: String(decoded.id) },
-      select: { 
-        id: true, 
-        role: true, 
-        isSeller: true, 
-        sellerStatus: true 
+      select: {
+        id: true,
+        role: true,
+        isSeller: true,
+        sellerStatus: true,
+        verificationStatus: true
       },
     });
 
@@ -66,17 +52,18 @@ const protect = async (
       }
     }
 
-    req.user = { 
-      id: decoded.id, 
+    req.user = {
+      id: decoded.id,
       role: user.role,
       isSeller: user.isSeller || false,
       sellerStatus: user.sellerStatus,
+      verificationStatus: user.verificationStatus,
       currentProfile: profileType || (user.isSeller && user.sellerStatus === SELLER_STATUS.APPROVED ? "seller" : "buyer"),
     };
     next();
   } catch (error) {
     console.log(error);
-    return next(new AppError(401, "Invalid access token, please log in"));
+    return next(new AppError(409, "Invalid access token, please log in"));
   }
 };
 

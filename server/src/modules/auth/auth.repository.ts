@@ -63,14 +63,16 @@ export class AuthRepository {
   async updateUserEmailVerification(
     userId: string,
     data: {
-      emailVerificationToken: string | null;
-      emailVerificationTokenExpiresAt: Date | null;
-      emailVerified?: boolean;
+      resetPasswordToken?: string | null;
+      resetPasswordTokenExpiresAt?: Date | null;
     }
   ) {
     return prisma.user.update({
       where: { id: userId },
-      data,
+      data: {
+        resetPasswordToken: data.resetPasswordToken,
+        resetPasswordTokenExpiresAt: data.resetPasswordTokenExpiresAt,
+      },
     });
   }
 

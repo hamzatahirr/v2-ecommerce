@@ -15,6 +15,9 @@ import {
   Shield,
   Check,
   MessageCircle,
+  FileText,
+  AlertTriangle,
+  Clock,
 } from "lucide-react";
 import { useSignOutMutation } from "@/app/store/apis/AuthApi";
 import useClickOutside from "@/app/hooks/dom/useClickOutside";
@@ -28,7 +31,7 @@ const UserMenu = ({ menuOpen, closeMenu, user }) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const menuRef = useRef(null);
-  const { activeRole, hasMultipleRoles } = useAuth();
+  const { activeRole, hasMultipleRoles, verificationStatus, isPendingVerification, isRejectedVerification } = useAuth();
 
   useClickOutside(menuRef, () => closeMenu());
 
@@ -111,6 +114,23 @@ const UserMenu = ({ menuOpen, closeMenu, user }) => {
           icon: <MessageCircle size={18} className="text-blue-500" />,
           show: true,
         },
+        // Verification status menu items
+        {
+          href: verificationStatus === "APPROVED" ? "/verification-status" :
+               isPendingVerification ? "/verification-status" :
+               isRejectedVerification ? "/verification" : "/verification",
+          label: verificationStatus === "APPROVED" ? "Verification Status" :
+                 isPendingVerification ? "Verification Pending" :
+                 isRejectedVerification ? "Re-submit Verification" : "Submit Verification",
+          icon: verificationStatus === "APPROVED" ?
+            <Check size={18} className="text-green-500" /> :
+            isPendingVerification ?
+            <Clock size={18} className="text-yellow-500" /> :
+            isRejectedVerification ?
+            <AlertTriangle size={18} className="text-red-500" /> :
+            <FileText size={18} className="text-indigo-500" />,
+          show: true, // Always show verification menu item
+        },
         // {
         //   href: "/support",
         //   label: "Contact Support",
@@ -174,6 +194,44 @@ const UserMenu = ({ menuOpen, closeMenu, user }) => {
           <div className="absolute top-[-8px] right-4 w-4 h-4 bg-white transform rotate-45 border-l border-t border-gray-100" />
 
           <div className="py-2 max-h-[calc(100vh-200px)] overflow-y-auto">
+            {/* Verification Status Indicator */}
+            {verificationStatus && (
+              <div className="mb-3 pb-3 border-b border-gray-200">
+                <div className="px-4 py-2">
+                  <div className="flex items-center space-x-2">
+                    {verificationStatus === "APPROVED" && (
+                      <>
+                        <Check className="w-4 h-4 text-green-600" />
+                        <span className="text-sm font-medium text-green-700">Verified</span>
+                      </>
+                    )}
+                    {verificationStatus === "PENDING" && (
+                      <>
+                        <Clock className="w-4 h-4 text-yellow-600" />
+                        <span className="text-sm font-medium text-yellow-700">Verification Pending</span>
+                      </>
+                    )}
+                    {verificationStatus === "REJECTED" && (
+                      <>
+                        <AlertTriangle className="w-4 h-4 text-red-600" />
+                        <span className="text-sm font-medium text-red-700">Verification Rejected</span>
+                      </>
+                    )}
+                  </div>
+                  {verificationStatus === "PENDING" && (
+                    <p className="text-xs text-gray-500 mt-1">
+                      Your documents are being reviewed by our admin team.
+                    </p>
+                  )}
+                  {verificationStatus === "REJECTED" && (
+                    <p className="text-xs text-gray-500 mt-1">
+                      Please re-submit your verification documents.
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
+
             {/* Role Switcher - Show if user has multiple roles */}
             {hasMultipleRoles && (
               <div className="mb-3 pb-3 border-b border-gray-200">

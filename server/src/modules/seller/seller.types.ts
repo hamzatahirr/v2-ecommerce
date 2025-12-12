@@ -60,14 +60,16 @@ export interface SellerUpdateData {
 }
 
 export interface SellerStats {
-  totalProducts: number;
+  totalProducts?: number;
   totalOrders: number;
   totalRevenue: number;
-  totalEarnings: number;
-  averageRating: number;
-  reviewCount: number;
+  totalEarnings?: number;
+  averageRating?: number;
+  reviewCount?: number;
   pendingOrders: number;
   completedOrders: number;
-  totalCustomers: number;
+  totalCustomers?: number;
+  thisMonthRevenue?: number;
+  lastMonthRevenue?: number;
 }
 

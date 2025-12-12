@@ -14,13 +14,31 @@ const productController = makeProductController();
  * @swagger
  * /products:
  *   get:
- *     summary: Get all products
- *     description: Retrieves a list of all products.
+ *     summary: Get all products (public)
+ *     description: Retrieves a list of all products for public viewing (home page, shop, etc.).
  *     responses:
  *       200:
  *         description: A list of products.
  */
-router.get("/", productController.getAllProducts);
+router.get("/", productController.getAllPublicProducts);
+
+/**
+ * @swagger
+ * /products/my:
+ *   get:
+ *     summary: Get current seller's products
+ *     description: Retrieves a list of products belonging to the current authenticated seller.
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: A list of seller's products.
+ *       401:
+ *         description: Unauthorized.
+ *       403:
+ *         description: Forbidden - Seller only.
+ */
+router.get("/my", protect, authorizeSeller, productController.getSellerProducts);
 
 /**
  * @swagger

@@ -40,7 +40,7 @@ interface TableProps {
 }
 
 const Table: React.FC<TableProps> = ({
-  data,
+  data : data,
   columns,
   isLoading = false,
   emptyMessage = "No data available",
@@ -66,6 +66,9 @@ const Table: React.FC<TableProps> = ({
   const [visibleColumns, setVisibleColumns] = useState<Set<string>>(
     new Set(columns.map((col) => col.key))
   );
+  // Exclude sellers
+  
+
   // console.log("Data in Table Component:", data);
 
   useEffect(() => {
@@ -138,27 +141,7 @@ const Table: React.FC<TableProps> = ({
   }
 
   const filteredColumns = columns.filter((col) => visibleColumns.has(col.key));
-  const normalizedSellers =
-    data?.map((seller: any) => ({
-      id: seller.id,
-      userId: seller.id,
-      storeName: seller.sellerProfile?.storeName ?? "-",
-      ownerName: seller.name ?? "-",
-      email: seller.email ?? "-",
-      appliedDate: seller.createdAt ?? null,
-      status: seller.sellerStatus ?? "UNKNOWN",
-      user: {
-        id: seller.id,
-        name: seller.name,
-        email: seller.email,
-      },
-    })) || [];
-
-    const isSellerData =
-      Array.isArray(data) &&
-      data.length > 0 &&
-      "sellerStatus" in data[0];
-
+  
 
   return (
     <div
@@ -187,8 +170,7 @@ const Table: React.FC<TableProps> = ({
       <div className="w-full overflow-x-auto">
         <TableBody
         // if data is sellers, normalize it
-        data={
-          isSellerData ? normalizedSellers : data}
+        data={data}
           columns={filteredColumns}
           isLoading={isLoading}
           emptyMessage={emptyMessage}

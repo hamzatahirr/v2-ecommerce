@@ -95,7 +95,7 @@ export const productApi = apiSlice.injectEndpoints({
         }
 
         return {
-          url: `/products?${queryString.toString()}`,
+          url: `/products/my?${queryString.toString()}`,
           method: "GET",
         };
       },

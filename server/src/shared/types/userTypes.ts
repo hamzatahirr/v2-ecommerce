@@ -5,7 +5,7 @@ export enum Role {
 
 export type SellerStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'SUSPENDED';
 
-export interface User {
+export interface JwtUser {
   id: string;
   role: Role;
   name?: string;

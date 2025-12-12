@@ -12,8 +12,8 @@ import {
 } from "@/app/store/apis/CartApi";
 import QuantitySelector from "@/app/components/molecules/QuantitySelector";
 import { motion } from "framer-motion";
-import CartSkeletonLoader from "@/app/components/feedback/CartSkeletonLoader";
 import { generateProductPlaceholder } from "@/app/utils/placeholderImage";
+import { VerificationGuard } from "@/app/hooks/VerificationGuard";
 
 // Helper function to format variant name from SKU
 const formatVariantName = (item: any) => {
@@ -27,7 +27,7 @@ const formatVariantName = (item: any) => {
 
 const Cart = () => {
   const { control } = useForm();
-  const { data, isLoading } = useGetCartQuery({});
+  const { data } = useGetCartQuery({});
   const [removeFromCart] = useRemoveFromCartMutation();
   const cartItems = data?.cart?.cartItems || [];
   console.log("items => ", cartItems);
@@ -50,7 +50,8 @@ const Cart = () => {
   };
 
   return (
-    <MainLayout>
+    <VerificationGuard>
+      <MainLayout>
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         <BreadCrumb />
 
@@ -70,9 +71,7 @@ const Cart = () => {
         </motion.div>
 
         {/* Cart Content */}
-        {isLoading ? (
-          <CartSkeletonLoader />
-        ) : cartItems.length === 0 ? (
+        {cartItems.length === 0 ? (
           <div className="text-center py-10">
             <ShoppingCart size={40} className="mx-auto text-gray-400 mb-3" />
             <p className="text-base sm:text-lg text-gray-600">
@@ -160,7 +159,8 @@ const Cart = () => {
           </div>
         )}
       </div>
-    </MainLayout>
+      </MainLayout>
+    </VerificationGuard>
   );
 };
 

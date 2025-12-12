@@ -18,6 +18,13 @@ model User {
   role                        ROLE                 @default(USER)
   isSeller                    Boolean              @default(false)
   sellerStatus                SELLER_STATUS?
+  verificationStatus          USER_VERIFICATION_STATUS? @default(PENDING)
+  studentIdCard               String?
+  feeChallan                  String?
+  rejectionReason             String?
+  verificationSubmittedAt     DateTime?
+  verificationReviewedAt      DateTime?
+  verificationReviewedBy      String?
   createdAt                   DateTime             @default(now())
   updatedAt                   DateTime             @updatedAt
   addresses                   Address[]
@@ -43,9 +50,12 @@ model User {
   sellerSubscriptions         SellerSubscription[]
   wallet                      Wallet?              @relation("SellerWallet")
   withdrawals                 Withdrawal[]          @relation("SellerWithdrawals")
+  verificationReviewedByUser   User?                   @relation("VerificationReviewer", fields: [verificationReviewedBy], references: [id])
+  usersReviewedForVerification User[]                  @relation("VerificationReviewer")
 
   @@index([email])
   @@index([isSeller, sellerStatus])
+  @@index([verificationStatus])
 }
 
 model Product {
@@ -66,7 +76,7 @@ model Product {
   updatedAt     DateTime         @updatedAt
   interactions  Interaction[]
   category      Category?        @relation(fields: [categoryId], references: [id])
-  seller        User?            @relation(fields: [sellerId], references: [id])
+  seller        User?            @relation(fields: [sellerId], references: [id], onDelete: Cascade)
   variants      ProductVariant[]
   reviews       Review[]
 
@@ -713,4 +723,10 @@ enum WITHDRAWAL_STATUS {
   COMPLETED
   FAILED
   CANCELLED
+}
+
+enum USER_VERIFICATION_STATUS {
+  PENDING
+  APPROVED
+  REJECTED
 }

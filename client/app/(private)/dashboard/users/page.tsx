@@ -2,7 +2,6 @@
 import Table from "@/app/components/layout/Table";
 import {
   useGetAllUsersQuery,
-  useUpdateUserMutation,
   useDeleteUserMutation,
   useCreateAdminMutation,
 } from "@/app/store/apis/UserApi";
@@ -14,16 +13,15 @@ import {
   AlertCircle,
   Pencil,
   Trash2,
-  X,
   UserPlus,
   Shield,
+  XCircle,
 } from "lucide-react";
 import useToast from "@/app/hooks/ui/useToast";
 import { useForm } from "react-hook-form";
-import UserForm, { UserFormData } from "./UserForm";
 import CreateAdminForm, { CreateAdminFormData } from "./CreateAdminForm";
 import ConfirmModal from "@/app/components/organisms/ConfirmModal";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import ToggleableText from "@/app/components/atoms/ToggleableText";
 import PermissionGuard from "@/app/components/auth/PermissionGuard";
 import RoleHierarchyGuard from "@/app/components/auth/RoleHierarchyGuard";
@@ -32,6 +30,7 @@ import AdminActionGuard from "@/app/components/auth/AdminActionGuard";
 const UsersDashboard = () => {
   const { showToast } = useToast();
   const pathname = usePathname();
+  const router = useRouter();
 
   const shouldFetchUsers = pathname === "/dashboard/users";
 
@@ -39,28 +38,20 @@ const UsersDashboard = () => {
     skip: !shouldFetchUsers,
   });
 
-  const [updateUser, { isLoading: isUpdating }] = useUpdateUserMutation();
   const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation();
   const [createAdmin, { isLoading: isCreatingAdmin }] =
     useCreateAdminMutation();
-  const users = data?.users || [];
+  const users = Array.isArray(data?.users)
+    ? data.users.filter(item => item.isSeller !== true)
+    : [];
+  // const users = data?.users || [];
+  // console.log(users[0].verificationStatus);
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCreateAdminModalOpen, setIsCreateAdminModalOpen] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState<string | number | null>(
     null
   );
-
-  const form = useForm<UserFormData>({
-    defaultValues: {
-      id: "",
-      name: "",
-      email: "",
-      role: "USER",
-      emailVerified: false,
-    },
-  });
 
   const createAdminForm = useForm<CreateAdminFormData>({
     defaultValues: {
@@ -106,7 +97,7 @@ const UsersDashboard = () => {
       label: "Name",
       render: (row: any) => (
         <div className="flex items-center space-x-3">
-          <span className="text-sm font-medium text-gray-800">{row.name}</span>
+          <span className="text-sm font-medium text-gray-800">{row?.name}</span>
         </div>
       ),
       sortable: true,
@@ -129,46 +120,47 @@ const UsersDashboard = () => {
       label: "Role",
       render: (row: any) => (
         <div className="flex items-center space-x-2">
-          {getRoleIcon(row.role)}
+          {getRoleIcon(row?.role)}
           <span
             className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getRoleColor(
-              row.role
+              row?.role
             )}`}
           >
-            {row.role}
+            {row?.role}
           </span>
         </div>
       ),
       sortable: true,
     },
+    {
+      key: "verificationStatus",
+      label: "Verification",
+      render: (row: any) => {
+        const status = row.verificationStatus;
+        const getVerificationColor = (status: string) => {
+          switch (status) {
+            case "APPROVED":
+              return "bg-green-100 text-green-800 border-green-200";
+            case "PENDING":
+              return "bg-yellow-100 text-yellow-800 border-yellow-200";
+            case "REJECTED":
+              return "bg-red-100 text-red-800 border-red-200";
+            default:
+              return "bg-gray-100 text-gray-800 border-gray-200";
+          }
+        };
 
-    {
-      key: "createdAt",
-      label: "Created",
+        return (
+          <span
+            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getVerificationColor(
+              status
+            )}`}
+          >
+            {status || "Not Set"}
+          </span>
+        );
+      },
       sortable: true,
-      render: (row: any) => (
-        <span className="text-sm text-gray-600">
-          {new Date(row.createdAt).toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-            year: "numeric",
-          })}
-        </span>
-      ),
-    },
-    {
-      key: "updatedAt",
-      label: "Updated",
-      sortable: true,
-      render: (row: any) => (
-        <span className="text-sm text-gray-600">
-          {new Date(row.updatedAt).toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-            year: "numeric",
-          })}
-        </span>
-      ),
     },
     {
       key: "actions",
@@ -182,10 +174,7 @@ const UsersDashboard = () => {
           >
             <AdminActionGuard action="update_user" showFallback={false}>
               <button
-                onClick={() => {
-                  form.reset(row);
-                  setIsModalOpen(true);
-                }}
+                onClick={() => router.push(`/dashboard/users/${row.id}`)}
                 className="text-blue-600 hover:text-blue-800 flex items-center gap-1"
               >
                 <Pencil size={16} />
@@ -220,17 +209,6 @@ const UsersDashboard = () => {
     },
   ];
 
-  const handleEditSubmit = async (data: UserFormData) => {
-    try {
-      await updateUser(data).unwrap();
-      setIsModalOpen(false);
-      showToast("User updated successfully", "success");
-    } catch (err: any) {
-      console.error("Failed to update user:", err);
-      const errorMessage = err?.data?.message || "Failed to update user";
-      showToast(errorMessage, "error");
-    }
-  };
 
   const handleCreateAdminSubmit = async (data: CreateAdminFormData) => {
     try {
@@ -245,6 +223,8 @@ const UsersDashboard = () => {
       showToast(errorMessage, "error");
     }
   };
+
+
 
   const handleDelete = async () => {
     if (!userToDelete) return;
@@ -262,13 +242,12 @@ const UsersDashboard = () => {
 
   return (
     <PermissionGuard requireAdmin={true}>
-      <div className="min-h-screen p-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-          className="min-w-full"
-        >
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="w-full"
+      >
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center space-x-3">
@@ -325,46 +304,6 @@ const UsersDashboard = () => {
               />
             )}
           </motion.div>
-        </motion.div>
-
-        {/* Edit Modal */}
-        <AnimatePresence>
-          {isModalOpen && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50"
-              onClick={() => setIsModalOpen(false)}
-            >
-              <motion.div
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.9, opacity: 0 }}
-                transition={{ duration: 0.2 }}
-                className="bg-white rounded-xl shadow-xl w-full max-w-lg p-6 border border-gray-100"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-xl font-bold text-gray-800">Edit User</h2>
-                  <button
-                    onClick={() => setIsModalOpen(false)}
-                    className="text-gray-500 hover:text-gray-700"
-                  >
-                    <X size={20} />
-                  </button>
-                </div>
-                <UserForm
-                  form={form}
-                  onSubmit={handleEditSubmit}
-                  isLoading={isUpdating}
-                  submitLabel="Save Changes"
-                />
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
 
         {/* Create Admin Modal */}
         <AnimatePresence>
@@ -393,7 +332,7 @@ const UsersDashboard = () => {
                     onClick={() => setIsCreateAdminModalOpen(false)}
                     className="text-gray-500 hover:text-gray-700"
                   >
-                    <X size={20} />
+                    <XCircle size={20} />
                   </button>
                 </div>
                 <CreateAdminForm
@@ -416,7 +355,7 @@ const UsersDashboard = () => {
           title="Delete User"
           type="danger"
         />
-      </div>
+      </motion.div>
     </PermissionGuard>
   );
 };

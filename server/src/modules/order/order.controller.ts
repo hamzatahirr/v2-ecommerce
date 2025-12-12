@@ -10,10 +10,19 @@ export class OrderController {
   getAllOrders = asyncHandler(async (req: Request, res: Response) => {
     const sellerId = req.user?.isSeller ? req.user.id : undefined;
     const userRole = req.user?.role;
+    const { page = 1, limit = 10, status } = req.query;
 
-    const orders = await this.orderService.getAllOrders(sellerId, userRole);
+    const orders = await this.orderService.getAllOrders(
+      sellerId, 
+      userRole,
+      {
+        page: parseInt(page as string),
+        limit: parseInt(limit as string),
+        status: status as string
+      }
+    );
     sendResponse(res, 200, {
-      data: { orders },
+      data: orders,
       message: "Orders retrieved successfully",
     });
   });

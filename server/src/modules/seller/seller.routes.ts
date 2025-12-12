@@ -402,7 +402,7 @@ router.get(
  * /sellers/analytics/reviews:
  *   get:
  *     summary: Get seller review analytics
- *     description: Retrieves review and rating analytics for the authenticated seller.
+ *     description: Retrieves review and rating analytics for authenticated seller.
  *     security:
  *       - bearerAuth: []
  *     responses:
@@ -416,6 +416,170 @@ router.get(
   protect,
   authorizeSeller,
   sellerController.getReviewAnalytics
+);
+
+/**
+ * @swagger
+ * /sellers/orders:
+ *   get:
+ *     summary: Get seller orders
+ *     description: Retrieves all orders for the authenticated seller with pagination and filtering support.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           description: Page number for pagination
+ *           example: 1
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           description: Number of orders per page
+ *           example: 10
+ *       - in: query
+ *         name: status
+ *         schema:
+ *           type: string
+ *           description: Filter orders by status
+ *           example: "PENDING"
+ *     responses:
+ *       200:
+ *         description: Orders retrieved successfully
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden - Seller only
+ */
+router.get(
+  "/orders",
+  protect,
+  authorizeSeller,
+  sellerController.getSellerOrders
+);
+
+/**
+ * @swagger
+ * /sellers/orders/{orderId}:
+ *   get:
+ *     summary: Get seller order by ID
+ *     description: Retrieves a specific order for the authenticated seller by order ID.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: orderId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the order to retrieve
+ *     responses:
+ *       200:
+ *         description: Order retrieved successfully
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden - Seller only
+ *       404:
+ *         description: Order not found
+ */
+router.get(
+  "/orders/:orderId",
+  protect,
+  authorizeSeller,
+  sellerController.getSellerOrder
+);
+
+/**
+ * @swagger
+ * /sellers/orders/{orderId}/status:
+ *   patch:
+ *     summary: Update seller order status
+ *     description: Updates the status of a specific order for the authenticated seller.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: orderId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the order to update
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - status
+ *             properties:
+ *               status:
+ *                 type: string
+ *                 enum: [PENDING, PROCESSING, SHIPPED, IN_TRANSIT, DELIVERED, CANCELED]
+ *                 description: New order status
+ *     responses:
+ *       200:
+ *         description: Order status updated successfully
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden - Seller only
+ *       404:
+ *         description: Order not found
+ */
+router.patch(
+  "/orders/:orderId/status",
+  protect,
+  authorizeSeller,
+  sellerController.updateOrderStatus
+);
+
+/**
+ * @swagger
+ * /sellers/orders/{orderId}/shipping:
+ *   patch:
+ *     summary: Update seller order shipping information
+ *     description: Updates the shipping information for a specific order for the authenticated seller.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: orderId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the order to update
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               trackingNumber:
+ *                 type: string
+ *                 description: Tracking number for the shipment
+ *               shippingNotes:
+ *                 type: string
+ *                 description: Additional shipping notes
+ *     responses:
+ *       200:
+ *         description: Shipping information updated successfully
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden - Seller only
+ *       404:
+ *         description: Order not found
+ */
+router.patch(
+  "/orders/:orderId/shipping",
+  protect,
+  authorizeSeller,
+  sellerController.updateShippingInfo
 );
 
 export default router;

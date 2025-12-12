@@ -40,7 +40,7 @@ const OrderItems = ({ order }) => {
             {/* Variant Image */}
             <div className="flex items-center justify-center mr-4 overflow-hidden shadow-sm">
               <Image
-                src={item.variant.images[0]}
+                src={item.variant?.images[0]}
                 alt={formatVariantName(item)}
                 width={50}
                 height={50}

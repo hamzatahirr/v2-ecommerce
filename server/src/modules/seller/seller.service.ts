@@ -5,6 +5,40 @@ import { SellerApplicationData, SellerUpdateData, SellerStats } from "./seller.t
 export class SellerService {
   constructor(private sellerRepository: SellerRepository) {}
 
+  async getSellerStats(userId: string): Promise<SellerStats> {
+    const sellerId = await this.sellerRepository.findSellerProfileByUserId(userId);
+    
+    if (!sellerId) {
+      throw new AppError(404, "Seller profile not found");
+    }
+
+    // Get seller's order statistics
+    const [
+      totalOrders,
+      pendingOrders,
+      completedOrders,
+      totalRevenue,
+      thisMonthRevenue,
+      lastMonthRevenue,
+    ] = await Promise.all([
+      this.sellerRepository.countOrdersBySellerId(userId),
+      this.sellerRepository.countOrdersBySellerIdAndStatus(userId, 'PENDING'),
+      this.sellerRepository.countOrdersBySellerIdAndStatus(userId, 'COMPLETED'),
+      this.sellerRepository.getTotalRevenueBySellerId(userId),
+      this.sellerRepository.getRevenueBySellerIdAndMonths(userId, 1), // Current month
+      this.sellerRepository.getRevenueBySellerIdAndMonths(userId, 2), // Last month
+    ]);
+
+    return {
+      totalOrders,
+      pendingOrders,
+      completedOrders,
+      totalRevenue,
+      thisMonthRevenue,
+      lastMonthRevenue,
+    };
+  }
+
   async applyToBecomeSeller(userId: string, data: SellerApplicationData) {
     // Check if user already has a seller profile
     const existingProfile = await this.sellerRepository.findSellerProfileByUserId(
@@ -47,6 +81,23 @@ export class SellerService {
     }
 
     return profile;
+  }
+
+  async getSellerOrders(
+    userId: string,
+    options: {
+      page?: number;
+      limit?: number;
+      status?: string;
+    }
+  ) {
+    // Get orders with pagination and filtering
+    const orders = await this.sellerRepository.findOrdersBySellerId(
+      userId,
+      options
+    );
+
+    return orders;
   }
 
   async updateSellerProfile(userId: string, data: SellerUpdateData) {
@@ -94,5 +145,19 @@ export class SellerService {
 
     return await this.sellerRepository.getSellerPayouts(userId);
   }
-}
 
+  async getSellerOrder(userId: string, orderId: string) {
+    const order = await this.sellerRepository.findSellerOrderById(userId, orderId);
+    return order;
+  }
+
+  async updateSellerOrderStatus(userId: string, orderId: string, status: string) {
+    const updatedOrder = await this.sellerRepository.updateSellerOrderStatus(userId, orderId, status);
+    return updatedOrder;
+  }
+
+  async updateSellerOrderShipping(userId: string, orderId: string, shippingInfo: { trackingNumber?: string; shippingNotes?: string }) {
+    const updatedOrder = await this.sellerRepository.updateSellerOrderShipping(userId, orderId, shippingInfo);
+    return updatedOrder;
+  }
+}

@@ -137,10 +137,10 @@ export const orderApi = apiSlice.injectEndpoints({
     }),
 
     updateShippingInfo: builder.mutation({
-      query: ({ orderId, shippingInfo }) => ({
+      query: ({ orderId, trackingNumber, shippingNotes }) => ({
         url: `/seller/orders/${orderId}/shipping`,
         method: "PATCH",
-        body: shippingInfo,
+        body: { trackingNumber, shippingNotes },
         credentials: "include",
       }),
       invalidatesTags: ["Order", "Seller"],

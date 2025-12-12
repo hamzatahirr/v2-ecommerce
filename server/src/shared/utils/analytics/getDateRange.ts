@@ -33,9 +33,10 @@ export function getDateRange({
 
   // If a year is passed, compute the exact start and end of that calendar year.
   if (year) {
-    // Months are zero-indexed: January = 0
-    yearStart = startOfYear(new Date(year, 0, 1));
-    yearEnd = endOfYear(new Date(year, 0, 1));
+    // Create a Date for the year and use date-fns functions to get start/end of year
+    const yearDate = new Date(year, 0, 1);
+    yearStart = startOfYear(yearDate);
+    yearEnd = endOfYear(yearDate);
   }
 
   // If user explicitly provides start and end dates, assume a custom range.

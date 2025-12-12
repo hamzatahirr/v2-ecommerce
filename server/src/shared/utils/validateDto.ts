@@ -1,6 +1,9 @@
 import { ValidationError, validate } from 'class-validator';
 
-export async function validateDto<T>(dtoClass: new () => T, data: any): Promise<{ valid: boolean; validData?: T; errors?: any[] }> {
+export async function validateDto<T>(dtoClass: new () => T, data: any): Promise<{
+  valid: boolean; validData?: T; errors?: any[] 
+}> 
+{
   const dto = new dtoClass();
   for (const key in data) {
     if (data.hasOwnProperty(key)) {

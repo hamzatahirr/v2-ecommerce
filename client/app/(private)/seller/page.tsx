@@ -33,7 +33,7 @@ interface FormData {
 const SellerDashboard = () => {
   const { control, watch } = useForm<FormData>({
     defaultValues: {
-      timePeriod: "allTime",
+      timePeriod: "last7days",
     },
   });
   const formatPrice = useFormatPrice();
@@ -47,15 +47,18 @@ const SellerDashboard = () => {
     isLoading: isLoadingAnalytics,
     error: analyticsError,
   } = useGetSellerAnalyticsQuery({ timePeriod });
+  // console.log("Analytics Data:", analyticsData);
   // Fetch recent orders
   const {
     data: ordersData,
     isLoading: isLoadingOrders,
   } = useGetSellerOrdersQuery({ page: 1, limit: 10 });
+  // console.log("Orders Data:", ordersData);
 
   // Fetch seller profile for store name
   const { data: profileData } = useGetSellerProfileQuery();
   const p = profileData?.sellerProfile;
+  // console.log("Profile Data:", profileData);
 
   const storeName = p?.storeName || "Your Store";
 

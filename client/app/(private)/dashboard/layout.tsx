@@ -1,11 +1,12 @@
 "use client";
-import { Shield, User } from "lucide-react";
+import { Shield, User, Home } from "lucide-react";
 import BreadCrumb from "@/app/components/feedback/BreadCrumb";
 import Sidebar from "../../components/layout/Sidebar";
 import HamburgerMenu from "../../components/layout/HamburgerMenu";
 import DashboardSearchBar from "@/app/components/molecules/DashboardSearchbar";
 import { useAuth } from "@/app/hooks/useAuth";
 import Image from "next/image";
+import Link from "next/link";
 import { SidebarProvider } from "@/app/contexts/SidebarContext";
 
 export default function AdminLayout({
@@ -15,13 +16,20 @@ export default function AdminLayout({
 }) {
   const { user } = useAuth();
   
-  if (user?.role !== 'ADMIN') {
+  if (!user || user?.role !== 'ADMIN') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
         <div className="text-center">
           <Shield className="w-12 h-12 text-purple-500 mx-auto mb-4" />
           <h1 className="text-2xl font-bold text-gray-900 mb-4">Access Denied</h1>
-          <p className="text-gray-600">Admin access required</p>
+          <p className="text-gray-600 mb-6">Admin access required</p>
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
+          >
+            <Home className="w-4 h-4" />
+            Back to Home
+          </Link>
         </div>
       </div>
     );

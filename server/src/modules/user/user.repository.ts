@@ -1,10 +1,24 @@
 import prisma from "@/infra/database/database.config";
-import { ROLE, SELLER_STATUS } from "@prisma/client";
+import { ROLE, SELLER_STATUS, USER_VERIFICATION_STATUS } from "@prisma/client";
 import { passwordUtils } from "@/shared/utils/authUtils";
+import { UserVerificationData } from "./user.types";
 
 export class UserRepository {
   async findAllUsers() {
-    return await prisma.user.findMany();
+    return await prisma.user.findMany({
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        avatar: true,
+        role: true,
+        isSeller: true,
+        sellerStatus: true,
+        verificationStatus: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
   }
 
   async findUserById(id: string | undefined) {
@@ -18,6 +32,9 @@ export class UserRepository {
         role: true,
         isSeller: true,
         sellerStatus: true,
+        verificationStatus: true,
+        createdAt: true,
+        updatedAt: true,
       },
     });
   }
@@ -79,6 +96,125 @@ export class UserRepository {
         avatar: true,
         isSeller: true,
         sellerStatus: true,
+        verificationStatus: true,
+      },
+    });
+  }
+
+  async submitVerificationDocuments(
+    userId: string,
+    data: { studentIdCard?: string; feeChallan?: string }
+  ) {
+    return await prisma.user.update({
+      where: { id: userId },
+      data: {
+        ...data,
+        verificationStatus: USER_VERIFICATION_STATUS.PENDING,
+        verificationSubmittedAt: new Date(),
+        rejectionReason: null, // Clear any previous rejection reason
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        verificationStatus: true,
+        studentIdCard: true,
+        feeChallan: true,
+        verificationSubmittedAt: true,
+      },
+    });
+  }
+
+  async reviewVerification(
+    userId: string,
+    adminId: string,
+    status: USER_VERIFICATION_STATUS,
+    rejectionReason?: string
+  ) {
+    const updateData: any = {
+      verificationStatus: status,
+      verificationReviewedAt: new Date(),
+      verificationReviewedBy: adminId,
+    };
+
+    if (status === USER_VERIFICATION_STATUS.REJECTED && rejectionReason) {
+      updateData.rejectionReason = rejectionReason;
+    } else if (status === USER_VERIFICATION_STATUS.APPROVED) {
+      updateData.rejectionReason = null; // Clear rejection reason on approval
+    }
+
+    return await prisma.user.update({
+      where: { id: userId },
+      data: updateData,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        verificationStatus: true,
+        studentIdCard: true,
+        feeChallan: true,
+        rejectionReason: true,
+        verificationSubmittedAt: true,
+        verificationReviewedAt: true,
+        verificationReviewedByUser: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
+    });
+  }
+
+  async getUsersByVerificationStatus(status: USER_VERIFICATION_STATUS) {
+    return await prisma.user.findMany({
+      where: { verificationStatus: status },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        avatar: true,
+        verificationStatus: true,
+        studentIdCard: true,
+        feeChallan: true,
+        rejectionReason: true,
+        verificationSubmittedAt: true,
+        verificationReviewedAt: true,
+        verificationReviewedByUser: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
+      orderBy: {
+        verificationSubmittedAt: 'desc',
+      },
+    });
+  }
+
+  async getUserVerificationDetails(userId: string) {
+    return await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        verificationStatus: true,
+        studentIdCard: true,
+        feeChallan: true,
+        rejectionReason: true,
+        verificationSubmittedAt: true,
+        verificationReviewedAt: true,
+        verificationReviewedByUser: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
       },
     });
   }

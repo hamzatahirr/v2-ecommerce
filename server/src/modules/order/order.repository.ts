@@ -1,15 +1,37 @@
 import prisma from "@/infra/database/database.config";
 
 export class OrderRepository {
-  async findAllOrders(sellerId?: string) {
+  async findAllOrders(
+    sellerId?: string,
+    options?: {
+      page?: number;
+      limit?: number;
+      status?: string;
+    }
+  ) {
     const where: any = {};
     if (sellerId) {
       where.sellerId = sellerId;
     }
+    
+    // Add status filter if provided
+    if (options?.status) {
+      where.status = options.status;
+    }
 
-    return prisma.order.findMany({
+    const page = options?.page || 1;
+    const limit = options?.limit || 10;
+    const skip = (page - 1) * limit;
+
+    // Get total count for pagination
+    const totalResults = await prisma.order.count({ where });
+
+    // Get orders with pagination
+    const orders = await prisma.order.findMany({
       where,
       orderBy: { orderDate: "desc" },
+      skip,
+      take: limit,
       include: { 
         user: {
           select: {
@@ -50,20 +72,30 @@ export class OrderRepository {
                     },
                   },
                 },
-              } 
-            } 
-          } 
+              },
+            },
+          },
         },
         payment: true,
-        address: true,
         shipment: true,
         transaction: true,
       },
     });
+
+    const totalPages = Math.ceil(totalResults / limit);
+
+    return {
+      orders,
+      totalPages,
+      totalResults,
+      currentPage: page,
+      resultsPerPage: limit,
+    };
   }
 
   async findOrdersByUserId(userId: string, sellerId?: string) {
     // If sellerId is provided, user can see orders where they are buyer OR seller
+    // If user is not a seller, they only see orders where they are buyer
     const where: any = sellerId
       ? {
           OR: [
@@ -116,9 +148,9 @@ export class OrderRepository {
                     },
                   },
                 },
-              } 
-            } 
-          } 
+              },
+            },
+          },
         },
         payment: true,
         address: true,
@@ -131,7 +163,7 @@ export class OrderRepository {
   async findOrderById(orderId: string) {
     return prisma.order.findUnique({
       where: { id: orderId },
-      include: {
+      include: { 
         user: {
           select: {
             id: true,
@@ -171,9 +203,9 @@ export class OrderRepository {
                     },
                   },
                 },
-              } 
-            } 
-          } 
+              },
+            },
+          },
         },
         payment: true,
         address: true,
@@ -190,58 +222,72 @@ export class OrderRepository {
     orderNumber: string;
     orderItems: { variantId: string; quantity: number; price: number; sellerId: string }[];
   }) {
-    return prisma.$transaction(async (tx) => {
-      // Validate stock for all variants
-      for (const item of data.orderItems) {
-        const variant = await tx.productVariant.findUnique({
-          where: { id: item.variantId },
-          select: { stock: true, product: { select: { id: true, salesCount: true } } },
-        });
-        if (!variant) {
-          throw new Error(`Variant not found: ${item.variantId}`);
-        }
-        if (variant.stock < item.quantity) {
-          throw new Error(`Insufficient stock for variant ${item.variantId}: only ${variant.stock} available`);
-        }
-      }
-
-      // Create order
-      const order = await tx.order.create({
-        data: {
-          orderNumber: data.orderNumber,
-          userId: data.userId,
-          sellerId: data.sellerId,
-          amount: data.amount,
-          orderItems: {
-            create: data.orderItems.map((item) => ({
-              variantId: item.variantId,
-              quantity: item.quantity,
-              price: item.price,
-              sellerId: item.sellerId,
-            })),
+    return prisma.order.create({
+      data: {
+        userId: data.userId,
+        sellerId: data.sellerId,
+        amount: data.amount,
+        orderNumber: data.orderNumber,
+        orderDate: new Date(),
+        status: "PENDING",
+        orderItems: {
+          create: data.orderItems.map((item) => ({
+            variantId: item.variantId,
+            quantity: item.quantity,
+            price: item.price,
+            sellerId: item.sellerId,
+          })),
+        },
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
           },
         },
-      });
-
-      // Update stock and sales count
-      for (const item of data.orderItems) {
-        const variant = await tx.productVariant.findUnique({
-          where: { id: item.variantId },
-          select: { stock: true, product: { select: { id: true, salesCount: true } } },
-        });
-        if (variant) {
-          await tx.productVariant.update({
-            where: { id: item.variantId },
-            data: { stock: variant.stock - item.quantity },
-          });
-          await tx.product.update({
-            where: { id: variant.product.id },
-            data: { salesCount: variant.product.salesCount + item.quantity },
-          });
-        }
-      }
-
-      return order;
+        seller: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            sellerProfile: {
+              select: {
+                storeName: true,
+                storeLogo: true,
+              },
+            },
+          },
+        },
+        orderItems: {
+          include: {
+            variant: {
+              include: {
+                product: {
+                  include: {
+                    seller: {
+                      select: {
+                        id: true,
+                        name: true,
+                        sellerProfile: {
+                          select: {
+                            storeName: true,
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        payment: true,
+        address: true,
+        shipment: true,
+        transaction: true,
+      },
     });
   }
 
@@ -270,17 +316,30 @@ export class OrderRepository {
             },
           },
         },
-        orderItems: { 
-          include: { 
-            variant: { 
-              include: { 
-                product: true
-              } 
-            } 
-          } 
+        orderItems: {
+          include: {
+            variant: {
+              include: {
+                product: {
+                  include: {
+                    seller: {
+                      select: {
+                        id: true,
+                        name: true,
+                        sellerProfile: {
+                          select: {
+                            storeName: true,
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
         payment: true,
-        address: true,
         shipment: true,
         transaction: true,
       },

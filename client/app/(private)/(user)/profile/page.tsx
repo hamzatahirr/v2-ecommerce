@@ -99,6 +99,7 @@ const UserProfile = () => {
   }
 
   const user = data;
+  console.log("User Data:", user);
 
   // Generate initials for avatar fallback
   const getInitials = (name: string) => {
@@ -297,10 +298,10 @@ const UserProfile = () => {
                       <p className="text-xs text-gray-500 mb-2">Account Role</p>
                       <span
                         className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getRoleColor(
-                          user.role
+                          user.role? user.role : "USER"
                         )}`}
                       >
-                        {formatRole(user.role)}
+                        {formatRole(user.role? user.role : "USER")}
                       </span>
                     </div>
                     <div className="flex items-center space-x-2">
@@ -325,20 +326,17 @@ const UserProfile = () => {
                     </div>
                     <div>
                       <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wide">
-                        Account Info
+                        Verification Status
                       </h3>
                     </div>
                   </div>
 
                   <div className="space-y-3">
                     <div>
-                      <p className="text-xs text-gray-500 mb-1">Member Since</p>
-                      <p className="text-gray-800 font-medium">Recently</p>
+                      <p className="text-xs text-gray-500 mb-1">
+                      {user.verificationStatus || "Not provided"}</p>
                     </div>
-                    <div>
-                      <p className="text-xs text-gray-500 mb-1">Last Updated</p>
-                      <p className="text-gray-800 font-medium">Recently</p>
-                    </div>
+                    
                   </div>
                 </motion.div>
 
@@ -369,25 +367,6 @@ const UserProfile = () => {
                         Edit Profile
                       </span>
                     </button>
-
-                    <button className="flex flex-col items-center space-y-2 p-3 rounded-lg bg-white border border-gray-200 hover:border-green-300 hover:bg-green-50 transition-all duration-200">
-                      <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                        <Shield className="w-4 h-4 text-green-600" />
-                      </div>
-                      <span className="text-xs font-medium text-gray-700">
-                        Security
-                      </span>
-                    </button>
-
-                    <button className="flex flex-col items-center space-y-2 p-3 rounded-lg bg-white border border-gray-200 hover:border-purple-300 hover:bg-purple-50 transition-all duration-200">
-                      <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
-                        <Mail className="w-4 h-4 text-purple-600" />
-                      </div>
-                      <span className="text-xs font-medium text-gray-700">
-                        Notifications
-                      </span>
-                    </button>
-
                     <button className="flex flex-col items-center space-y-2 p-3 rounded-lg bg-white border border-gray-200 hover:border-red-300 hover:bg-red-50 transition-all duration-200">
                       <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
                         <LogOut className="w-4 h-4 text-red-600" />

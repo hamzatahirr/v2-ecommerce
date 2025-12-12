@@ -11,10 +11,36 @@ export class ProductController {
   private logsService = makeLogsService();
   constructor(private productService: ProductService) {}
 
-  getAllProducts = asyncHandler(
+  getAllPublicProducts = asyncHandler(
     async (req: Request, res: Response): Promise<void> => {
-      // If user is a seller, filter by their sellerId
-      const sellerId = req.user?.isSeller ? req.user.id : undefined;
+      // Public endpoint - no seller filtering
+      const {
+        products,
+        totalResults,
+        totalPages,
+        currentPage,
+        resultsPerPage,
+      } = await this.productService.getAllProducts(req.query, undefined);
+      sendResponse(res, 200, {
+        data: {
+          products,
+          totalResults,
+          totalPages,
+          currentPage,
+          resultsPerPage,
+        },
+        message: "Products fetched successfully",
+      });
+    }
+  );
+
+  getSellerProducts = asyncHandler(
+    async (req: Request, res: Response): Promise<void> => {
+      // Seller endpoint - filter by current seller's ID
+      const sellerId = req.user?.id;
+      if (!sellerId) {
+        throw new AppError(401, "Seller not authenticated");
+      }
       
       const {
         products,
@@ -31,7 +57,7 @@ export class ProductController {
           currentPage,
           resultsPerPage,
         },
-        message: "Products fetched successfully",
+        message: "Seller products fetched successfully",
       });
     }
   );

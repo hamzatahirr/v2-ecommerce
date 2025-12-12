@@ -49,7 +49,8 @@ const Signup = () => {
   const onSubmit = async (formData: InputForm) => {
     try {
       await signUp(formData).unwrap();
-      router.push("/");
+      // Redirect to verification page after successful signup
+      router.push("/verification");
     } catch (error) {
       console.log("error: ", error);
     }

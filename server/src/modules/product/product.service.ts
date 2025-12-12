@@ -7,6 +7,7 @@ import * as XLSX from "xlsx";
 import prisma from "@/infra/database/database.config";
 import { AttributeRepository } from "../attribute/attribute.repository";
 import { VariantRepository } from "../variant/variant.repository";
+import cloudinaryService from "@/infra/cloudinary/cloudinary.service";
 
 export class ProductService {
   constructor(
@@ -527,6 +528,23 @@ export class ProductService {
       );
     }
 
+    // Collect all image URLs from variants before deletion
+    const imageUrls: string[] = [];
+    product.variants.forEach(variant => {
+      variant.images.forEach(image => {
+        if (cloudinaryService.isCloudinaryUrl(image)) {
+          imageUrls.push(image);
+        }
+      });
+    });
+
+    // Delete the product (this will cascade delete variants due to schema)
     await this.productRepository.deleteProduct(productId);
+
+    // Delete images from Cloudinary
+    if (imageUrls.length > 0) {
+      const result = await cloudinaryService.deleteImages(imageUrls);
+      console.log(`Deleted ${result.success} images from Cloudinary, ${result.failed} failed`);
+    }
   }
 }
