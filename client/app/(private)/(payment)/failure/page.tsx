@@ -53,6 +53,7 @@ const PaymentFailed = () => {
         >
           <ShoppingCart size={18} />
           <span>View Orders</span>
+          <span>View Orders</span>
         </button>
         <button
           onClick={() => handleRedirect("/support")}

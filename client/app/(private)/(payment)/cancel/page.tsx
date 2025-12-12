@@ -44,6 +44,10 @@ const PaymentCancelled = () => {
         We&apos;re sorry, but your payment has been cancelled. Please try again
         or contact support if you need help.
       </p>
+      <p className="text-center text-lg text-gray-700 mb-6">
+        We&apos;re sorry, but your payment has been cancelled. Please try again
+        or contact support if you need help.
+      </p>
 
       {/* Helpful Links */}
       <div className="flex space-x-6">
