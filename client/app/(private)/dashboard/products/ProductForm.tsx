@@ -3,7 +3,7 @@ import { Controller, UseFormReturn } from "react-hook-form";
 import { Tag } from "lucide-react";
 import Dropdown from "@/app/components/molecules/Dropdown";
 import { ProductFormData } from "./product.types";
-import CheckBox from "@/app/components/atoms/CheckBox";
+// import CheckBox from "@/app/components/atoms/CheckBox";
 import VariantForm from "./VariantForm";
 
 interface ProductFormProps {

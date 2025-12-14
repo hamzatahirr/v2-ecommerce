@@ -59,8 +59,7 @@ const PaymentFailed = () => {
           className="flex items-center space-x-2 text-sm font-medium text-blue-600 hover:text-blue-800"
         >
           <Headphones size={18} />
-          <span>Contact Support</span>
-          <span>Or wait</span>
+          <span>Contact Support.</span>
         </button>
       </div>
     </motion.div>
