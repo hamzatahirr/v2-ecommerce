@@ -57,7 +57,7 @@ const Footer = () => {
               </div>
               <div className="h-6 w-1 rounded-full bg-gradient-to-b from-indigo-500 to-purple-600"></div>
               <span className="ml-2 text-sm font-medium tracking-wider text-gray-400 uppercase">
-                Premium Store
+               
               </span>
             </div>
 
@@ -81,14 +81,14 @@ const Footer = () => {
                   size={18}
                   className="text-indigo-400 mr-3 flex-shrink-0"
                 />
-                <p className="text-sm text-gray-400">+92 309 0433744</p>
+                <p className="text-sm text-gray-400">+92 314 4090095</p>
               </div>
               <div className="flex items-center">
                 <Mail
                   size={18}
                   className="text-indigo-400 mr-3 flex-shrink-0"
                 />
-                <p className="text-sm text-gray-400">support@buybuddy.com</p>
+                <p className="text-sm text-gray-400">chat.buybuddy@gmail.com</p>
               </div>
             </div>
 

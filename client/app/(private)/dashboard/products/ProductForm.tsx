@@ -100,7 +100,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
         </div>
       </div>
 
-      <div>
+      {/* <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
           Product Flags
         </label>
@@ -130,7 +130,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
             defaultValue={false}
           />
         </div>
-      </div>
+      </div> */}
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">

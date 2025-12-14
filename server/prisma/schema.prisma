@@ -91,7 +91,7 @@ model ProductVariant {
   images            String[]                  @default([])
   price             Float
   stock             Int
-  lowStockThreshold Int                       @default(10)
+  lowStockThreshold Int                       @default(1)
   barcode           String?
   warehouseLocation String?
   createdAt         DateTime                  @default(now())

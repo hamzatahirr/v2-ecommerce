@@ -495,19 +495,19 @@ const VerificationPage = () => {
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 <FileUploadArea
                   fieldName="studentIdCard"
-                  label="Student ID Card"
-                  description="Upload a clear photo of your student ID card"
+                  label="Student ID Card / Semester fee challan"
+                  description="Upload a clear photo of your student ID card or last pais fee challan"
                   register={register}
                   error={errors.studentIdCard?.message}
                 />
 
-                <FileUploadArea
+                {/* <FileUploadArea
                   fieldName="feeChallan"
                   label="Fee Challan"
                   description="Upload your latest fee challan or payment receipt"
                   register={register}
                   error={errors.feeChallan?.message}
-                />
+                /> */}
 
                 {/* Submit Button */}
                 <div className="flex justify-end space-x-4 pt-6 border-t border-gray-200">

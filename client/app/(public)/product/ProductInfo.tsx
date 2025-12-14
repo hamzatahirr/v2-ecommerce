@@ -129,10 +129,19 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
 
   return (
     <div className="flex flex-col gap-6 px-4 sm:px-6 py-6">
+       <div className="flex items-center gap-2">
+            <Info className="w-4 h-4 text-blue-500" />
+            <span className="text-blue-600 text-sm">This seller is accepting online payments</span>
+      </div>
       {/* Product Name */}
       <h1 className="text-xl sm:text-2xl font-semibold text-gray-800">
         {name}
-      </h1>
+      </h1>      
+      
+      <div className="flex items-center gap-2">
+            <span className="text-black-600 text-md">{seller ? `By: ${seller.name}` : "Sold by: --- "}</span>
+      </div>
+     
 
       {/* Rating and Stock */}
       <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600">

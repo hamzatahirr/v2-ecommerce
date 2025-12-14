@@ -26,11 +26,27 @@ const Home = () => {
     fetchPolicy: "no-cache",
   });
 
-  const { featured, trending, newArrivals, bestSellers } = useMemo(() => {
-    if (!data?.products?.products)
-      return { featured: [], trending: [], newArrivals: [], bestSellers: [] };
-    return groupProductsByFlag(data.products.products);
-  }, [data]);
+  // const { featured, trending, newArrivals, bestSellers } = useMemo(() => {
+  //   if (!data?.products?.products)
+  //     return { featured: [], trending: [], newArrivals: [], bestSellers: [] };
+  //   return groupProductsByFlag(data.products.products);
+  // }, [data]);
+
+  const allProducts = useMemo(() => {
+  if (!data?.products?.products) return [];
+
+  const { featured, trending, newArrivals, bestSellers } =
+    groupProductsByFlag(data.products.products);
+
+  return Array.from(
+    new Map(
+      [...featured, ...trending, ...newArrivals, ...bestSellers].map(
+        (item) => [item.id, item]
+      )
+    ).values()
+  );
+}, [data]);
+
 
   if (loading) {
     return (
@@ -46,13 +62,13 @@ const Home = () => {
       <HeroSection />
       <CategoryBar />
       <ProductSection
-        title="Featured"
-        products={featured}
+        title="All products"
+        products={allProducts}
         loading={false}
         error={error}
         showTitle={true}
       />
-      <ProductSection
+      {/* <ProductSection
         title="Trending"
         products={trending}
         loading={false}
@@ -72,7 +88,7 @@ const Home = () => {
         loading={false}
         error={error}
         showTitle={true}
-      />
+      /> */}
     </MainLayout>
   );
 };

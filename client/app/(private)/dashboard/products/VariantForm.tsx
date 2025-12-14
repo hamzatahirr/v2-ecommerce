@@ -23,7 +23,7 @@ const VariantForm: React.FC<VariantFormProps> = ({
     control,
     formState: { errors },
     setValue,
-  } = form;
+  } = form; 
   const { fields, append, remove } = useFieldArray({
     control,
     name: "variants",
@@ -189,7 +189,7 @@ const VariantForm: React.FC<VariantFormProps> = ({
               )}
             </div>
 
-            <div>
+            {/* <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Barcode
               </label>
@@ -205,9 +205,9 @@ const VariantForm: React.FC<VariantFormProps> = ({
                   />
                 )}
               />
-            </div>
+            </div> */}
 
-            <div>
+            {/* <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Warehouse Location
               </label>
@@ -223,7 +223,7 @@ const VariantForm: React.FC<VariantFormProps> = ({
                   />
                 )}
               />
-            </div>
+            </div> */}
 
             <div className="md:col-span-2">
               <ImageUploader

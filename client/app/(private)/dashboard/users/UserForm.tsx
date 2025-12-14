@@ -231,8 +231,7 @@ const UserForm: React.FC<UserFormProps> = ({
             {verificationImages.map((image, index) => {
               // Determine image type based on URL or index
               const isStudentIdCard = image.toLowerCase().includes('studentid') || index === 0;
-              const imageLabel = isStudentIdCard ? 'Student ID Card' : 'Fee Challan';
-              console.log('Rendering verification image:', image, 'as', imageLabel);
+              const imageLabel = isStudentIdCard ? 'Verification ID' : 'Fee Challan';
               
               return (
                 <div key={index} className="relative group">
