@@ -134,7 +134,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
-          Description 
+          Description  
         </label>
         <Controller
           name="description"
