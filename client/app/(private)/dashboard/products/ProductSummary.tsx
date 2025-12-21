@@ -31,7 +31,7 @@ const ProductSummary: React.FC<ProductSummaryProps> = ({
       : "Rs 0.00";
   const hasDiscount = product.discount && product.discount > 0;
   const discountedPrice = hasDiscount
-    ? `$${(product.price * (1 - product.discount / 100)).toFixed(2)}`
+    ? `Rs ${(product.price * (1 - product.discount / 100)).toFixed(2)}`
     : null;
 
   return (

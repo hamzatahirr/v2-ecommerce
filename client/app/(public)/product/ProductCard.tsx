@@ -106,7 +106,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             <div className="flex items-center space-x-2">
               {inStockVariants.length > 0 ? (
                 <span className="text-indigo-700 font-bold text-sm sm:text-lg lg:text-xl">
-                  ${lowestPrice.toFixed(2)}
+                  Rs {lowestPrice.toFixed(2)}
                 </span>
               ) : (
                 <span className="text-gray-500 font-medium text-sm sm:text-lg lg:text-xl">

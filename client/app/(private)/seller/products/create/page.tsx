@@ -32,7 +32,7 @@ const SellerCreateProduct = () => {
     defaultValues: {
       id: "",
       name: "",
-      isNew: false,
+      isNew: true,
       isTrending: false,
       isFeatured: false,
       isBestSeller: false,

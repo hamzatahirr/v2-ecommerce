@@ -160,7 +160,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
 
       {/* Price */}
       <div className="text-2xl sm:text-3xl font-bold text-gray-900">
-        ${price.toFixed(2)}
+        Rs {price.toFixed(2)}
       </div>
 
       {/* Available Options */}

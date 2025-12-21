@@ -18,7 +18,7 @@ interface CartSummaryProps {
 const CartSummary: React.FC<CartSummaryProps> = ({
   subtotal,
   shippingRate = 0.01,
-  currency = "$",
+  currency = "Rs",
   totalItems,
 }) => {
   const { showToast } = useToast();

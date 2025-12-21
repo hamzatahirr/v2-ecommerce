@@ -116,7 +116,7 @@ const Cart = () => {
                       {formatVariantName(item)}
                     </p>
                     <p className="text-xs sm:text-sm text-gray-500">
-                      ${item.variant.price.toFixed(2)}
+                      Rs {item.variant.price.toFixed(2)}
                     </p>
                   </div>
 
@@ -137,7 +137,7 @@ const Cart = () => {
                   {/* Subtotal and Remove */}
                   <div className="flex items-center justify-between sm:flex-col sm:items-end gap-2 w-full sm:w-auto">
                     <p className="font-medium text-gray-800 text-sm sm:text-base">
-                      ${(item.variant.price * item.quantity).toFixed(2)}
+                      Rs {(item.variant.price * item.quantity).toFixed(2)}
                     </p>
                     <button
                       onClick={() => handleRemoveFromCart(item.id)}
