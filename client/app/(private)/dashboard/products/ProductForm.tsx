@@ -83,7 +83,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
               <Dropdown
                 onChange={(value) => {
                   field.onChange(value);
-                  setValue("variants", []); // Reset variants when category changes
+                  setValue("variants", []); 
                 }}
                 options={categories}
                 value={field.value}
@@ -134,7 +134,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
-          Description
+          Description 
         </label>
         <Controller
           name="description"

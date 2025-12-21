@@ -37,7 +37,7 @@ const PaymentFailed = () => {
 
       {/* Error Message */}
       <h1 className="text-center text-3xl font-semibold text-red-700 mb-4">
-        Payment Failed
+        Payment Failed | Try again
       </h1>
 
       <p className="text-center text-lg text-gray-700 mb-6">
