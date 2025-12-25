@@ -3,7 +3,6 @@ import { Controller, UseFormReturn } from "react-hook-form";
 import { Tag } from "lucide-react";
 import Dropdown from "@/app/components/molecules/Dropdown";
 import { ProductFormData } from "./product.types";
-// import CheckBox from "@/app/components/atoms/CheckBox";
 import VariantForm from "./VariantForm";
 
 interface ProductFormProps {
@@ -128,13 +127,14 @@ const ProductForm: React.FC<ProductFormProps> = ({
             control={control}
             label="Trending"
             defaultValue={false}
+
           />
         </div>
       </div> */}
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
-          Description  
+          Description    
         </label>
         <Controller
           name="description"
