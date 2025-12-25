@@ -13,6 +13,7 @@ export interface User {
   verificationStatus?: VerificationStatus;
   avatar: string | null;
   email: string;
+  emailVerified?: boolean;
   createdAt?: string;
   updatedAt?: string;
   sellerProfile?: {

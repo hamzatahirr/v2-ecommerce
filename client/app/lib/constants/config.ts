@@ -3,7 +3,7 @@ const API_PATH = "/api/v1";
 export const API_BASE_URL =
   process.env.NODE_ENV === "production"
     ? `${process.env.NEXT_PUBLIC_API_URL_PROD}${API_PATH}` 
-    : `${process.env.NEXT_PUBLIC_API_URL_DEV}${API_PATH}`; ;
+    : `${process.env.NEXT_PUBLIC_API_URL_DEV}${API_PATH}`;
 
 export const AUTH_API_BASE_URL =
   process.env.NODE_ENV === "production"

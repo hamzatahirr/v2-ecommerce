@@ -289,32 +289,38 @@ export class ProductController {
                   .filter(Boolean);
               }
 
-              // Validate images from req.body
-              let bodyImages = variant.images || [];
-              if (typeof bodyImages === "string") {
+              // Get existing images from req.body
+              let existingImages: string[] = [];
+              if (variant.existingImages) {
                 try {
-                  bodyImages = JSON.parse(bodyImages);
+                  existingImages = JSON.parse(variant.existingImages);
                 } catch {
                   throw new AppError(
                     400,
-                    `Invalid images format at variant index ${index}`
+                    `Invalid existingImages format at variant index ${index}`
                   );
                 }
               }
-              if (
-                !Array.isArray(bodyImages) ||
-                bodyImages.some((img: any) => img && typeof img !== "string")
-              ) {
+              
+              if (!Array.isArray(existingImages)) {
                 throw new AppError(
                   400,
-                  `Images at variant index ${index} must be an array of strings or empty`
+                  `Existing images at variant index ${index} must be an array of strings`
                 );
               }
 
-              // Combine uploaded images with body images
+              // Validate existing images format
+              if (existingImages.some((img: any) => img && typeof img !== "string")) {
+                throw new AppError(
+                  400,
+                  `Existing images at variant index ${index} must be an array of strings`
+                );
+              }
+
+              // Combine uploaded images with existing images
               imageUrls = [
                 ...imageUrls,
-                ...bodyImages.filter((img: string) => img),
+                ...existingImages.filter((img: string) => img),
               ];
 
               // Cast numeric fields

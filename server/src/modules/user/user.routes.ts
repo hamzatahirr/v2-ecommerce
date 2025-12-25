@@ -127,17 +127,10 @@ router.get(
 
 /**
  * @swagger
- * /users/{id}:
+ * /users/me:
  *   put:
  *     summary: Update the authenticated user's profile
  *     description: Updates the profile of the authenticated user.
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: The ID of the user to update.
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -155,10 +148,9 @@ router.get(
  *         description: Unauthorized. Token is invalid or missing.
  */
 router.put(
-  "/:id",
+  "/me",
   protect,
   authorizeRole("USER", "ADMIN"),
-  authorizeRoleHierarchy("USER"),
   validateDto(UpdateUserDto),
   userController.updateMe
 );

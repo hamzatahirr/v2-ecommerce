@@ -56,7 +56,10 @@ export class UserController {
 
   updateMe = asyncHandler(
     async (req: Request, res: Response): Promise<void> => {
-      const { id } = req.params;
+      const id = req.user?.id;
+      if (!id) {
+        throw new AppError(401, "User not authenticated");
+      }
       const updatedData = req.body;
       const user = await this.userService.updateMe(id, updatedData);
       sendResponse(res, 200, {

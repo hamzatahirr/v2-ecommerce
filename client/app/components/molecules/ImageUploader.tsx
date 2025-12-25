@@ -7,6 +7,7 @@ import {
   Control,
   FieldErrors,
   UseFormSetValue,
+  useWatch,
 } from "react-hook-form";
 import { useEffect, useState, useCallback } from "react";
 
@@ -22,7 +23,8 @@ interface ImageUploaderProps {
 
 interface ImagePreview {
   url: string;
-  file: File;
+  file?: File;
+  isExisting?: boolean;
 }
 
 const ImageUploader = ({
@@ -35,12 +37,75 @@ const ImageUploader = ({
   disabled = false,
 }: ImageUploaderProps) => {
   const [previews, setPreviews] = useState<ImagePreview[]>([]);
+  const watchedValue = useWatch({ control, name });
 
-  // Cleanup blob URLs on unmount
+  // Initialize previews with existing images
+  useEffect(() => {
+    if (watchedValue && Array.isArray(watchedValue) && watchedValue.length > 0) {
+      // Create previews for all images (both existing URLs and new Files)
+      const newPreviews: ImagePreview[] = [];
+      watchedValue.forEach((item: File | string) => {
+        if (typeof item === 'string' && item.trim() !== '') {
+          // Existing image URL
+          newPreviews.push({
+            url: item,
+            isExisting: true
+          });
+        } else if (item instanceof File) {
+          // New file upload
+          newPreviews.push({
+            url: URL.createObjectURL(item),
+            file: item,
+            isExisting: false
+          });
+        }
+      });
+      
+      setPreviews(newPreviews);
+    } else {
+      setPreviews([]);
+    }
+  }, [watchedValue, name]);
+
+  // Watch for form value changes
+  useEffect(() => {
+    const currentValue = control._formValues[name];
+    console.log("ImageUploader - value changed:", { name, currentValue, previews: previews.length });
+    
+    // Sync previews with form value if they get out of sync
+    if (currentValue && Array.isArray(currentValue)) {
+      // Only update if the lengths don't match to avoid infinite loops
+      const totalExpected = currentValue.length;
+      const totalCurrent = previews.length;
+      
+      if (totalExpected !== totalCurrent) {
+        console.log("Syncing previews - expected:", totalExpected, "current:", totalCurrent);
+        // Re-initialize previews
+        const newPreviews: ImagePreview[] = [];
+        currentValue.forEach((item: File | string) => {
+          if (typeof item === 'string' && item.trim() !== '') {
+            newPreviews.push({
+              url: item,
+              isExisting: true
+            });
+          } else if (item instanceof File) {
+            newPreviews.push({
+              url: URL.createObjectURL(item),
+              file: item,
+              isExisting: false
+            });
+          }
+        });
+        setPreviews(newPreviews);
+      }
+    }
+  }, [control._formValues[name]]);
   useEffect(() => {
     return () => {
       previews.forEach((preview) => {
-        URL.revokeObjectURL(preview.url);
+        if (!preview.isExisting) {
+          URL.revokeObjectURL(preview.url);
+        }
       });
     };
   }, [previews]);
@@ -51,8 +116,8 @@ const ImageUploader = ({
 
       if (!files.length) return;
 
-      const currentFiles = previews.map((p) => p.file);
-      const remainingSlots = maxFiles - currentFiles.length;
+      const currentItems = watchedValue || [];
+      const remainingSlots = maxFiles - currentItems.length;
       const filesToAdd = files.slice(0, remainingSlots);
 
       if (filesToAdd.length < files.length) {
@@ -64,24 +129,19 @@ const ImageUploader = ({
       const newPreviews = filesToAdd.map((file) => ({
         url: URL.createObjectURL(file),
         file,
+        isExisting: false,
       }));
 
-      const updatedFiles = [...currentFiles, ...filesToAdd];
-      console.log(
-        "handleFileUpload files:",
-        files,
-        "updatedFiles:",
-        updatedFiles
-      );
+      const updatedItems = [...currentItems, ...filesToAdd];
       const updatedPreviews = [...previews, ...newPreviews];
 
       setPreviews(updatedPreviews);
-      setValue(name, updatedFiles, { shouldValidate: true });
+      setValue(name, updatedItems, { shouldValidate: true });
 
       // Clear the input
       e.target.value = "";
     },
-    [previews, setValue, name, maxFiles]
+    [previews, setValue, name, maxFiles, watchedValue]
   );
 
   const removeImage = useCallback(
@@ -89,17 +149,19 @@ const ImageUploader = ({
       const updatedPreviews = [...previews];
       const removedPreview = updatedPreviews.splice(index, 1)[0];
 
-      // Revoke blob URL
-      URL.revokeObjectURL(removedPreview.url);
+      // Revoke blob URL only for new files
+      if (!removedPreview.isExisting) {
+        URL.revokeObjectURL(removedPreview.url);
+      }
+
+      // Update the form values using the current watched value
+      const currentItems = watchedValue || [];
+      const updatedItems = currentItems.filter((_: any, i: number) => i !== index);
 
       setPreviews(updatedPreviews);
-      setValue(
-        name,
-        updatedPreviews.map((p) => p.file),
-        { shouldValidate: true }
-      );
+      setValue(name, updatedItems, { shouldValidate: true });
     },
-    [previews, setValue, name]
+    [previews, setValue, name, watchedValue]
   );
 
   const canAddMore = previews.length < maxFiles;
@@ -144,8 +206,8 @@ const ImageUploader = ({
               </button>
 
               {/* File indicator */}
-              <div className="absolute bottom-1 left-1 bg-green-500 text-white text-xs px-1.5 py-0.5 rounded">
-                New
+              <div className={`absolute bottom-1 left-1 text-white text-xs px-1.5 py-0.5 rounded ${preview.isExisting ? 'bg-blue-500' : 'bg-green-500'}`}>
+                {preview.isExisting ? 'Saved' : 'New'}
               </div>
             </div>
           ))}

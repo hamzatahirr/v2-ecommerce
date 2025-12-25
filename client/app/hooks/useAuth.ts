@@ -6,7 +6,7 @@ export function useAuth() {
     
 
   const user = useAppSelector((state) => state.auth.user);
-  const { data: data } = useGetUserVerificationDetailsQuery(user?.id || '', {
+  const { data: data, isLoading: verificationLoading } = useGetUserVerificationDetailsQuery(user?.id || '', {
     skip: !user?.id,
   } );
   const activeRole = useAppSelector((state) => state.auth.activeRole);
@@ -32,7 +32,7 @@ export function useAuth() {
   return {
     user,
     isAuthenticated: !!user,
-    isLoading: user === undefined,
+    isLoading: user === undefined || verificationLoading,
     activeRole,
     availableRoles,
     isBuyer,

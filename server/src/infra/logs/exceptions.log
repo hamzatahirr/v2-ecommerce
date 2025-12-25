@@ -1,0 +1,24 @@
+[2025-12-25T13:05:00.247Z] [31MERROR[39M: uncaughtException: ⨯ Unable to compile TypeScript:
+[96msrc/modules/user/user.controller.ts[0m:[93m61[0m:[93m52[0m - [91merror[0m[90m TS2345: [0mArgument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+
+[7m61[0m       const user = await this.userService.updateMe(id, updatedData);
+[7m  [0m [91m                                                   ~~[0m
+
+TSError: ⨯ Unable to compile TypeScript:
+[96msrc/modules/user/user.controller.ts[0m:[93m61[0m:[93m52[0m - [91merror[0m[90m TS2345: [0mArgument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+
+[7m61[0m       const user = await this.userService.updateMe(id, updatedData);
+[7m  [0m [91m                                                   ~~[0m
+
+    at createTSError (/media/hamza/Study/Work/ecommerce app fyp/Final/v2-ecommerce/server/node_modules/ts-node/src/index.ts:859:12)
+    at reportTSError (/media/hamza/Study/Work/ecommerce app fyp/Final/v2-ecommerce/server/node_modules/ts-node/src/index.ts:863:19)
+    at getOutput (/media/hamza/Study/Work/ecommerce app fyp/Final/v2-ecommerce/server/node_modules/ts-node/src/index.ts:1077:36)
+    at Object.compile (/media/hamza/Study/Work/ecommerce app fyp/Final/v2-ecommerce/server/node_modules/ts-node/src/index.ts:1433:41)
+    at Module.m._compile (/media/hamza/Study/Work/ecommerce app fyp/Final/v2-ecommerce/server/node_modules/ts-node/src/index.ts:1617:30)
+    at node:internal/modules/cjs/loader:1839:10
+    at Object.require.extensions.<computed> [as .ts] (/media/hamza/Study/Work/ecommerce app fyp/Final/v2-ecommerce/server/node_modules/ts-node/src/index.ts:1621:12)
+    at Module.load (node:internal/modules/cjs/loader:1441:32)
+    at Function._load (node:internal/modules/cjs/loader:1263:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)

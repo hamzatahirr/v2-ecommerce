@@ -24,7 +24,8 @@ export function VerificationGuard({
       return;
     }
 
-    if (!isLoading && isAuthenticated && !isVerified) {
+    // Only redirect if we have a definitive verification status (not undefined)
+    if (!isLoading && isAuthenticated && !isVerified && verificationStatus !== undefined) {
       if (!allowPending || verificationStatus !== "PENDING") {
         // Avoid redirect loop if we're already on the verification page
         if (typeof window !== 'undefined' && !window.location.pathname.includes('/verification')) {
@@ -47,7 +48,7 @@ export function VerificationGuard({
     return null;
   }
 
-  if (!isVerified) {
+  if (!isVerified && verificationStatus !== undefined) {
     if (!allowPending || verificationStatus !== "PENDING") {
       return null;
     }

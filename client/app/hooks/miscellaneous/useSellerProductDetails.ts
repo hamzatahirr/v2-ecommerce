@@ -88,7 +88,7 @@ export const useSellerProductDetails = () => {
             barcode: v.barcode || "",
             warehouseLocation: v.warehouseLocation || "",
             attributes: v.attributes || [],
-            images: v.images || [],
+            images: v.images || [], // These are existing image URLs (strings)
           })) || [],
       });
       // Set default selected variant to the first one
@@ -138,7 +138,8 @@ export const useSellerProductDetails = () => {
     payload.append("isFeatured", data.isFeatured.toString());
     payload.append("categoryId", data.categoryId || "");
 
-    // Handle variants
+    // Track image indexes for each variant
+    let imageIndex = 0;
     data.variants.forEach((variant, index) => {
       payload.append(`variants[${index}][id]`, variant.id || "");
       payload.append(`variants[${index}][sku]`, variant.sku || "");
@@ -157,13 +158,41 @@ export const useSellerProductDetails = () => {
         `variants[${index}][attributes]`,
         JSON.stringify(variant.attributes || [])
       );
-      // Handle new image uploads
+      
+      // Handle images: separate existing URLs from new files
+      const existingImages: string[] = [];
+      const newFiles: File[] = [];
+      
       if (variant.images && variant.images.length > 0) {
-        variant.images.forEach((file) => {
-          if (file instanceof File) {
-            payload.append(`images`, file);
+        variant.images.forEach((image) => {
+          if (image instanceof File) {
+            newFiles.push(image);
+          } else if (typeof image === 'string') {
+            existingImages.push(image);
           }
         });
+      }
+      
+      // Store existing images as JSON string
+      payload.append(`variants[${index}][existingImages]`, JSON.stringify(existingImages));
+      
+      // Track image indexes for this variant
+      if (Array.isArray(variant.images) && variant.images.length > 0) {
+        const imageIndexes = variant.images
+          .map((file) => {
+            if (file instanceof File) {
+              payload.append(`images`, file);
+              return imageIndex++;
+            }
+            return null;
+          })
+          .filter((idx) => idx !== null);
+        payload.append(
+          `variants[${index}][imageIndexes]`,
+          JSON.stringify(imageIndexes)
+        );
+      } else {
+        payload.append(`variants[${index}][imageIndexes]`, JSON.stringify([]));
       }
     });
 

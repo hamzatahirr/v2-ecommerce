@@ -9,7 +9,6 @@ const poppins = Poppins({
 });
 
 export const metadata = {
-  metadataBase: new URL('https://buybuddypk.store'),
   title: "BuyBuddy | Campus E-commerce Platform",
   description: "Campus e-commerce platform for students to buy and sell products.",
   icons: {
@@ -20,30 +19,6 @@ export const metadata = {
     ],
     apple: '/apple-touch-icon.png',
     shortcut: '/favicon.ico',
-  },
-  openGraph: {
-    title: "BuyBuddy | Campus E-commerce Platform",
-    description: "Campus e-commerce platform for students to buy and sell products.",
-    images: [
-      {
-        url: '/opengraph-image.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'BuyBuddy - Campus E-commerce Platform',
-      },
-    ],
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    images: [
-      {
-        url: '/twitter-image.jpg',
-        width: 1200,
-        height: 675,
-        alt: 'BuyBuddy - Campus E-commerce Platform',
-      },
-    ],
   },
 };
 

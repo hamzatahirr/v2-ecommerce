@@ -1,6 +1,6 @@
 "use client";
 import MainLayout from "@/app/components/templates/MainLayout";
-import { useGetMeQuery } from "@/app/store/apis/UserApi";
+import { useGetMeQuery, useUpdateUserMutation } from "@/app/store/apis/UserApi";
 import { useAuth } from "@/app/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -15,6 +15,8 @@ import {
   AlertCircle,
   Settings,
   LogOut,
+  X,
+  Save,
 } from "lucide-react";
 import Image from "next/image";
 import { motion } from "framer-motion";
@@ -25,12 +27,27 @@ const UserProfile = () => {
   const { isAuthenticated, isLoading: authLoading } = useAuth();
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
+  const [updateUser, { isLoading: isUpdating }] = useUpdateUserMutation();
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+  });
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
       router.push("/sign-in");
     }
   }, [authLoading, isAuthenticated, router]);
+
+  // Initialize form data when user data is available
+  useEffect(() => {
+    if (data) {
+      setFormData({
+        name: data.name || "",
+        email: data.email || "",
+      });
+    }
+  }, [data]);
 
   if (authLoading || isLoading) {
 
@@ -74,7 +91,7 @@ const UserProfile = () => {
     return null;
   }
 
-  if (error || !data) {
+  if (error) {
     return (
       <MainLayout>
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 py-4 sm:py-8 px-3 sm:px-4">
@@ -98,8 +115,76 @@ const UserProfile = () => {
     );
   }
 
+  if (!data) {
+    return (
+      <MainLayout>
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 py-4 sm:py-8 px-3 sm:px-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 overflow-hidden">
+              <div className="animate-pulse">
+                {/* Header skeleton */}
+                <div className="h-32 sm:h-40 bg-gradient-to-r from-indigo-500 to-purple-600 relative">
+                  <div className="absolute -bottom-8 sm:-bottom-12 left-4 sm:left-8">
+                    <div className="w-16 h-16 sm:w-24 sm:h-24 bg-gray-300 rounded-full border-4 border-white"></div>
+                  </div>
+                </div>
+                {/* Content skeleton */}
+                <div className="pt-12 sm:pt-16 p-4 sm:p-8">
+                  <div className="space-y-4">
+                    <div className="h-6 bg-gray-300 rounded w-48"></div>
+                    <div className="h-4 bg-gray-300 rounded w-32"></div>
+                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                      {[...Array(4)].map((_, i) => (
+                        <div
+                          key={i}
+                          className="h-20 bg-gray-200 rounded-xl"
+                        ></div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </MainLayout>
+    );
+  }
+
   const user = data;
   console.log("User Data:", user);
+
+
+
+  // Handle form input changes
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  // Handle form submission
+  const handleSave = async () => {
+    try {
+      await updateUser(formData).unwrap();
+      setIsEditing(false);
+    } catch (error) {
+      console.error("Failed to update profile:", error);
+    }
+  };
+
+  // Handle cancel
+  const handleCancel = () => {
+    if (user) {
+      setFormData({
+        name: user.name || "",
+        email: user.email || "",
+      });
+    }
+    setIsEditing(false);
+  };
 
   // Generate initials for avatar fallback
   const getInitials = (name: string) => {
@@ -187,21 +272,83 @@ const UserProfile = () => {
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 sm:mb-8">
                 <div>
                   <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-1">
-                    {user.name || "User Profile"}
+                    {isEditing ? "Edit Profile" : (user.name || "User Profile")}
                   </h1>
                   <p className="text-gray-600 text-sm sm:text-base">
-                    Manage your account information and preferences
+                    {isEditing ? "Update your account information" : "Manage your account information and preferences"}
                   </p>
                 </div>
 
-                <button
-                  onClick={() => setIsEditing(!isEditing)}
-                  className="mt-4 sm:mt-0 inline-flex items-center space-x-2 bg-indigo-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-medium shadow-lg hover:bg-indigo-700 hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
-                >
-                  <Edit3 className="w-4 h-4" />
-                  <span>{isEditing ? "Save Changes" : "Edit Profile"}</span>
-                </button>
+                <div className="flex space-x-3 mt-4 sm:mt-0">
+                  {isEditing ? (
+                    <>
+                      <button
+                        onClick={handleCancel}
+                        className="inline-flex items-center space-x-2 bg-gray-200 text-gray-700 px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-medium hover:bg-gray-300 transition-colors duration-200"
+                      >
+                        <X className="w-4 h-4" />
+                        <span>Cancel</span>
+                      </button>
+                      <button
+                        onClick={handleSave}
+                        disabled={isUpdating}
+                        className="inline-flex items-center space-x-2 bg-green-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-medium shadow-lg hover:bg-green-700 hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        <Save className="w-4 h-4" />
+                        <span>{isUpdating ? "Saving..." : "Save Changes"}</span>
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      onClick={() => setIsEditing(!isEditing)}
+                      className="inline-flex items-center space-x-2 bg-indigo-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-medium shadow-lg hover:bg-indigo-700 hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
+                    >
+                      <Edit3 className="w-4 h-4" />
+                      <span>Edit Profile</span>
+                    </button>
+                  )}
+                </div>
               </div>
+
+              {/* Edit Form */}
+              {isEditing && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mb-8 bg-gray-50 rounded-xl p-6 border border-gray-200"
+                >
+                  <h3 className="text-lg font-semibold text-gray-800 mb-4">Edit Your Information</h3>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Full Name
+                      </label>
+                      <input
+                        type="text"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                        placeholder="Enter your full name"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Email Address
+                      </label>
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                        placeholder="Enter your email"
+                      />
+                    </div>
+
+                  </div>
+                </motion.div>
+              )}
 
               {/* User Details Grid */}
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -359,19 +506,28 @@ const UserProfile = () => {
                   </div>
 
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                    <button className="flex flex-col items-center space-y-2 p-3 rounded-lg bg-white border border-gray-200 hover:border-indigo-300 hover:bg-indigo-50 transition-all duration-200">
+                    <button 
+                      onClick={() => setIsEditing(true)}
+                      className="flex flex-col items-center space-y-2 p-3 rounded-lg bg-white border border-gray-200 hover:border-indigo-300 hover:bg-indigo-50 transition-all duration-200"
+                    >
                       <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
                         <Edit3 className="w-4 h-4 text-indigo-600" />
                       </div>
-                      <span className="text-xs font-medium text-gray-700">
+                      <span className="text-xs text-gray-600 font-medium">
                         Edit Profile
                       </span>
                     </button>
-                    <button className="flex flex-col items-center space-y-2 p-3 rounded-lg bg-white border border-gray-200 hover:border-red-300 hover:bg-red-50 transition-all duration-200">
+                    <button 
+                      onClick={() => {
+                        // Handle logout - you might want to use your auth context here
+                        window.location.href = "/sign-in";
+                      }}
+                      className="flex flex-col items-center space-y-2 p-3 rounded-lg bg-white border border-gray-200 hover:border-red-300 hover:bg-red-50 transition-all duration-200"
+                    >
                       <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
                         <LogOut className="w-4 h-4 text-red-600" />
                       </div>
-                      <span className="text-xs font-medium text-gray-700">
+                      <span className="text-xs text-gray-600 font-medium">
                         Sign Out
                       </span>
                     </button>

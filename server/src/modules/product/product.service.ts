@@ -410,6 +410,18 @@ export class ProductService {
     }
 
     return prisma.$transaction(async (tx) => {
+      // Collect existing image URLs before update for cleanup
+      const existingImageUrls: string[] = [];
+      if (variants) {
+        existingProduct.variants.forEach(variant => {
+          variant.images.forEach(image => {
+            if (cloudinaryService.isCloudinaryUrl(image)) {
+              existingImageUrls.push(image);
+            }
+          });
+        });
+      }
+
       const updatedProduct = await this.productRepository.updateProduct(
         productId,
         {
@@ -419,7 +431,23 @@ export class ProductService {
       );
 
       if (variants) {
+        // Collect new image URLs after update
+        const newImageUrls: string[] = [];
+        variants.forEach(variant => {
+          variant.images.forEach(image => {
+            if (cloudinaryService.isCloudinaryUrl(image)) {
+              newImageUrls.push(image);
+            }
+          });
+        });
+
+        // Find images to delete (existing but not in new)
+        const imagesToDelete = existingImageUrls.filter(url => !newImageUrls.includes(url));
+        
+        // Delete variants first (this will also delete variant attributes)
         await prisma.productVariant.deleteMany({ where: { productId } });
+        
+        // Create new variants
         for (const variant of variants) {
           await this.variantRepository.createVariant({
             productId,
@@ -432,6 +460,12 @@ export class ProductService {
             attributes: variant.attributes,
             images: variant.images || [],
           });
+        }
+
+        // Delete removed images from Cloudinary
+        if (imagesToDelete.length > 0) {
+          const deleteResult = await cloudinaryService.deleteImages(imagesToDelete);
+          console.log(`Deleted ${deleteResult.success} images from Cloudinary during product update, ${deleteResult.failed} failed`);
         }
       }
 
