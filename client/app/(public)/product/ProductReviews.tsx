@@ -34,7 +34,7 @@ const ProductReviews: React.FC<ProductReviewsProps> = ({
   productId,
 }) => {
   const { data } = useGetMeQuery(undefined);
-  const userId = data?.id;
+  const userId = data?.user?.id;
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
   const [expandedReviews, setExpandedReviews] = useState<
@@ -316,7 +316,7 @@ const ProductReviews: React.FC<ProductReviewsProps> = ({
                     </p>
                   </div>
                 </div>
-                {(data?.role === "ADMIN" || userId === review.userId) && (
+                {(data?.user?.role === "ADMIN" || userId === review.userId) && (
                   <button
                     onClick={() => handleDeleteReview(review.id)}
                     className="text-red-500 hover:text-red-600 transition-colors p-1 rounded-full hover:bg-red-50"

@@ -100,7 +100,7 @@ export default function ChatConversationPage() {
                     <div className="flex-shrink-0">
                       <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
                         {(() => {
-                          const participantName = user?.isSeller ? conversation.user?.name : conversation.seller?.name;
+                            const participantName = userData?.isSeller ? conversation.user?.name : conversation.seller?.name;
                           return participantName ? (
                             <span className="text-white font-bold text-sm">
                               {participantName[0]?.toUpperCase()}
@@ -117,7 +117,7 @@ export default function ChatConversationPage() {
                       <div className="flex items-center justify-between mb-1">
                         <h3 className="font-semibold text-gray-900 truncate">
                           {(() => {
-                            const participantName = user?.isSeller ? conversation.user?.name : conversation.seller?.name;
+                          const participantName = userData?.isSeller ? conversation.user?.name : conversation.seller?.name;
                             return participantName || 'Support';
                           })()}
                         </h3>

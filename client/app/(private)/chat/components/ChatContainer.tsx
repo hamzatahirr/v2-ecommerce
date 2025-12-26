@@ -59,7 +59,7 @@ const ChatContainer: React.FC<ChatProps> = ({ chatId }) => {
     setMessage,
     handleSendMessage,
     isTyping
-  } = useChatMessages(chatId, userData, chat, socket.socket, sendMessage);
+  } = useChatMessages(chatId, user, chat, socket.socket, sendMessage);
 
   // Merge server + local messages and sort
   const mergedMessages = useMemo(() => {

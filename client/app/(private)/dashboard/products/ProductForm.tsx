@@ -45,7 +45,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
       <div className="grid grid-cols-2 gap-4">
         <div className="relative">
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Product Name
+            Product Name:
           </label>
           <div className="relative">
             <Controller

@@ -41,10 +41,10 @@ const UserProfile = () => {
 
   // Initialize form data when user data is available
   useEffect(() => {
-    if (data) {
+    if (data?.user) {
       setFormData({
-        name: data.name || "",
-        email: data.email || "",
+        name: data.user.name || "",
+        email: data.user.email || "",
       });
     }
   }, [data]);
@@ -151,7 +151,7 @@ const UserProfile = () => {
     );
   }
 
-  const user = data;
+  const user = data.user;
   console.log("User Data:", user);
 
 

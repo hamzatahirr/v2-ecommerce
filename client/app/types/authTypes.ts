@@ -22,3 +22,7 @@ export interface User {
     // Add other seller profile fields as needed
   };
 }
+
+export interface GetMeResponse {
+  user: User;
+}

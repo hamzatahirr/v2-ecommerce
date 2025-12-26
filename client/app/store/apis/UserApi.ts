@@ -1,4 +1,4 @@
-import { User } from "@/app/types/authTypes";
+import { GetMeResponse } from "@/app/types/authTypes";
 import { apiSlice } from "../slices/ApiSlice";
 
 export const userApi = apiSlice.injectEndpoints({
@@ -37,7 +37,7 @@ export const userApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["User"],
     }),
-    getMe: builder.query<User, void>({
+    getMe: builder.query<GetMeResponse, void>({
       query: () => ({
         url: "/users/me",
         method: "GET",
