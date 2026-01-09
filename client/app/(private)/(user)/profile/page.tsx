@@ -304,7 +304,7 @@ const UserProfile = () => {
                       className="inline-flex items-center space-x-2 bg-indigo-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-medium shadow-lg hover:bg-indigo-700 hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
                     >
                       <Edit3 className="w-4 h-4" />
-                      <span>Edit Profile</span>
+                      <span>Edit Profile </span>
                     </button>
                   )}
                 </div>
@@ -500,7 +500,7 @@ const UserProfile = () => {
                     </div>
                     <div>
                       <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wide">
-                        Quick Actions
+                        Quick Action
                       </h3>
                     </div>
                   </div>
@@ -528,7 +528,7 @@ const UserProfile = () => {
                         <LogOut className="w-4 h-4 text-red-600" />
                       </div>
                       <span className="text-xs text-gray-600 font-medium">
-                        Sign Out
+                        Sign Out?
                       </span>
                     </button>
                   </div>
