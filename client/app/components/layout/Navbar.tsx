@@ -152,6 +152,14 @@ const Navbar = () => {
                 </Link>
               )}
 
+              {/* About Us Link */}
+              <Link
+                href="/about-us"
+                className="hidden sm:flex items-center gap-1 px-3 py-2 text-gray-700 hover:text-indigo-600 transition-colors text-sm font-medium"
+              >
+                <span>About Us</span>
+              </Link>
+
               {/* Cart */}
               <Link
                 href="/cart"
@@ -283,6 +291,13 @@ const Navbar = () => {
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Shop
+                </Link>
+                <Link
+                  href="/about-us"
+                  className="block px-3 py-2 text-gray-800 hover:bg-gray-100 rounded-md"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  About Us
                 </Link>
                 {isAuthenticated && (
                   <Link

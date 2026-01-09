@@ -182,3 +182,24 @@
 [2025-12-25T23:14:26.389Z] [32MINFO[39M: ::1 - - [25/Dec/2025:23:14:26 +0000] "POST /api/v1/analytics/interactions HTTP/1.1" 200 321 "http://localhost:3000/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"
 [2025-12-25T23:14:35.653Z] [32MINFO[39M: ::1 - - [25/Dec/2025:23:14:35 +0000] "GET /api/v1/users/me HTTP/1.1" 200 345 "http://localhost:3000/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"
 [2025-12-25T23:14:49.407Z] [32MINFO[39M: ::1 - - [25/Dec/2025:23:14:49 +0000] "GET /api/v1/auth/sign-out HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"
+[2026-01-09T04:55:46.577Z] [31MERROR[39M: Refresh token not found
+[2026-01-09T04:55:46.769Z] [32MINFO[39M: ::ffff:127.0.0.1 - - [09/Jan/2026:04:55:46 +0000] "POST /api/v1/auth/refresh-token HTTP/1.1" 401 - "http://localhost:3000/" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:146.0) Gecko/20100101 Firefox/146.0"
+[2026-01-09T04:55:46.791Z] [31MERROR[39M: Refresh token not found
+[2026-01-09T04:55:46.816Z] [32MINFO[39M: ::ffff:127.0.0.1 - - [09/Jan/2026:04:55:46 +0000] "POST /api/v1/auth/refresh-token HTTP/1.1" 401 - "http://localhost:3000/" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:146.0) Gecko/20100101 Firefox/146.0"
+[2026-01-09T05:37:29.928Z] [31MERROR[39M: Refresh token not found
+[2026-01-09T05:37:30.032Z] [32MINFO[39M: ::ffff:127.0.0.1 - - [09/Jan/2026:05:37:30 +0000] "POST /api/v1/auth/refresh-token HTTP/1.1" 401 - "http://localhost:3000/" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:146.0) Gecko/20100101 Firefox/146.0"
+[2026-01-09T05:37:30.075Z] [31MERROR[39M: Refresh token not found
+[2026-01-09T05:37:30.248Z] [32MINFO[39M: ::ffff:127.0.0.1 - - [09/Jan/2026:05:37:30 +0000] "POST /api/v1/auth/refresh-token HTTP/1.1" 401 - "http://localhost:3000/" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:146.0) Gecko/20100101 Firefox/146.0"
+[2026-01-09T05:37:30.630Z] [32MINFO[39M: ::ffff:127.0.0.1 - - [09/Jan/2026:05:37:30 +0000] "POST /api/v1/graphql HTTP/1.1" 200 989 "http://localhost:3000/" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:146.0) Gecko/20100101 Firefox/146.0"
+[2026-01-09T05:37:30.761Z] [32MINFO[39M: ::ffff:127.0.0.1 - - [09/Jan/2026:05:37:30 +0000] "POST /api/v1/graphql HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:146.0) Gecko/20100101 Firefox/146.0"
+[2026-01-09T05:37:30.784Z] [32MINFO[39M: ::ffff:127.0.0.1 - - [09/Jan/2026:05:37:30 +0000] "GET /api/v1/cart/count HTTP/1.1" 200 74 "http://localhost:3000/" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:146.0) Gecko/20100101 Firefox/146.0"
+[2026-01-09T05:37:31.743Z] [32MINFO[39M: ::ffff:127.0.0.1 - - [09/Jan/2026:05:37:31 +0000] "GET /api/v1/categories HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:146.0) Gecko/20100101 Firefox/146.0"
+[2026-01-09T06:51:21.166Z] [32MINFO[39M: ::ffff:127.0.0.1 - - [09/Jan/2026:06:51:21 +0000] "GET /api/v1/cart/count HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:146.0) Gecko/20100101 Firefox/146.0"
+[2026-01-09T06:51:21.489Z] [32MINFO[39M: ::ffff:127.0.0.1 - - [09/Jan/2026:06:51:21 +0000] "POST /api/v1/graphql HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:146.0) Gecko/20100101 Firefox/146.0"
+[2026-01-09T06:51:53.949Z] [32MINFO[39M: ::ffff:127.0.0.1 - - [09/Jan/2026:06:51:53 +0000] "POST /api/v1/graphql HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:146.0) Gecko/20100101 Firefox/146.0"
+[2026-01-09T06:53:16.878Z] [31MERROR[39M: Refresh token not found
+[2026-01-09T06:53:16.901Z] [32MINFO[39M: ::ffff:127.0.0.1 - - [09/Jan/2026:06:53:16 +0000] "POST /api/v1/auth/refresh-token HTTP/1.1" 401 - "http://localhost:3000/" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:146.0) Gecko/20100101 Firefox/146.0"
+[2026-01-09T06:53:16.948Z] [31MERROR[39M: Refresh token not found
+[2026-01-09T06:53:16.980Z] [32MINFO[39M: ::ffff:127.0.0.1 - - [09/Jan/2026:06:53:16 +0000] "POST /api/v1/auth/refresh-token HTTP/1.1" 401 - "http://localhost:3000/" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:146.0) Gecko/20100101 Firefox/146.0"
+[2026-01-09T06:53:17.238Z] [32MINFO[39M: ::ffff:127.0.0.1 - - [09/Jan/2026:06:53:17 +0000] "POST /api/v1/graphql HTTP/1.1" 200 - "http://localhost:3000/" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:146.0) Gecko/20100101 Firefox/146.0"
+[2026-01-09T06:53:17.271Z] [32MINFO[39M: ::ffff:127.0.0.1 - - [09/Jan/2026:06:53:17 +0000] "GET /api/v1/cart/count HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:146.0) Gecko/20100101 Firefox/146.0"

@@ -37,12 +37,13 @@ const PaymentFailed = () => {
 
       {/* Error Message */}
       <h1 className="text-center text-3xl font-semibold text-red-700 mb-4">
-        Payment Failed to fetch
+        Payment Failed to fetch at all
       </h1>
 
       <p className="text-center text-lg text-gray-700 mb-6">
         Something went wrong with your payment. Please try again or contact
-        support for assistance.
+        support for assistance. Make sure to check your payment details and
+        try again.
       </p>
 
       {/* Helpful Links */}
