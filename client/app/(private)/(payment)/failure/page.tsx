@@ -6,11 +6,6 @@ import { XCircle, ShoppingCart, Headphones } from "lucide-react";
 
 const PaymentFailed = () => {
   {/* TESTING: Payment bypassed - START */}
-  {/* 
-  This page is commented out for testing purposes when BYPASS_PAYMENTS is enabled.
-  Payment failures won't occur in bypass mode.
-  */}
-  {/* TESTING: Payment bypassed - END */}
   
   const router = useRouter();
 
@@ -37,7 +32,7 @@ const PaymentFailed = () => {
 
       {/* Error Message */}
       <h1 className="text-center text-3xl font-semibold text-red-700 mb-4">
-        Payment Failed
+        Payment Failed to send
       </h1>
 
       <p className="text-center text-lg text-gray-700 mb-6">
@@ -53,7 +48,7 @@ const PaymentFailed = () => {
           className="flex items-center space-x-2 text-sm font-medium text-blue-600 hover:text-blue-800"
         >
           <ShoppingCart size={18} />
-          <span>View Orders</span>
+          <span>View my Orders</span>
         </button>
         <button
           onClick={() => handleRedirect("/support")}

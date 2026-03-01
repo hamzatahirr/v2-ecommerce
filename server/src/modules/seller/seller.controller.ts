@@ -6,6 +6,7 @@ import asyncHandler from "@/shared/utils/asyncHandler";
 import sendResponse from "@/shared/utils/sendResponse";
 import { makeLogsService } from "../logs/logs.factory";
 import AppError from "@/shared/errors/AppError";
+import { uploadToCloudinary } from "@/shared/utils/uploadToCloudinary";
 
 export class SellerController {
   private logsService = makeLogsService();
@@ -85,6 +86,42 @@ export class SellerController {
       });
 
       this.logsService.info("Seller profile updated", {
+        userId,
+        sellerProfileId: sellerProfile.id,
+      });
+    }
+  );
+
+  uploadStoreLogo = asyncHandler(
+    async (req: Request, res: Response): Promise<void> => {
+      const userId = req.user?.id;
+      if (!userId) {
+        throw new AppError(401, "User not authenticated");
+      }
+
+      if (!req.file) {
+        throw new AppError(400, "No logo file uploaded");
+      }
+
+      const uploadResult = await uploadToCloudinary([req.file]);
+
+      if (!uploadResult || uploadResult.length === 0) {
+        throw new AppError(500, "Failed to upload logo to cloud storage");
+      }
+
+      const logoUrl = uploadResult[0].url;
+
+      const sellerProfile = await this.sellerService.updateSellerProfile(
+        userId,
+        { storeLogo: logoUrl }
+      );
+
+      sendResponse(res, 200, {
+        data: { sellerProfile, logoUrl },
+        message: "Logo uploaded successfully",
+      });
+
+      this.logsService.info("Seller logo uploaded", {
         userId,
         sellerProfileId: sellerProfile.id,
       });

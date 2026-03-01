@@ -3,6 +3,7 @@ import { makeSellerController } from "./seller.factory";
 import protect from "@/shared/middlewares/protect";
 import authorizeSeller from "@/shared/middlewares/authorizeSeller";
 import { validateDto } from "@/shared/middlewares/validateDto";
+import upload from "@/shared/middlewares/upload";
 import {
   ApplySellerDto,
   UpdateSellerProfileDto,
@@ -142,6 +143,40 @@ router.patch(
   authorizeSeller,
   validateDto(UpdateSellerProfileDto),
   sellerController.updateSellerProfile
+);
+
+/**
+ * @swagger
+ * /sellers/profile/logo:
+ *   post:
+ *     summary: Upload store logo
+ *     description: Uploads a store logo image for the authenticated seller.
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               logo:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       200:
+ *         description: Logo uploaded successfully
+ *       400:
+ *         description: Invalid input or no file uploaded
+ *       401:
+ *         description: Unauthorized
+ */
+router.post(
+  "/profile/logo",
+  protect,
+  authorizeSeller,
+  upload.single("logo"),
+  sellerController.uploadStoreLogo
 );
 
 /**
