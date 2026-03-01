@@ -105,7 +105,7 @@ const UserProfile = () => {
                   Profile Error
                 </h3>
                 <p className="text-red-600 text-sm sm:text-base">
-                  Unable to fetch your profile
+                  Unable to fetch your profile 
                 </p>
               </div>
             </div>
