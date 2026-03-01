@@ -105,7 +105,7 @@ const UserProfile = () => {
                   Profile Error
                 </h3>
                 <p className="text-red-600 text-sm sm:text-base">
-                  Unable to fetch your profile. Please try again.
+                  Unable to fetch your profile. 
                 </p>
               </div>
             </div>
@@ -304,7 +304,7 @@ const UserProfile = () => {
                       className="inline-flex items-center space-x-2 bg-indigo-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-medium shadow-lg hover:bg-indigo-700 hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
                     >
                       <Edit3 className="w-4 h-4" />
-                      <span>Edit Profile </span>
+                      <span>Edit Profile. </span>
                     </button>
                   )}
                 </div>
