@@ -38,7 +38,7 @@ const PaymentFailed = () => {
       <p className="text-center text-lg text-gray-700 mb-6">
         Something went wrong with your payment. Please try again or contact
         support for assistance. Make sure to check your payment details and
-        try again.
+        try again later.
       </p>
 
       {/* Helpful Links */}
